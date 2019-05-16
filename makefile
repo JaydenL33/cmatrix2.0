@@ -3,36 +3,50 @@
 
 ##############################################
 # Defining make macros:
+#
 # wildcard function from make, searches through
-# pwd for files matching *.c
+# current directory for files matching *.c
 #
 # SRC:.c=.o is a pattern naming all *.c files found
 # to *.o files
+#
+# $@ is target & $^ is dependency(s)
 ##############################################
+
 LINK_TARGET = main.exe
-SRC = $(wildcard *.c)
-OBJS = $(SRC:.c=.o)
+LINK_SRC  = $(wildcard *.c)
 
-CFLAGS = -Wall -Werror -ansi
+STATIC_LIB_TARGET = libCrypto.a
+STATIC_LIB_SRC = $(wildcard crypto/*.c)
 
-##############################################
-# 	Auto clean (on make)
-##############################################
-clean:
-	rm -f $(OBJS) $(LINK_TARGET)
-	echo Clean complete!
+OBJS = $(LINK_SRC:.c=.o)
+STATIC_OBJS = $(STATIC_LIB_SRC:.c=.o)
+
+CFLAGS = -Wall -Werror -ansi -g
 
 ##############################################
-#	 Compile all (make all)
+#	 Compile all (default make command)
 ##############################################
 all : $(LINK_TARGET)
-	
-# $@ is target & $^ is dependency(s)
-$(LINK_TARGET) : $(OBJS)
-	gcc $(CFLAGS) -o $@ $^ -lm
-	echo All done!
 
-# use macro : pattern match to compile src
-# again, $^ matches dependency(s)
-#$(OBJS): lec3.c
-#	gcc -c $(CFLAGS) $^ -lm
+$(LINK_TARGET) : libraries
+	gcc $(CFLAGS) -o $@ $(LINK_SRC) $(STATIC_LIB_TARGET) -lm
+	@echo ======================== All done! =============
+
+##############################################
+#	 Compile libraries (static)
+##############################################
+libraries : $(STATIC_OBJS)
+	ar -rcs $(STATIC_LIB_TARGET) encrypt.o util.o
+	@echo ============= Libraries compilled! =============
+
+$(STATIC_OBJS) : $(STATIC_LIB_SRC)
+	gcc $(CFLAGS) -c $^ -lm
+
+##############################################
+#	Clean directory
+##############################################
+.PHONY : clean
+clean :
+	rm -f $(OBJS) $(LINK_TARGET) $(STATIC_LIB_TARGET)
+	@echo ============== Clean all complete! =============
