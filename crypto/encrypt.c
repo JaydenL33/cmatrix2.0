@@ -11,10 +11,8 @@
 # include <stdio.h> /* fgets, printf, */
 # include <stdlib.h> /* system */
 # include <string.h> /* strlen */
+# include <math.h>
 # include "encrypt.h" /* custom library header file for cryptography functionality */
-
-# define MAX_KEY_LEN 256
-# define INPUT_STRING_BUFFER 1024
 
 /*******************************************************************************
  * Implement gen_key to retrieve a user-defined key. Then generate a pseudo rand
@@ -26,6 +24,8 @@
  *	- ciphertext
 *******************************************************************************/
 int encrypt(void) {
+	int i;
+
 	/* string data */
 	char plaintext[INPUT_STRING_BUFFER];
 	char ciphertext[INPUT_STRING_BUFFER];
@@ -35,15 +35,19 @@ int encrypt(void) {
 	int byte_state_vector[MAX_KEY_LEN];
 	int pseudo_rand_key[MAX_KEY_LEN];
 	/* Byte converted key */
-	int key_val[MAX_KEY_LEN];
+	char key_val[MAX_KEY_LEN];
 	int keyLength;
 
 	keyLength = getKey(key_val);
-	byteStreamInitialiser(key_val, byte_state_vector, &keyLength);
-	genPseudoRandKey(byte_state_vector, pseudo_rand_key);				printf("%d\n", keyLength);
-	length_plaintext_data = getPlaintext(plaintext); 					printf("%d\n", length_plaintext_data);
+	byteStreamInitialiser((int*) key_val, byte_state_vector, &keyLength);
+	genPseudoRandKey(byte_state_vector, pseudo_rand_key);				printf("KeyLength:%d\n", keyLength);
+	length_plaintext_data = getPlaintext(plaintext); 					printf("Plaintext Length:%d\n", length_plaintext_data);
 
 	XORencrypt(plaintext, ciphertext, byte_key_stream);
+	printf("Ciphertext:\n");
+	for (i = 0; i < 10; i++){
+		printf("%d", ciphertext[i]);
+	}
 	return 1;
 }
 
@@ -56,19 +60,19 @@ int encrypt(void) {
  *	- int length of key
  *	- BYTE struct converted key to mem address provided
 *******************************************************************************/
-int getkey(int* key_arr) {
+int getKey(char* userInputKey) {
 
 	int length;
-	char userInputKey[MAX_KEY_LEN];
 	char* explanation = "The key value may contain any ASCII valid characters.\
-						(TODO: escape sequences?? - implement testing later)\
-						Only the first 256 characters inputed will be used.";
+(TODO: escape sequences?? - implement testing later)\
+Only the first 256 characters inputed will be used.";
 	
+	printf("[echo]");
+	system("echo off");  /* Do not print the key in plaintext back to the shell! */
 	printf("%s\nEnter the key:\n", explanation);
-	system("@echo off");  /* Do not print the key in plaintext back to the shell! */
-	
 	clearStdin();
-	fgets(userInputKey, MAX_KEY_LEN, stdin);
+	fgets(userInputKey, 5, stdin);
+
 	length = strlen(userInputKey);
 
 	if (userInputKey[length - 1] == '\n') {
@@ -90,8 +94,8 @@ int getkey(int* key_arr) {
    	 * re enable echo then convert input ASCII key to 
    	 * "byte" key before returning length of user input key
    	 */
-    system("@echo on"); 
-    key_arr = (int*) userInputKey;
+    printf("[echo]");
+    system("echo on"); 
 	return length;
 }
 
@@ -106,7 +110,7 @@ int getkey(int* key_arr) {
 void byteStreamInitialiser(int* userInputKey,  int* byteStateVector, int* keyLength) {
 	int byteTempVecotr[MAX_KEY_LEN];
 	int i, j;
-
+	/* KSA */
 	/* loops input key, generates a byte stream vector (byte-key) of 256 */
 	for (i = 0; i < MAX_KEY_LEN; i++) {
 		byteStateVector[i] = i;
@@ -129,8 +133,8 @@ void byteStreamInitialiser(int* userInputKey,  int* byteStateVector, int* keyLen
 *******************************************************************************/
 int genPseudoRandKey(int* byteStateVector, int* byteStreamKey) {
 	int i, j, t;
-
-	while(1) {
+	/* PRGA */
+	while(i != MAX_KEY_LEN) {
 		i = (i+1) % MAX_KEY_LEN;
 		j = (j + byteStateVector[i]) % MAX_KEY_LEN;
 		swap(&byteStateVector[i], &byteStateVector[j]);
@@ -152,14 +156,13 @@ int genPseudoRandKey(int* byteStateVector, int* byteStreamKey) {
 int XORencrypt(char* plaintext, char* ciphertext, int* byteStreamKey) {
 	int i;
 
-	for (i = 0; i < MAX_KEY_LEN; i++) {
+	for (i = 0; i < strlen(plaintext); i++) {
 		/* note: ^ is the XOR operator. Do not confuse with power operation */
 		ciphertext[i] = byteStreamKey[i]^plaintext[i];
 	}
 
 	return 0;
 }
-
 
 /*******************************************************************************
  * Plaintext getter. Prompts user for plaintext entry to be encrypted. 
@@ -170,10 +173,10 @@ int XORencrypt(char* plaintext, char* ciphertext, int* byteStreamKey) {
  *	- int length of plaintext entered.
 *******************************************************************************/
 int getPlaintext(char* plaintext) {
-	int len_plaintext;
+	int lengthPlainText;
 	char* explanation = "Enter the data to be encrypted! Note: currently only\
-						1024 characters are supported, all remaining characters\
-						will be ignored!";
+1024 characters are supported, all remaining characters\
+will be ignored!";
 
 	printf("\n%s\n", explanation);
 	clearStdin();

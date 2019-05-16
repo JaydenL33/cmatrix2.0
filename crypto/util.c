@@ -8,11 +8,14 @@
  */
 
 # include "encrypt.h" /* custom library header file for cryptography functionality */
+# include <stdlib.h>
+# include <stdio.h>
+# include <math.h>
 
 /*******************************************************************************
  * Utility function that clears stdin until newline or EOF
 *******************************************************************************/
-void clear_stdin() {
+void clearStdin() {
     int c;
     while (!((c = getchar() == '\n') || c == EOF));
 }

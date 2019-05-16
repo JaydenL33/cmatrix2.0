@@ -11,7 +11,9 @@
  * Albert Ferguson, Jayden Lee
  */
 
-
+# define MAX_KEY_LEN 256
+# define INPUT_STRING_BUFFER 1024
+# define OUTPUT_CMD_BUFFER 128
 /*******************************************************************************
  * Implement library to encrypt data
  * Inputs: 
@@ -46,8 +48,9 @@ int XORencrypt(char* plaintext, char* ciphertext, int* byteStreamKey);
  * randomisation functions.
 *******************************************************************************/
 
-int getKey(int* key_arr);
+int getKey(char* userInputKey);
 
+/* TAKES SEED */
 int genPseudoRandKey(int* byteStateVector, int* byteStreamKey);
 
 /* state vector initiliser - 256 list based on key */
@@ -62,5 +65,21 @@ int getPlaintext(char* plaintext);
 void clearStdin();
 void StateVectorConstructor(int* initArray, int len);
 void swap(int* firstElem, int* secondElem);
+
+/*******************************************************************************
+ * Utility functionality required by library/
+*******************************************************************************/
+
+/* Check overal encryption/decryption and XOR operation */
+void CheckEncryptDecrypt(void);
+void CheckXORencrypt(char* plaintext, char* ciphertext, int* byteStreamKey);
+
+/* check user inputs, assert no overflows or segmentation faults */
+void CheckUserKeyInput(void);
+void CheckUserPlaintext(char* plaintext);
+
+/* check key stream generation process */
+void CheckPseudoKeyStream(int* byteStateVector, int* byteStreamKey);
+void CheckByteStreamInit(int* userInputKey,  int* byteStateVector, int* keyLength);
 
 # endif

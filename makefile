@@ -19,7 +19,7 @@ LINK_SRC  = $(wildcard *.c)
 STATIC_LIB_TARGET = libCrypto.a
 STATIC_LIB_SRC = $(wildcard crypto/*.c)
 
-OBJS = $(SRC:.c=.o)
+OBJS = $(LINK_SRC:.c=.o)
 STATIC_OBJS = $(STATIC_LIB_SRC:.c=.o)
 
 CFLAGS = -Wall -Werror -ansi -g
@@ -30,24 +30,23 @@ CFLAGS = -Wall -Werror -ansi -g
 all : $(LINK_TARGET)
 
 $(LINK_TARGET) : libraries
-	gcc $(CFLAGS) -o $@ $(LINK_SRC) -Lcrypto/ -lCrypto -lm
+	gcc $(CFLAGS) -o $@ $(LINK_SRC) $(STATIC_LIB_TARGET) -lm
 	@echo ======================== All done! =============
 
 ##############################################
 #	 Compile libraries (static)
 ##############################################
-libraries : $(STATIC_LIB_SRC)
-	ar rcs $(STATIC_LIB_TARGET) $^
+libraries : $(STATIC_OBJS)
+	ar -rcs $(STATIC_LIB_TARGET) encrypt.o util.o
 	@echo ============= Libraries compilled! =============
 
-$(STATIC_LIB_SRC) :
-	gcc $(CFLAGS) -c $@ -lm
+$(STATIC_OBJS) : $(STATIC_LIB_SRC)
+	gcc $(CFLAGS) -c $^ -lm
 
 ##############################################
 #	Clean directory
 ##############################################
 .PHONY : clean
 clean :
-	rm -f $(OBJS) $(LINK_TARGET)
-	rm -f $(STATIC_OBJS) $(STATIC_LIB_TARGET)
+	rm -f $(OBJS) $(LINK_TARGET) $(STATIC_LIB_TARGET)
 	@echo ============== Clean all complete! =============
