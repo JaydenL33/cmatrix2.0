@@ -78,10 +78,8 @@ void print_raindrops() {
             }
         }
 
+        /* Do we need to clear this?> */
         char finalString[(LINES) * (COLUMNS)];
-        for (i = 0; i < LINES * COLUMNS; i++) {
-            finalString[i] = 'A';
-        }
         int tempCount = 0;
         for (i = 0; i < LINES-1; i++) {
             int j;
