@@ -5,8 +5,6 @@
  *  - Lachlan Leslie
  *  - Albert Ferguson
  *  - Jayden Lee
- *  - Hong Kung (Steven)
- */
 
 
 # include <stdio.h>

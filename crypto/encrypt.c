@@ -5,7 +5,8 @@
  * See the github: github.com/rlcaust/Fund-O-C
  * 
  * Authors:
- * Albert Ferguson, Jayden Lee
+ * Albert Ferguson
+ * Jayden Lee
  */
 
 # include <stdio.h> /* fgets, printf, */
@@ -24,30 +25,32 @@
  *	- ciphertext
 *******************************************************************************/
 int encrypt(void) {
-	int i;
+	int i; /* Crypt test print back */
 
 	/* string data */
-	char plaintext[INPUT_STRING_BUFFER];
-	char ciphertext[INPUT_STRING_BUFFER];
-	int length_plaintext_data;
+	char plainText[INPUT_STRING_BUFFER];
+	char cipherText[INPUT_STRING_BUFFER];
+	int lengthPlainText;
 	/* Define byte arrays */
-	int byte_key_stream[MAX_KEY_LEN];
-	int byte_state_vector[MAX_KEY_LEN];
-	int pseudo_rand_key[MAX_KEY_LEN];
+	unsigned char byteStateVector[KEY_LEN];
+	int pseudoRandKey[KEY_LEN];
 	/* Byte converted key */
-	char key_val[MAX_KEY_LEN];
+
+	int keyVal[KEY_LEN];
 	int keyLength;
 
-	keyLength = getKey(key_val);
-	byteStreamInitialiser((int*) key_val, byte_state_vector, &keyLength);
-	genPseudoRandKey(byte_state_vector, pseudo_rand_key);				printf("KeyLength:%d\n", keyLength);
-	length_plaintext_data = getPlaintext(plaintext); 					printf("Plaintext Length:%d\n", length_plaintext_data);
-
-	XORencrypt(plaintext, ciphertext, byte_key_stream);
+	/* Fuction Processing  */
+	lengthPlainText = getPlaintext(plainText); 					                printf("%d\n", lengthPlainText);
+	keyLength = getKey(keyVal);
+	byteStreamInitialiser(keyVal, byteStateVector, keyLength);
+	genPseudoRandKey(byteStateVector, pseudoRandKey, cipherText);				printf("%d\n", keyLength);
+  
+  /* test cipher output */
 	printf("Ciphertext:\n");
 	for (i = 0; i < 10; i++){
 		printf("%d", ciphertext[i]);
 	}
+
 	return 1;
 }
 
@@ -61,18 +64,20 @@ int encrypt(void) {
  *	- BYTE struct converted key to mem address provided
 *******************************************************************************/
 int getKey(char* userInputKey) {
-
+  
 	int length;
-	char* explanation = "The key value may contain any ASCII valid characters.\
-(TODO: escape sequences?? - implement testing later)\
-Only the first 256 characters inputed will be used.";
+	char userInputKey[KEY_LEN];
+	char* explanation = 
+	"The key value may contain any ASCII valid characters\
+	(TODO: escape sequences?? - implement testing later)\
+	Only the first 256 characters inputed will be used.";
 	
 	printf("[echo]");
 	system("echo off");  /* Do not print the key in plaintext back to the shell! */
 	printf("%s\nEnter the key:\n", explanation);
 	clearStdin();
-	fgets(userInputKey, 5, stdin);
-
+  
+	fgets(userInputKey, KEY_LEN, stdin);
 	length = strlen(userInputKey);
 
 	if (userInputKey[length - 1] == '\n') {
@@ -87,7 +92,7 @@ Only the first 256 characters inputed will be used.";
          * clear stdin of any excess characters, avoiding the possible 
          * buffer overflow
          */
-        userInputKey[MAX_KEY_LEN] = '\0';
+        userInputKey[KEY_LEN] = '\0';
         clearStdin();
     }
    	/*
@@ -107,21 +112,24 @@ Only the first 256 characters inputed will be used.";
  * Outputs:
  *	- mem address of state vector to store to
 *******************************************************************************/
-void byteStreamInitialiser(int* userInputKey,  int* byteStateVector, int* keyLength) {
-	int byteTempVecotr[MAX_KEY_LEN];
+void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector, 
+	int keyLength) {
+  
+	int byteTempVecotr[KEY_LEN];
 	int i, j;
+  
 	/* KSA */
 	/* loops input key, generates a byte stream vector (byte-key) of 256 */
-	for (i = 0; i < MAX_KEY_LEN; i++) {
+	for (i = 0; i < KEY_LEN; i++) {
 		byteStateVector[i] = i;
-		byteTempVecotr[i] = userInputKey[i % MAX_KEY_LEN - *keyLength];
 	}
 
-	for (i = 0; i < MAX_KEY_LEN; i++) {
-		j = (j + byteStateVector[i] + byteTempVecotr[i] % MAX_KEY_LEN);
+	for (i = 0; i < KEY_LEN; i++) {
+		j = (j + byteStateVector[i] + key_arr[i % keyLength]) % N;
 		swap(&byteStateVector[i], &byteStateVector[j]);
 
 	}
+	return;
 }
 
 /*******************************************************************************
@@ -131,38 +139,33 @@ void byteStreamInitialiser(int* userInputKey,  int* byteStateVector, int* keyLen
  * Outputs:
  *	- mem address return_key byte stream.
 *******************************************************************************/
-int genPseudoRandKey(int* byteStateVector, int* byteStreamKey) {
-	int i, j, t;
-	/* PRGA */
-	while(i != MAX_KEY_LEN) {
-		i = (i+1) % MAX_KEY_LEN;
-		j = (j + byteStateVector[i]) % MAX_KEY_LEN;
+int genPseudoRandKey(unsigned char* byteStateVector,  
+    char* plaintext, unsigned char* ciphertext)  {
+  
+	int i = 0;  /* i ~ byteStateVector 1st index "randomiser" */
+  int j = 0;  /* j ~ byteStateVector 2nd index "randomiser" */
+  int t;      /* t ~ loop counter creating temp index */
+  
+  /* 
+   * length of the plaintext input, as plaintext already here, 
+   * quicker to recalc' one int val.
+   */
+  int len = strlen(plaintext);
+
+  /* PRGA algorithm */
+	for (t=0; t < len, t++) {
+		i = (i+1) % KEY_LEN;
+		j = (j + byteStateVector[i]) % KEY_LEN;
+
 		swap(&byteStateVector[i], &byteStateVector[j]);
-		t = (byteStateVector[i] + byteStateVector[j]) % 256;
-		byteStreamKey[i] = byteStateVector[t];
+		int rnd = byteStateVector[byteStateVector[i] + byteStateVector[j] % KEY_LEN];
+
+		ciphertext[t] = rnd^plaintext[n];
 	}
 
 	return 0;
 }
 
-/*******************************************************************************
- * Utilise keystream (bytes) to pseudo-randomly xor each plaintext (byte) value.
- * Inputs: 
- *	- mem address for plaintext
- * 	- mem address for keystream
- * Outputs:
- *	- mem address for ciphertext
-*******************************************************************************/
-int XORencrypt(char* plaintext, char* ciphertext, int* byteStreamKey) {
-	int i;
-
-	for (i = 0; i < strlen(plaintext); i++) {
-		/* note: ^ is the XOR operator. Do not confuse with power operation */
-		ciphertext[i] = byteStreamKey[i]^plaintext[i];
-	}
-
-	return 0;
-}
 
 /*******************************************************************************
  * Plaintext getter. Prompts user for plaintext entry to be encrypted. 
