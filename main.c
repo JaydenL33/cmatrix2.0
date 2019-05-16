@@ -44,7 +44,13 @@ int main(void) {
 }
 
 
-
+void delay() {
+    int c, d;
+   /* Can change the time of delay with this, Cheap method but works... */
+   for (c = 1; c <= 32767 / 2; c++) {
+       for (d = 1; d <= 32767 / 2; d++) {}
+   }
+}
 void print_raindrops() {
     
     printf("hi\n");
@@ -55,7 +61,7 @@ void print_raindrops() {
     // printf("made it to this function");
     int count = 0;
     char asciiChar = 'A';
-    while (count < 3) {
+    while (count < 5) {
         /* Generate a random string of size COLUMNS */
          /* Just for testing basic concept of printing a and b */
         char tempString[COLUMNS];
@@ -100,11 +106,11 @@ void print_raindrops() {
             tempCount++;
             // printf("\n");
         }
+
         /* after we update matrix, need to loop through matrix and add all strings to one big string with \n :) */
-        
         clear;
         printf("%s", finalString);
-        // sleep(1);
+        delay();  
         count++;
         if (asciiChar == 'A') {
             asciiChar = 'B';
