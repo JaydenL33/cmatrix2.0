@@ -11,7 +11,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <math.h>
-# include "crypto/encrypt.h"
+# include "crypto\encrypt.h"
 
 /* app functionality */
 void print_menu();
@@ -30,7 +30,6 @@ void pepe();
 void squash_pepe();
 void matrix_quotes();
 
-int main(void)
-{
-	
+int main(int argc, char* arv[]) {
+    return encrypt();
 }
