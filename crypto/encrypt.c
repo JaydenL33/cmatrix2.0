@@ -13,7 +13,7 @@
 # include <string.h> /* strlen */
 # include "encrypt.h" /* custom library header file for cryptography functionality */
 
-# define MAX_KEY_LEN 256
+# define KEY_LEN 256
 # define INPUT_STRING_BUFFER 1024
 
 /*******************************************************************************
@@ -31,19 +31,18 @@ int encrypt(void) {
 	char ciphertext[INPUT_STRING_BUFFER];
 	int length_plaintext_data;
 	/* Define byte arrays */
-	int byte_key_stream[MAX_KEY_LEN];
-	int byte_state_vector[MAX_KEY_LEN];
-	int pseudo_rand_key[MAX_KEY_LEN];
+	unsigned char byte_state_vector[KEY_LEN];
+	int pseudo_rand_key[KEY_LEN];
 	/* Byte converted key */
-	int key_val[MAX_KEY_LEN];
+	int key_val[KEY_LEN];
 	int keyLength;
 
-	keyLength = getKey(key_val);
-	byteStreamInitialiser(key_val, byte_state_vector, &keyLength);
-	genPseudoRandKey(byte_state_vector, pseudo_rand_key);				printf("%d\n", keyLength);
+	/* Fuction Processing  */
 	length_plaintext_data = getPlaintext(plaintext); 					printf("%d\n", length_plaintext_data);
+	keyLength = getKey(key_val);
+	byteStreamInitialiser(key_val, byte_state_vector, keyLength);
+	genPseudoRandKey(byte_state_vector, pseudo_rand_key, ciphertext);				printf("%d\n", keyLength);
 
-	XORencrypt(plaintext, ciphertext, byte_key_stream);
 	return 1;
 }
 
@@ -59,16 +58,17 @@ int encrypt(void) {
 int getkey(int* key_arr) {
 
 	int length;
-	char userInputKey[MAX_KEY_LEN];
-	char* explanation = "The key value may contain any ASCII valid characters.\
-						(TODO: escape sequences?? - implement testing later)\
-						Only the first 256 characters inputed will be used.";
+	char userInputKey[KEY_LEN];
+	char* explanation = 
+	"The key value may contain any ASCII valid characters\
+	(TODO: escape sequences?? - implement testing later)\
+	Only the first 256 characters inputed will be used.";
 	
 	printf("%s\nEnter the key:\n", explanation);
 	system("@echo off");  /* Do not print the key in plaintext back to the shell! */
 	
 	clearStdin();
-	fgets(userInputKey, MAX_KEY_LEN, stdin);
+	fgets(userInputKey, KEY_LEN, stdin);
 	length = strlen(userInputKey);
 
 	if (userInputKey[length - 1] == '\n') {
@@ -83,7 +83,7 @@ int getkey(int* key_arr) {
          * clear stdin of any excess characters, avoiding the possible 
          * buffer overflow
          */
-        userInputKey[MAX_KEY_LEN] = '\0';
+        userInputKey[KEY_LEN] = '\0';
         clearStdin();
     }
    	/*
@@ -103,21 +103,23 @@ int getkey(int* key_arr) {
  * Outputs:
  *	- mem address of state vector to store to
 *******************************************************************************/
-void byteStreamInitialiser(int* userInputKey,  int* byteStateVector, int* keyLength) {
-	int byteTempVecotr[MAX_KEY_LEN];
+void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector, 
+	int keyLength) {
+	int byteTempVecotr[KEY_LEN];
 	int i, j;
 
+
 	/* loops input key, generates a byte stream vector (byte-key) of 256 */
-	for (i = 0; i < MAX_KEY_LEN; i++) {
+	for (i = 0; i < KEY_LEN; i++) {
 		byteStateVector[i] = i;
-		byteTempVecotr[i] = userInputKey[i % MAX_KEY_LEN - *keyLength];
 	}
 
-	for (i = 0; i < MAX_KEY_LEN; i++) {
-		j = (j + byteStateVector[i] + byteTempVecotr[i] % MAX_KEY_LEN);
+	for (i = 0; i < KEY_LEN; i++) {
+		j = (j + byteStateVector[i] + key_arr[i % keyLength]) % N;
 		swap(&byteStateVector[i], &byteStateVector[j]);
 
 	}
+	return;
 }
 
 /*******************************************************************************
@@ -127,38 +129,26 @@ void byteStreamInitialiser(int* userInputKey,  int* byteStateVector, int* keyLen
  * Outputs:
  *	- mem address return_key byte stream.
 *******************************************************************************/
-int genPseudoRandKey(int* byteStateVector, int* byteStreamKey) {
-	int i, j, t;
+int genPseudoRandKey(unsigned char* byteStateVector, 
+	char* plaintext, unsigned char * ciphertext)  {
 
-	while(1) {
-		i = (i+1) % MAX_KEY_LEN;
-		j = (j + byteStateVector[i]) % MAX_KEY_LEN;
+	int i, j, t, len;
+
+	len = strlen(plaintext);
+	for (t=0; t<len, t++)
+	{
+		i = (i+1) % KEY_LEN;
+		j = (j + byteStateVector[i]) % KEY_LEN;
 		swap(&byteStateVector[i], &byteStateVector[j]);
-		t = (byteStateVector[i] + byteStateVector[j]) % 256;
-		byteStreamKey[i] = byteStateVector[t];
+		int rnd = byteStateVector[byteStateVector[i] + byteStateVector[j] % KEY_LEN];
+
+		ciphertext[t] = rnd^plaintext[n];
 	}
 
 	return 0;
 }
 
-/*******************************************************************************
- * Utilise keystream (bytes) to pseudo-randomly xor each plaintext (byte) value.
- * Inputs: 
- *	- mem address for plaintext
- * 	- mem address for keystream
- * Outputs:
- *	- mem address for ciphertext
-*******************************************************************************/
-int XORencrypt(char* plaintext, char* ciphertext, int* byteStreamKey) {
-	int i;
 
-	for (i = 0; i < MAX_KEY_LEN; i++) {
-		/* note: ^ is the XOR operator. Do not confuse with power operation */
-		ciphertext[i] = byteStreamKey[i]^plaintext[i];
-	}
-
-	return 0;
-}
 
 
 /*******************************************************************************

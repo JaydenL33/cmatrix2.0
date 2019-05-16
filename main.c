@@ -32,7 +32,7 @@ void pepe();
 void squash_pepe();
 void matrix_quotes();
 
-int main(int argc, char* arv[]) {
-
-    return 1;
+int main(void)
+{
+	
 }
