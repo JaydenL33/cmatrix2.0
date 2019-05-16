@@ -11,7 +11,7 @@
  * Albert Ferguson, Jayden Lee
  */
 
-# define MAX_KEY_LEN 256
+# define KEY_LEN 256
 # define INPUT_STRING_BUFFER 1024
 # define OUTPUT_CMD_BUFFER 128
 /*******************************************************************************
@@ -31,17 +31,7 @@ int encrypt(void);
  * Outputs:
  *	- plaintext
 *******************************************************************************/
-int decrypt(char* plaintext, char* ciphertext, char* keystream);
-
-/*******************************************************************************
- * XOR BYTE plaintext to BYTE Ciphertext
- * Inputs: 
- *	- mem address for plaintext
- * 	- mem address for keystream
- * Outputs:
- *	- mem address for ciphertext
-*******************************************************************************/
-int XORencrypt(char* plaintext, char* ciphertext, int* byteStreamKey);
+int decrypt(char* plainText, char* cipherText, char* keystream);
 
 /*******************************************************************************
  * Key request from user, byte stream generation and pseudo 
@@ -51,10 +41,12 @@ int XORencrypt(char* plaintext, char* ciphertext, int* byteStreamKey);
 int getKey(char* userInputKey);
 
 /* TAKES SEED */
-int genPseudoRandKey(int* byteStateVector, int* byteStreamKey);
+int genPseudoRandKey(unsigned char* byteStateVector,  
+    char* plaintext, unsigned char* ciphertext);
 
 /* state vector initiliser - 256 list based on key */
-void byteStreamInitialiser(int* userInputKey,  int* byteStateVector, int* keyLength);
+void byteStreamInitialiser(char* userInputKey,  unsigned char* byteStateVector, 
+						   int keyLength);
 
 /* plaintext getter */
 int getPlaintext(char* plaintext);
@@ -66,8 +58,11 @@ void clearStdin();
 void StateVectorConstructor(int* initArray, int len);
 void swap(int* firstElem, int* secondElem);
 
+int writecipher(char* cipherText);
+int readcipher(char* cipherText);
+
 /*******************************************************************************
- * Utility functionality required by library/
+ * Debug units required by library/
 *******************************************************************************/
 
 /* Check overal encryption/decryption and XOR operation */
@@ -80,6 +75,7 @@ void CheckUserPlaintext(char* plaintext);
 
 /* check key stream generation process */
 void CheckPseudoKeyStream(int* byteStateVector, int* byteStreamKey);
-void CheckByteStreamInit(int* userInputKey,  int* byteStateVector, int* keyLength);
+void CheckByteStreamInit(int* userInputKey,  int* byteStateVector, 
+				     	 int* keyLength);
 
 # endif
