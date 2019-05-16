@@ -26,15 +26,7 @@ int load();
 void pepe();
 void squash_pepe();
 
-/*
-while (*envp) {
-     printf("%s\n", *envp++);
-}
-*/
-
 int main(void) {
-    /* clear; */
-    printf("hi, lines is %d and cols is %d\n", LINES, COLUMNS);
     /* printf("LINES: %s\n", getenv("LINES"));
     printf("COLUMNS: %s\n", getenv("COLUMNS")); */
     /* Lines and Columns need to be passed in at compile time with -D flag */
@@ -54,8 +46,6 @@ void delay() {
 void print_raindrops() {
     char* matrix[LINES-1][COLUMNS]; /* Might need to clear :) */
 
-
-    // printf("made it to this function");
     int count = 0;
     char asciiChar = 'A';
     while (count < 20) {
@@ -67,7 +57,6 @@ void print_raindrops() {
         for (i = 0; i < COLUMNS; i++) {
             tempString[i] = asciiChar;
         }
-        
         for (i = LINES-1; i >= 0; i--) {
             if (i == 0) {
                 int j;
@@ -83,17 +72,18 @@ void print_raindrops() {
                     for (j = 0; j < COLUMNS; j++) {
                         // matrix[i][j] = tempString[j];
                         matrix[i][j] = matrix[i-1][j];
-                        // printf("%c", matrix[i][j]);
                     }  
-                    // printf("\n");
                 }
-                 
+                
             }
         }
 
-        char finalString[LINES * COLUMNS];
+        char finalString[(LINES) * (COLUMNS)];
+        for (i = 0; i < LINES * COLUMNS; i++) {
+            finalString[i] = 'A';
+        }
         int tempCount = 0;
-        for (i = 0; i < LINES; i++) {
+        for (i = 0; i < LINES-1; i++) {
             int j;
             for (j = 0; j < COLUMNS; j++) {
                 finalString[tempCount] = matrix[i][j];
@@ -103,10 +93,11 @@ void print_raindrops() {
             finalString[tempCount] = '\n';
             tempCount++;
         }
-
-        /* after we update matrix, need to loop through matrix and add all strings to one big string with \n :) */
         clear;
+        // printf("\nfinalString length is:  %d\n", LINES * COLUMNS);
+        // printf("tempCount length is: %d and finalString is: %c yep\n", tempCount, finalString[tempCount]);
         printf("%s", finalString);
+        
         delay();  
         count++;
         if (asciiChar == 'A') {
@@ -118,18 +109,3 @@ void print_raindrops() {
 }
 
 /* int main(int argc, char *argv[], char *envp[]) {} */
-
-/*
-for (int i = 0; i < LINES; i++) {
-            char s[156];
-            for (int j = 0; j < COLUMNS; j++) {
-                if (j == 156) {
-                    s[j] = 'A';
-                } else {
-                    s[j] ='x';
-                }
-            }
-            printf("%s\n", s);
-            sleep(1);
-        }
-*/
