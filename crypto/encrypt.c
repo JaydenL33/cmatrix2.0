@@ -5,7 +5,8 @@
  * See the github: github.com/rlcaust/Fund-O-C
  * 
  * Authors:
- * Albert Ferguson, Jayden Lee
+ * Albert Ferguson
+ * Jayden Lee
  */
 
 # include <stdio.h> /* fgets, printf, */
@@ -15,6 +16,7 @@
 
 # define KEY_LEN 256
 # define INPUT_STRING_BUFFER 1024
+
 
 /*******************************************************************************
  * Implement gen_key to retrieve a user-defined key. Then generate a pseudo rand
