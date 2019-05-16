@@ -14,7 +14,7 @@
 #include <string.h>
 #include <math.h>
 #include <unistd.h> /* THIS WILL NEED TO BE DELETED, just for testing */
-#define clear printf("\033[2J")
+#define clear printf("\033[H\033[J")
 
 void print_menu();
 void print_raindrops();
@@ -58,7 +58,7 @@ void print_raindrops() {
     // printf("made it to this function");
     int count = 0;
     char asciiChar = 'A';
-    while (count < 5) {
+    while (count < 20) {
         /* Generate a random string of size COLUMNS */
          /* Just for testing basic concept of printing a and b */
         char tempString[COLUMNS];
