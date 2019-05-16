@@ -39,7 +39,7 @@ int decrypt(char* plaintext, char* ciphertext, char* keystream);
  * Outputs:
  *	- mem address for ciphertext
 *******************************************************************************/
-int XORencrypt(char* plaintext, char* ciphertext, int* keystream);
+int XORencrypt(char* plaintext, char* ciphertext, int* byteStreamKey);
 
 /*******************************************************************************
  * Key request from user, byte stream generation and pseudo 
@@ -48,10 +48,10 @@ int XORencrypt(char* plaintext, char* ciphertext, int* keystream);
 
 int getKey(int* key_arr);
 
-int genPseudoRandKey(int* state_vector, int* return_key);
+int genPseudoRandKey(int* byteStateVector, int* byteStreamKey);
 
 /* state vector initiliser - 256 list based on key */
-void byteStreamInitialiser(int* key_arr,  int* state_vector, int* keyLength);
+void byteStreamInitialiser(int* userInputKey,  int* byteStateVector, int* keyLength);
 
 /* plaintext getter */
 int getPlaintext(char* plaintext);
@@ -60,7 +60,7 @@ int getPlaintext(char* plaintext);
  * Utility functionality required by library/
 *******************************************************************************/
 void clearStdin();
-void StateVectorConstructor(int* init_arr, int len);
-void swap(int* input_arr1, int* input_arr2);
+void StateVectorConstructor(int* initArray, int len);
+void swap(int* firstElem, int* secondElem);
 
 # endif

@@ -8,11 +8,10 @@
  * Albert Ferguson, Jayden Lee
  */
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <math.h>
-# include "encrypt.h"
+# include <stdio.h> /* fgets, printf, */
+# include <stdlib.h> /* system */
+# include <string.h> /* strlen */
+# include "encrypt.h" /* custom library header file for cryptography functionality */
 
 # define MAX_KEY_LEN 256
 # define INPUT_STRING_BUFFER 1024
@@ -60,33 +59,39 @@ int encrypt(void) {
 int getkey(int* key_arr) {
 
 	int length;
-	char user_input_key[MAX_KEY_LEN+1];
+	char userInputKey[MAX_KEY_LEN];
 	char* explanation = "The key value may contain any ASCII valid characters.\
 						(TODO: escape sequences?? - implement testing later)\
 						Only the first 256 characters inputed will be used.";
 	
-	printf("%s\n", explanation);
-	printf("Enter the key:\n");
-	/* Do not print the key in plaintext back to the shell! */
-	system("@echo off"); 
+	printf("%s\nEnter the key:\n", explanation);
+	system("@echo off");  /* Do not print the key in plaintext back to the shell! */
 	
-	/* avoid a buffer overflow */
 	clearStdin();
-	fgets(user_input_key, MAX_KEY_LEN, stdin);
-	length = strlen(user_input_key);
+	fgets(userInputKey, MAX_KEY_LEN, stdin);
+	length = strlen(userInputKey);
 
-	if (user_input_key[length - 1] == '\n') {
-    	/* Replace \n with \0 (replace the EOL with end of string)*/
-        user_input_key[length - 1] = '\0';
+	if (userInputKey[length - 1] == '\n') {
+    	/* 
+    	 * Replace last character, \n, with \0 (replace the EOL with end of
+    	 * end-of-string EOS character )
+    	 */
+        userInputKey[length - 1] = '\0';
     } else {
-        user_input_key[MAX_KEY_LEN] = '\0';
-        /*Clear stdin if overflow */
+    	/* 
+         * Set the last possible buffer index to EOS character then,
+         * clear stdin of any excess characters, avoiding the possible 
+         * buffer overflow
+         */
+        userInputKey[MAX_KEY_LEN] = '\0';
         clearStdin();
     }
-   	/*re enable echo */
+   	/*
+   	 * re enable echo then convert input ASCII key to 
+   	 * "byte" key before returning length of user input key
+   	 */
     system("@echo on"); 
-    /* convert input ASCII key to "byte" key */
-    key_arr = (int*) user_input_key;
+    key_arr = (int*) userInputKey;
 	return length;
 }
 
@@ -98,25 +103,21 @@ int getkey(int* key_arr) {
  * Outputs:
  *	- mem address of state vector to store to
 *******************************************************************************/
-void byteStreamInitialiser(int* key_arr,  int* state_vector, int* keyLength) {
-
-	int S[MAX_KEY_LEN];
-	int T[MAX_KEY_LEN];
+void byteStreamInitialiser(int* userInputKey,  int* byteStateVector, int* keyLength) {
+	int byteTempVecotr[MAX_KEY_LEN];
 	int i, j;
 
 	/* loops input key, generates a byte stream vector (byte-key) of 256 */
 	for (i = 0; i < MAX_KEY_LEN; i++) {
-		S[i] = i;
-		T[i] = key_arr[i % MAX_KEY_LEN - *keyLength];
+		byteStateVector[i] = i;
+		byteTempVecotr[i] = userInputKey[i % MAX_KEY_LEN - *keyLength];
 	}
 
 	for (i = 0; i < MAX_KEY_LEN; i++) {
-		j = (j + S[i] + T[i] % MAX_KEY_LEN);
-		swap(&S[i], &S[j]);
+		j = (j + byteStateVector[i] + byteTempVecotr[i] % MAX_KEY_LEN);
+		swap(&byteStateVector[i], &byteStateVector[j]);
 
 	}
-	/* return the mem address of our state vector */
-	state_vector = S;
 }
 
 /*******************************************************************************
@@ -126,15 +127,15 @@ void byteStreamInitialiser(int* key_arr,  int* state_vector, int* keyLength) {
  * Outputs:
  *	- mem address return_key byte stream.
 *******************************************************************************/
-int genPseudoRandKey(int* state_vector, int* return_key) {
+int genPseudoRandKey(int* byteStateVector, int* byteStreamKey) {
 	int i, j, t;
 
 	while(1) {
 		i = (i+1) % MAX_KEY_LEN;
-		j = (j + state_vector[i]) % MAX_KEY_LEN;
-		swap(&state_vector[i], &state_vector[j]);
-		t = (state_vector[i] + state_vector[j]) % 256;
-		return_key[i] = state_vector[t];
+		j = (j + byteStateVector[i]) % MAX_KEY_LEN;
+		swap(&byteStateVector[i], &byteStateVector[j]);
+		t = (byteStateVector[i] + byteStateVector[j]) % 256;
+		byteStreamKey[i] = byteStateVector[t];
 	}
 
 	return 0;
@@ -148,11 +149,12 @@ int genPseudoRandKey(int* state_vector, int* return_key) {
  * Outputs:
  *	- mem address for ciphertext
 *******************************************************************************/
-int XORencrypt(char* plaintext, char* ciphertext, int* keystream) {
+int XORencrypt(char* plaintext, char* ciphertext, int* byteStreamKey) {
 	int i;
 
 	for (i = 0; i < MAX_KEY_LEN; i++) {
-		ciphertext[i] = keystream[i]^plaintext[i];
+		/* note: ^ is the XOR operator. Do not confuse with power operation */
+		ciphertext[i] = byteStreamKey[i]^plaintext[i];
 	}
 
 	return 0;
@@ -178,15 +180,22 @@ int getPlaintext(char* plaintext) {
 
 	fgets(plaintext, INPUT_STRING_BUFFER, stdin);
 
-	len_plaintext = strlen(plaintext);
+	lengthPlainText = strlen(plaintext);
 
-	if (plaintext[len_plaintext - 1] == '\n') {
-    	/* Replace \n with \0 (replace the EOL with end of string)*/
-        plaintext[len_plaintext - 1] = '\0';
+	if (plaintext[lengthPlainText - 1] == '\n') {
+    	/* 
+    	 * Replace last character, \n, with \0 (replace the EOL with end of
+    	 * end-of-string EOS character )
+    	 */
+        plaintext[lengthPlainText - 1] = '\0';
     } else {
-        plaintext[INPUT_STRING_BUFFER] = '\0';
-        /*Clear stdin if overflow */
+        /* 
+         * Set the last possible buffer index to EOS character then,
+         * clear stdin of any excess characters, avoiding the possible 
+         * buffer overflow
+         */
+    	plaintext[INPUT_STRING_BUFFER] = '\0';
         clearStdin();
     }
-	return len_plaintext;
+	return lengthPlainText;
 }
