@@ -52,9 +52,6 @@ void delay() {
    }
 }
 void print_raindrops() {
-    
-    printf("hi\n");
-    printf("made it to this function\n");
     char* matrix[LINES-1][COLUMNS]; /* Might need to clear :) */
 
 
@@ -80,6 +77,7 @@ void print_raindrops() {
                 }
                 // printf("\n");
             } else {
+                /* Check for valid character, not needed on mac, not sure about linux. */
                 if (matrix[i-1][0] == 'A' || matrix[i-1][0] == 'B') {
                     int j;
                     for (j = 0; j < COLUMNS; j++) {
@@ -104,7 +102,6 @@ void print_raindrops() {
             }   
             finalString[tempCount] = '\n';
             tempCount++;
-            // printf("\n");
         }
 
         /* after we update matrix, need to loop through matrix and add all strings to one big string with \n :) */
@@ -117,8 +114,7 @@ void print_raindrops() {
         } else {
             asciiChar = 'A';
         }
-    }
-    
+    }   
 }
 
 /* int main(int argc, char *argv[], char *envp[]) {} */
