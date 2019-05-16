@@ -49,44 +49,68 @@ void print_raindrops() {
     
     printf("hi\n");
     printf("made it to this function\n");
-    char* matrix[LINES-1]; /* Might need to clear :) */
+    char* matrix[LINES-1][COLUMNS]; /* Might need to clear :) */
+
 
     // printf("made it to this function");
     int count = 0;
-    while (count < 1) {
-    //     /* Generate a random string of size COLUMNS */
-        char asciiChar = 'A'; /* Just for testing basic concept of printing a and b */
-        char *tempString = ""; /* Random String */
-    //     /* Create string, can defs be done better */
-    
+    char asciiChar = 'A';
+    while (count < 3) {
+        /* Generate a random string of size COLUMNS */
+         /* Just for testing basic concept of printing a and b */
+        char tempString[COLUMNS];
+        /* Create string, can defs be done better */
         int i;
         for (i = 0; i < COLUMNS; i++) {
-            tempString += asciiChar;
+            tempString[i] = asciiChar;
         }
-        
-        // printf("Made it here");
         
         for (i = LINES-1; i >= 0; i--) {
             if (i == 0) {
-                matrix[0] = tempString;
+                int j;
+                for (j = 0; j < COLUMNS; j++) {
+                    matrix[i][j] = tempString[i];
+                    // printf("%c", tempString[i]);
+                }
+                // printf("\n");
             } else {
-                matrix[i] = matrix[i-1];
+                if (matrix[i-1][0] == 'A' || matrix[i-1][0] == 'B') {
+                    int j;
+                    for (j = 0; j < COLUMNS; j++) {
+                        // matrix[i][j] = tempString[j];
+                        matrix[i][j] = matrix[i-1][j];
+                        // printf("%c", matrix[i][j]);
+                    }  
+                    // printf("\n");
+                }
+                 
             }
-            asciiChar = asciiChar == 'A' ? 'B' : 'A';
         }
 
-        char *finalString = "";
+        char finalString[LINES * COLUMNS];
+        int tempCount = 0;
         for (i = 0; i < LINES; i++) {
-            finalString = matrix[i];
-            printf("final string is %s", finalString);
-            finalString += '\n';
+            int j;
+            for (j = 0; j < COLUMNS; j++) {
+                finalString[tempCount] = matrix[i][j];
+                // printf("%c", matrix[i][j]);
+                tempCount++;
+            }   
+            finalString[tempCount] = '\n';
+            tempCount++;
+            // printf("\n");
         }
         /* after we update matrix, need to loop through matrix and add all strings to one big string with \n :) */
         
-        // clear;
+        clear;
         printf("%s", finalString);
         // sleep(1);
         count++;
+        if (asciiChar == 'A') {
+            asciiChar = 'B';
+        } else {
+            asciiChar = 'A';
+        }
     }
     
 }
