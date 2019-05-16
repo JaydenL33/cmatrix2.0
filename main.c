@@ -5,7 +5,7 @@
  *  - Lachlan Leslie
  *  - Albert Ferguson
  *  - Jayden Lee
-
+ */
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -31,5 +31,7 @@ void squash_pepe();
 void matrix_quotes();
 
 int main(int argc, char* arv[]) {
-    return encrypt();
+    encrypt();
+
+    return 0;
 }
