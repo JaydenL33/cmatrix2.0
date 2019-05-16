@@ -65,8 +65,11 @@ void clearStdin();
 void StateVectorConstructor(int* initArray, int len);
 void swap(unsigned char* firstElem, unsigned char* secondElem);
 
+int writecipher(char* cipherText);
+int readcipher(char* cipherText);
+
 /*******************************************************************************
- * Utility functionality required by library/
+ * Debug units required by library/
 *******************************************************************************/
 
 /* Check overal encryption/decryption and XOR operation */
@@ -79,6 +82,7 @@ void CheckUserplainText(char* plainText);
 
 /* check key stream generation process */
 void CheckPseudoKeyStream(int* byteStateVector, int* byteStreamKey);
-void CheckByteStreamInit(int* userInputKey,  int* byteStateVector, int* keyLength);
+void CheckByteStreamInit(int* userInputKey,  int* byteStateVector, 
+				     	 int* keyLength);
 
 # endif
