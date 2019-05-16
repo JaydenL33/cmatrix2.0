@@ -14,22 +14,30 @@
 # define KEY_LEN 256
 # define INPUT_STRING_BUFFER 1024
 # define OUTPUT_CMD_BUFFER 128
+# define FILENAME "encrypt.locked" /* temp file output for writing encrypt data tp */
+
+# define plainText_EXPLANATION "Enter the data to be encrypted! Note: currently only\
+1024 characters are supported, all remaining characters\
+will be ignored!"
+# define GETKEY_EXPLANATION "The key value may contain any ASCII valid characters\
+(TODO: escape sequences?? - implement testing later)\
+Only the first 256 characters inputed will be used."
 /*******************************************************************************
  * Implement library to encrypt data
  * Inputs: 
  *	- none
  * Outputs:
- *	- ciphertext
+ *	- cipherText
 *******************************************************************************/
 int encrypt(void);
 
 /*******************************************************************************
  * Implement library to decrypt data
  * Inputs: 
- *	- ciphertext
+ *	- cipherText
  *	- byte key stream
  * Outputs:
- *	- plaintext
+ *	- plainText
 *******************************************************************************/
 int decrypt(char* plainText, char* cipherText, char* keystream);
 
@@ -37,26 +45,25 @@ int decrypt(char* plainText, char* cipherText, char* keystream);
  * Key request from user, byte stream generation and pseudo 
  * randomisation functions.
 *******************************************************************************/
-
 int getKey(char* userInputKey);
 
 /* TAKES SEED */
 int genPseudoRandKey(unsigned char* byteStateVector,  
-    char* plaintext, unsigned char* ciphertext);
+    char* plainText, unsigned char* cipherText);
 
 /* state vector initiliser - 256 list based on key */
-void byteStreamInitialiser(char* userInputKey,  unsigned char* byteStateVector, 
-						   int keyLength);
+void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector, 
+						   int userKeyLength);
 
-/* plaintext getter */
-int getPlaintext(char* plaintext);
+/* plainText getter */
+int getPlainText(char* plainText);
 
 /*******************************************************************************
  * Utility functionality required by library/
 *******************************************************************************/
 void clearStdin();
 void StateVectorConstructor(int* initArray, int len);
-void swap(int* firstElem, int* secondElem);
+void swap(unsigned char* firstElem, unsigned char* secondElem);
 
 int writecipher(char* cipherText);
 int readcipher(char* cipherText);
@@ -67,11 +74,11 @@ int readcipher(char* cipherText);
 
 /* Check overal encryption/decryption and XOR operation */
 void CheckEncryptDecrypt(void);
-void CheckXORencrypt(char* plaintext, char* ciphertext, int* byteStreamKey);
+void CheckXORencrypt(char* plainText, char* cipherText, int* byteStreamKey);
 
 /* check user inputs, assert no overflows or segmentation faults */
 void CheckUserKeyInput(void);
-void CheckUserPlaintext(char* plaintext);
+void CheckUserplainText(char* plainText);
 
 /* check key stream generation process */
 void CheckPseudoKeyStream(int* byteStateVector, int* byteStreamKey);

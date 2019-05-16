@@ -8,9 +8,8 @@
  */
 
 # include "encrypt.h" /* custom library header file for cryptography functionality */
-# include <stdlib.h>
-# include <stdio.h>
-# include <math.h>
+# include <stdlib.h> /* Using fopen, fprintf and fclose from stdlib.h */ 
+# include <stdio.h> /* getchar,  EOF*/
 
 /*******************************************************************************
  * Utility function that clears stdin until newline or EOF
@@ -32,8 +31,38 @@ void StateVectorConstructor(int* initArray, int len) {
 /*******************************************************************************
  * Utility function that swaps input_arr1 with input_arr2
 *******************************************************************************/
-void swap(int* firstElem, int* secondElem) {
-	int* temp_P = firstElem;
+void swap(unsigned char* firstElem, unsigned char* secondElem) {
+	unsigned char* temp_P = firstElem;
 	firstElem = secondElem;
-	secondElem = temp_P; 
+	secondElem = temp_P;
 }
+
+/*******************************************************************************
+ * Utility function that writes cipherText back into a file called
+ * encrypt.locked. 
+*******************************************************************************/
+
+int writecipher(char* cipherText) {
+	FILE* fp;
+	fp = fopen(FILENAME, "wb");
+	fprintf(fp, "%s", cipherText);
+	fclose(fp);
+	return 0;
+}
+
+/*******************************************************************************
+ * Utility function that reads cipherText from a file called encrypt.locked. 
+*******************************************************************************/
+int readcipher(char* cipherText) {
+	FILE* fp;
+	fp = fopen(FILENAME, "r");
+	if (fp == NULL) /* If file doesn't exist*/
+    {
+        printf("Read error, make sure there is a encrypt.locked \n");
+        return 0;
+    }
+	   	fscanf(fp, "%s", cipherText);
+	    fclose(fp);
+	    return 0;
+}
+
