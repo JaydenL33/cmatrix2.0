@@ -18,7 +18,7 @@
 
 void print_menu();
 void print_raindrops();
-void rand_str(char *dest, size_t length)
+void rand_str(char *dest, size_t length);
 void compress();
 /* int encrypt();
 int decrypt(); */
@@ -40,20 +40,22 @@ int main(void) {
 void delay() {
     int c, d;
    /* Can change the time of delay with this, Cheap method but works... */
-   for (c = 1; c <= 32767 / 2; c++) {
-       for (d = 1; d <= 32767 / 2; d++) {}
+   for (c = 1; c <= 32767 / 4; c++) {
+       for (d = 1; d <= 32767 / 4; d++) {}
    }
 }
 
 void print_raindrops() {
-    char* matrix[LINES-1][COLUMNS]; /* Might need to clear :) */
+    char* matrix[LINES-1][COLUMNS];
 
     int count = 0;
     char asciiChar = 'A';
-    while (count < 20) {
+    while (count < 100) {
         /* Generate a random string of size COLUMNS */
          /* Just for testing basic concept of printing a and b */
         char tempString[COLUMNS];
+        char temp[COLUMNS];
+        rand_str(temp, COLUMNS);
         /* Create string, can defs be done better */
         int i;
         for (i = 0; i < COLUMNS; i++) {
@@ -63,16 +65,17 @@ void print_raindrops() {
             if (i == 0) {
                 int j;
                 for (j = 0; j < COLUMNS; j++) {
-                    matrix[i][j] = tempString[i];
-                    // printf("%c", tempString[i]);
+                    // matrix[i][j] = tempString[i];
+                    matrix[i][j] = temp[j];
                 }
-                // printf("\n");
             } else {
                 /* Check for valid character, not needed on mac, not sure about linux. */
-                if (matrix[i-1][0] == 'A' || matrix[i-1][0] == 'B') {
+                if (matrix[i-1][0] >= 'a' && matrix[i-1][0] <= 'z' || 
+                    matrix[i-1][0] >= 'A' && matrix[i-1][0] <= 'Z' ||
+                    matrix[i-1][0] >= '0' && matrix[i-1][0] <= '9' || 
+                    matrix[i-1][0] == ' ') {
                     int j;
                     for (j = 0; j < COLUMNS; j++) {
-                        // matrix[i][j] = tempString[j];
                         matrix[i][j] = matrix[i-1][j];
                     }  
                 }
@@ -80,22 +83,18 @@ void print_raindrops() {
             }
         }
 
-        /* Do we need to clear this?> */
         char finalString[(LINES) * (COLUMNS)];
         int tempCount = 0;
         for (i = 0; i < LINES-1; i++) {
             int j;
             for (j = 0; j < COLUMNS; j++) {
                 finalString[tempCount] = matrix[i][j];
-                // printf("%c", matrix[i][j]);
                 tempCount++;
             }   
             finalString[tempCount] = '\n';
             tempCount++;
         }
         clear;
-        // printf("\nfinalString length is:  %d\n", LINES * COLUMNS);
-        // printf("tempCount length is: %d and finalString is: %c yep\n", tempCount, finalString[tempCount]);
         printf("%s", finalString);
         
         delay();  
