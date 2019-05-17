@@ -65,4 +65,3 @@ int readcipher(char* cipherText) {
 	    fclose(fp);
 	    return 0;
 }
-

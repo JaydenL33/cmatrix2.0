@@ -1,5 +1,6 @@
 # makefile for Encryption testing on crypto branch! See the github:
 # https://github.com/rlcaust/Fund-O-C
+# Author: Albert Ferguson
 
 ##############################################
 # Defining make macros:
@@ -22,6 +23,7 @@ STATIC_LIB_SRC = $(wildcard crypto/*.c)
 OBJS = $(LINK_SRC:.c=.o)
 STATIC_OBJS = $(STATIC_LIB_SRC:.c=.o)
 
+CLEAN_OBJS = $(wildcard *.o)
 CFLAGS = -Wall -Werror -ansi -g
 
 ##############################################
@@ -48,5 +50,5 @@ $(STATIC_OBJS) : $(STATIC_LIB_SRC)
 ##############################################
 .PHONY : clean
 clean :
-	rm -f $(OBJS) $(LINK_TARGET) $(STATIC_LIB_TARGET)
+	rm -f $(CLEAN_OBJS) $(LINK_TARGET) $(STATIC_LIB_TARGET)
 	@echo ============== Clean all complete! =============
