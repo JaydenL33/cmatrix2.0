@@ -18,6 +18,7 @@
 
 void print_menu();
 void print_raindrops();
+void rand_str(char *dest, size_t length)
 void compress();
 /* int encrypt();
 int decrypt(); */
@@ -43,6 +44,7 @@ void delay() {
        for (d = 1; d <= 32767 / 2; d++) {}
    }
 }
+
 void print_raindrops() {
     char* matrix[LINES-1][COLUMNS]; /* Might need to clear :) */
 
@@ -107,3 +109,32 @@ void print_raindrops() {
 }
 
 /* int main(int argc, char *argv[], char *envp[]) {} */
+/********************************************** 
+*  *str = variable to put random string into
+*  length = size of length in bytes
+*
+*  Generates random string 
+*  rand_str(str, sizeof str - 1)
+*
+***********************************************/
+void rand_str(char *str, size_t length) {
+    char charset[] = "0123456789"
+                     "abcdefghijklmnopqrstuvwxyz"
+                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                     "                          "
+                     "                          "
+                     "                          "
+                     "                          "
+                     "                          "
+                     "                          "
+                     "                          "
+                     "                          ";
+
+   
+
+    while (length-- > 0) {
+        size_t index = (double) rand() / RAND_MAX * (sizeof charset - 1);
+        *str++ = charset[index];
+    }
+    *str = '\0';
+}
