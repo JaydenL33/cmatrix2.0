@@ -31,7 +31,19 @@ void squash_pepe();
 void matrix_quotes();
 
 int main(int argc, char* arv[]) {
-    encrypt();
+    int i, plainTextLen;
 
+    unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
+    plainTextLen = encrypt(encryptedData);
+    printf("%d\n", plainTextLen);
+
+    /* test cipher output */
+	printf("CipherText:\n");
+	
+	for (i = 0; i < plainTextLen; i++){
+		printf("%x", encryptedData[i]);
+	}
+
+	printf("%s\n", encryptedData);
     return 0;
 }

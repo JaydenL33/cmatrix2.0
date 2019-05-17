@@ -16,41 +16,33 @@
 # include "encrypt.h" /* custom library header file for cryptography functionality */
 
 /*******************************************************************************
- * Implement gen_key to retrieve a user-defined key. Then generate a pseudo rand
- * byte stream from this key with gen_pseudo_rand_key. Finally use xor_encrypt 
- * to output cipherText byte array.
+ * Implement getKey to retrieve a user-defined key. Then use  byteStreamInitialiser
+ * to generate the byteStateVector. Finally pseudo-randomise the key and XOR it
+ * by implementing genPseudoRandKey.  
  * Inputs: 
  *	- none
  * Outputs:
- *	- cipherText
+ *	- mem address cipherText
+ * 	- int length of plaintext/ciphertext
 *******************************************************************************/
-int encrypt(void) {
-	int i; /* Crypt test print back */
+int encrypt(unsigned char* encryptedData) {
 
-	/* string data */
-	char plainText[INPUT_STRING_BUFFER];
-	unsigned char cipherText[INPUT_STRING_BUFFER];
-	int lengthplainText;
-	/* Define byte arrays */
-	unsigned char byteStateVector[KEY_LEN];
-	/* Byte converted key */
+	char plainText[INPUT_STRING_BUFFER]; /* user input (either from file or console) */
+	unsigned char cipherText[INPUT_STRING_BUFFER]; /* encrypted user input */
+	unsigned char byteStateVector[KEY_LEN]; /* intermediate used by RC4 encryption */
 
 	char keyVal[KEY_LEN];
 	int keyLength;
+	int plainTextLength = 0;
 
 	/* Fuction Processing  */
-	lengthplainText = getPlainText(plainText); 					            printf("%d\n", lengthplainText);
-	keyLength = getKey(keyVal);
+	plainTextLength = getPlainText(plainText);
+	keyLength = getKey(keyVal);	
 	byteStreamInitialiser(keyVal, byteStateVector, keyLength);
-	genPseudoRandKey(byteStateVector, plainText, cipherText);				printf("%d\n", keyLength);
-
-  /* test cipher output */
-	printf("cipherText:\n");
-	for (i = 0; i < 10; i++){
-		printf("%c", cipherText[i]);
-	}
-
-	return 1;
+	genPseudoRandKey(byteStateVector, plainText, cipherText);
+	printf("[encrypt]:%d\n", plainTextLength);
+	encryptedData = cipherText; /* pass back the cipherText stream */
+	return plainTextLength;
 }
 
 /*******************************************************************************
@@ -65,8 +57,6 @@ int encrypt(void) {
 int getKey(char* userInputKey) {
   
 	int length;
-	
-	printf("[echo]");
 	system("echo off");  /* Do not print the key in plainText back to the shell! */
 	printf("%s\nEnter the key:\n", GETKEY_EXPLANATION);
 	clearStdin();
@@ -93,9 +83,44 @@ int getKey(char* userInputKey) {
    	 * re enable echo then convert input ASCII key to 
    	 * "byte" key before returning length of user input key
    	 */
-    printf("[echo]");
     system("echo on"); 
 	return length;
+}
+
+/*******************************************************************************
+ * plainText getter. Prompts user for plainText entry to be encrypted. 
+ * WARNING: Max plainText entered currently allows 1024 char's!! All remaining 
+ * ignored!
+ *	- mem address for plainText
+ * Outputs:
+ *	- int length of plainText entered.
+*******************************************************************************/
+int getPlainText(char* plainText) {
+	int lengthplainText;
+
+	printf("\n%s\n", PLAINTEXT_EXPLANATION);
+	fgets(plainText, INPUT_STRING_BUFFER, stdin);
+
+	lengthplainText = strlen(plainText);
+	printf("[getPlainText]:%d\n", lengthplainText);
+
+	if (plainText[lengthplainText - 1] == '\n') {
+    	/* 
+    	 * Replace last character, \n, with \0 (replace the EOL with end of
+    	 * end-of-string EOS character )
+    	 */
+        plainText[lengthplainText - 1] = '\0';
+    } else {
+        /* 
+         * Set the last possible buffer index to EOS character then,
+         * clear stdin of any excess characters, avoiding the possible 
+         * buffer overflow
+         */
+    	plainText[INPUT_STRING_BUFFER] = '\0';
+        clearStdin();
+    }
+    printf("[getPlainText]:%u\n", (unsigned)strlen(plainText));
+	return lengthplainText;
 }
 
 /*******************************************************************************
@@ -156,41 +181,4 @@ int genPseudoRandKey(unsigned char* byteStateVector,
 	}
 
 	return 0;
-}
-
-
-/*******************************************************************************
- * plainText getter. Prompts user for plainText entry to be encrypted. 
- * WARNING: Max plainText entered currently allows 1024 char's!! All remaining 
- * ignored!
- *	- mem address for plainText
- * Outputs:
- *	- int length of plainText entered.
-*******************************************************************************/
-int getPlainText(char* plainText) {
-	int lengthplainText;
-
-	printf("\n%s\n", plainText_EXPLANATION);
-	clearStdin();
-
-	fgets(plainText, INPUT_STRING_BUFFER, stdin);
-
-	lengthplainText = strlen(plainText);
-
-	if (plainText[lengthplainText - 1] == '\n') {
-    	/* 
-    	 * Replace last character, \n, with \0 (replace the EOL with end of
-    	 * end-of-string EOS character )
-    	 */
-        plainText[lengthplainText - 1] = '\0';
-    } else {
-        /* 
-         * Set the last possible buffer index to EOS character then,
-         * clear stdin of any excess characters, avoiding the possible 
-         * buffer overflow
-         */
-    	plainText[INPUT_STRING_BUFFER] = '\0';
-        clearStdin();
-    }
-	return lengthplainText;
 }

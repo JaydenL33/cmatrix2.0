@@ -1,3 +1,4 @@
 .vscode
-main.c
-RC4.c
+.exe
+.a
+.o
