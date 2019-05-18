@@ -56,6 +56,7 @@ void print_raindrops() {
     char* matrix[LINES-1][COLUMNS];
     int count = 0;
     char asciiChar = 'A';
+    printf("\e[?25l"); /* Hides the cursor */
     while (count < 100) {     
         char temp[COLUMNS];
         rand_str(temp, COLUMNS);
@@ -84,6 +85,7 @@ void print_raindrops() {
 
         char finalString[(LINES) * (COLUMNS)];
         int tempCount = 0;
+        /* LINES - 1 is needed otherwise it prints on the same line.... */
         for (i = 0; i < LINES-1; i++) {
             int j;
             for (j = 0; j < COLUMNS; j++) {
