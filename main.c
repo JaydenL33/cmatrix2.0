@@ -13,8 +13,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <unistd.h> /* THIS WILL NEED TO BE DELETED, just for testing */
 #define clear printf("\033[H\033[J")
+#define KNRM  "\x1B[0m"
+#define KRED  "\x1B[31m"
+#define KGRN  "\x1B[32m"
+#define KYEL  "\x1B[33m"
+#define KBLU  "\x1B[34m"
+#define KMAG  "\x1B[35m"
+#define KCYN  "\x1B[36m"
+#define KWHT  "\x1B[37m"
 
 void print_menu();
 void print_raindrops();
@@ -40,32 +47,24 @@ int main(void) {
 void delay() {
     int c, d;
    /* Can change the time of delay with this, Cheap method but works... */
-   for (c = 1; c <= 32767 / 4; c++) {
-       for (d = 1; d <= 32767 / 4; d++) {}
+   for (c = 1; c <= 32767 / 6; c++) {
+       for (d = 1; d <= 32767 / 6; d++) {}
    }
 }
 
 void print_raindrops() {
     char* matrix[LINES-1][COLUMNS];
-
     int count = 0;
     char asciiChar = 'A';
-    while (count < 100) {
-        /* Generate a random string of size COLUMNS */
-         /* Just for testing basic concept of printing a and b */
-        char tempString[COLUMNS];
+    while (count < 100) {     
         char temp[COLUMNS];
         rand_str(temp, COLUMNS);
         /* Create string, can defs be done better */
         int i;
-        for (i = 0; i < COLUMNS; i++) {
-            tempString[i] = asciiChar;
-        }
         for (i = LINES-1; i >= 0; i--) {
             if (i == 0) {
                 int j;
                 for (j = 0; j < COLUMNS; j++) {
-                    // matrix[i][j] = tempString[i];
                     matrix[i][j] = temp[j];
                 }
             } else {
@@ -95,15 +94,10 @@ void print_raindrops() {
             tempCount++;
         }
         clear;
-        printf("%s", finalString);
+        printf("%s%s", KGRN, finalString);
         
         delay();  
-        count++;
-        if (asciiChar == 'A') {
-            asciiChar = 'B';
-        } else {
-            asciiChar = 'A';
-        }
+        count++;       
     }   
 }
 
