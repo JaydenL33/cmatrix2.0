@@ -27,14 +27,14 @@ void print_menu();
 void print_raindrops();
 void rand_str(char *dest, size_t length);
 void compress();
-/* int encrypt();
-int decrypt(); */
+int encrypt();
+int decrypt();
 int save();
 int load();
 void pepe();
 void squash_pepe();
 
-int main(void) {
+int main(int argc, char *argv[])  {
     /* printf("LINES: %s\n", getenv("LINES"));
     printf("COLUMNS: %s\n", getenv("COLUMNS")); */
     /* Lines and Columns need to be passed in at compile time with -D flag */
@@ -55,7 +55,6 @@ void delay() {
 void print_raindrops() {
     char* matrix[LINES-1][COLUMNS];
     int count = 0;
-    char asciiChar = 'A';
     printf("\e[?25l"); /* Hides the cursor */
     while (count < 100) {     
         char temp[COLUMNS];
@@ -66,7 +65,7 @@ void print_raindrops() {
             if (i == 0) {
                 int j;
                 for (j = 0; j < COLUMNS; j++) {
-                    matrix[i][j] = temp[j];
+                    matrix[0][j] = temp[j];
                 }
             } else {
                 /* Check for valid character, not needed on mac, not sure about linux. */
