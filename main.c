@@ -24,7 +24,7 @@
 #define KWHT  "\x1B[37m"
 
 void print_menu();
-void print_raindrops();
+void print_raindrops(int LINES, int COLUMNS);
 void rand_str(char *dest, size_t length);
 void compress();
 int encrypt();
@@ -38,7 +38,14 @@ int main(int argc, char *argv[])  {
     /* printf("LINES: %s\n", getenv("LINES"));
     printf("COLUMNS: %s\n", getenv("COLUMNS")); */
     /* Lines and Columns need to be passed in at compile time with -D flag */
-    print_raindrops();
+    printf("argc is %d", argc);
+    if (argc == 3) {
+    int LINES = atoi(argv[1]);
+    int COLUMNS = atoi(argv[2]);
+
+    print_raindrops(LINES, COLUMNS);
+    }
+    
 
     return 1;
 }
@@ -52,16 +59,16 @@ void delay() {
    }
 }
 
-void print_raindrops() {
+void print_raindrops(int LINES, int COLUMNS) {
     char* matrix[LINES-1][COLUMNS];
     int count = 0;
     printf("\e[?25l"); /* Hides the cursor */
     while (count < 100) {     
         char temp[COLUMNS];
-        rand_str(temp, COLUMNS);
+        rand_str(temp, COLUMNS+1);
         /* Create string, can defs be done better */
         int i;
-        for (i = LINES-1; i >= 0; i--) {
+        for (i = LINES-2; i >= 0; i--) {
             if (i == 0) {
                 int j;
                 for (j = 0; j < COLUMNS; j++) {
