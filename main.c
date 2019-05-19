@@ -1,30 +1,37 @@
 /*
-    Authors:    
-   - Sebastian Southern 
-   - Ben Gillespie
-   - Lachlan Leslie
-   - Albert Ferguson
-   - Jayden Lee
-   - Hong Kung (steve)
-*/
+ *   Authors:    
+ *  - Sebastian Southern 
+ *  - Ben Gillespie
+ *  - Lachlan Leslie
+ *  - Albert Ferguson
+ *  - Jayden Lee
+ */
 
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <math.h>
+# include "crypto\encrypt.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-
+/* app functionality */
 void print_menu();
-void print_raindrops(char *input);
+void print_raindrops(char* input);
+
+/* Compression functionality */
 void compress();
-int encrypt();
-int decrypt();
-int save();
-int load();
+void decompress();
+
+/* file handling */
+int save(char* input);
+int load(char* output);
+
+/* memes be like... */
 void pepe();
 void squash_pepe();
+void matrix_quotes();
 
-int main(void) {
+int main(int argc, char* arv[]) {
+    encrypt();
 
-    return 1;
+    return 0;
 }
