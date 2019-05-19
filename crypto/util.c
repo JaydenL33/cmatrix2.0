@@ -29,12 +29,12 @@ void StateVectorConstructor(int* initArray, int len) {
 }
 
 /*******************************************************************************
- * Utility function that swaps input_arr1 with input_arr2
+ * Utility function that swaps array[i] with array[j]
 *******************************************************************************/
-void swap(unsigned char* firstElem, unsigned char* secondElem) {
-	unsigned char* temp_P = firstElem;
-	firstElem = secondElem;
-	secondElem = temp_P;
+void swap(unsigned char* array, int i, int j) {
+	unsigned char temp_P = array[i];
+	array[i] = array[j];
+	array[j] = temp_P;
 }
 
 /*******************************************************************************

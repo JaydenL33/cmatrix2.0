@@ -33,16 +33,33 @@ int encrypt(unsigned char* encryptedData) {
 
 	char keyVal[KEY_LEN];
 	int keyLength;
-	int plainTextLength = 0;
+	int plainTextLength;
 
 	/* Fuction Processing  */
 	plainTextLength = getPlainText(plainText);
 	keyLength = getKey(keyVal);	
+	printf("%d\n", keyLength);
 	byteStreamInitialiser(keyVal, byteStateVector, keyLength);
-	genPseudoRandKey(byteStateVector, plainText, cipherText);
-	printf("[encrypt]:%d\n", plainTextLength);
+	genPseudoRandKey(byteStateVector, plainText, cipherText, 0, plainTextLength, keyLength);
+
 	encryptedData = cipherText; /* pass back the cipherText stream */
 	return plainTextLength;
+}
+
+int decrypt(unsigned char* encryptedData, char* decryptedData,
+	int lenEncrytpedData, char* userInputKey) {
+
+	unsigned char byteStateVector[KEY_LEN]; /* intermediate used by RC4 encryption */
+
+	int keyLength;
+	/* keyLength = strlen(userInputKey); */
+	keyLength = getKey(userInputKey);
+	printf("%d\n", keyLength);
+	byteStreamInitialiser(userInputKey, byteStateVector, keyLength);
+	genPseudoRandKey(byteStateVector, decryptedData, encryptedData, 1, 
+					 lenEncrytpedData, keyLength);
+
+	return 0;
 }
 
 /*******************************************************************************
@@ -57,9 +74,8 @@ int encrypt(unsigned char* encryptedData) {
 int getKey(char* userInputKey) {
   
 	int length;
-	system("echo off");  /* Do not print the key in plainText back to the shell! */
+	system("echo off"); /* Do not print the key in plainText back to the shell! */
 	printf("%s\nEnter the key:\n", GETKEY_EXPLANATION);
-	clearStdin();
   
 	fgets(userInputKey, KEY_LEN, stdin);
 	length = strlen(userInputKey);
@@ -83,7 +99,7 @@ int getKey(char* userInputKey) {
    	 * re enable echo then convert input ASCII key to 
    	 * "byte" key before returning length of user input key
    	 */
-    system("echo on"); 
+    system("echo on");
 	return length;
 }
 
@@ -102,7 +118,6 @@ int getPlainText(char* plainText) {
 	fgets(plainText, INPUT_STRING_BUFFER, stdin);
 
 	lengthplainText = strlen(plainText);
-	printf("[getPlainText]:%d\n", lengthplainText);
 
 	if (plainText[lengthplainText - 1] == '\n') {
     	/* 
@@ -119,7 +134,6 @@ int getPlainText(char* plainText) {
     	plainText[INPUT_STRING_BUFFER] = '\0';
         clearStdin();
     }
-    printf("[getPlainText]:%u\n", (unsigned)strlen(plainText));
 	return lengthplainText;
 }
 
@@ -133,18 +147,17 @@ int getPlainText(char* plainText) {
 *******************************************************************************/
 void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector, 
 	int userKeyLength) {
-	int i, j;
+	int i, j = 0;
   
 	/* KSA */
 	/* loops input key, generates a byte stream vector (byte-key) of 256 */
-	for (i = 0; i < KEY_LEN; i++) {
+	for (i = 0; i < userKeyLength; i++) {
 		byteStateVector[i] = i;
 	}
 
-	for (i = 0; i < KEY_LEN; i++) {
-		j = (j + byteStateVector[i] + userInputKey[i % userKeyLength]) % KEY_LEN;
-		swap(&byteStateVector[i], &byteStateVector[j]);
-
+	for (i = 0; i < userKeyLength; i++) {
+		j = (j + byteStateVector[i] + userInputKey[i % userKeyLength]) % userKeyLength;
+		swap(byteStateVector, i, j);		
 	}
 	return;
 }
@@ -156,28 +169,26 @@ void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector,
  * Outputs:
  *	- mem address return_key byte stream.
 *******************************************************************************/
-int genPseudoRandKey(unsigned char* byteStateVector,  
-    char* plainText, unsigned char* cipherText)  {
+int genPseudoRandKey(unsigned char* byteStateVector, char* plainText, 
+	unsigned char* cipherText, int reverse, int dataLen, int keyLen)  {
 
-    int i = 0;  /* i ~ byteStateVector 1st index "randomiser" */
-  	int j = 0;  /* j ~ byteStateVector 2nd index "randomiser" */
-  	int t;      /* t ~ loop counter creating temp index */
-  
-   /* 
-    * length of the plainText input, as plainText already here, 
-    * quicker to recalc' one int val.
-    */
-	int len = strlen(plainText);
+    int i = 0;  /* i ~ byteStateVector 1st index "randomiser" 	*/
+  	int j = 0;  /* j ~ byteStateVector 2nd index "randomiser" 	*/
+  	int t;      /* t ~ loop counter creating temp index 		*/
 
     /* PRGA algorithm */
-	for (t=0; t < len; t++) {
-		i = (i+1) % KEY_LEN;
-		j = (j + byteStateVector[i]) % KEY_LEN;
+	for (t=0; t < dataLen; t++) {
+		i = (i+1) % keyLen;
+		j = (j + byteStateVector[i]) % keyLen;
 
-		swap(&byteStateVector[i], &byteStateVector[j]);
-		int xorElem = byteStateVector[byteStateVector[i] + byteStateVector[j] % KEY_LEN];
+		swap(byteStateVector, i, j);
+		int xorElem = byteStateVector[byteStateVector[i] + byteStateVector[j] % keyLen];
 
-		cipherText[t] = xorElem^plainText[t];
+		if(reverse) {
+			plainText[t] = xorElem^cipherText[t];
+		} else {
+			cipherText[t] = xorElem^plainText[t];
+		}
 	}
 
 	return 0;
