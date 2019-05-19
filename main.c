@@ -63,7 +63,9 @@ void print_raindrops(int LINES, int COLUMNS) {
     char* matrix[LINES-1][COLUMNS];
     int count = 0;
     printf("\e[?25l"); /* Hides the cursor */
-    while (count < 100) {     
+
+    /* This should print infinitely unless input specified */
+    while (count < 1000) {     
         char temp[COLUMNS];
         rand_str(temp, COLUMNS+1);
         /* Create string, can defs be done better */
@@ -103,10 +105,9 @@ void print_raindrops(int LINES, int COLUMNS) {
         }
         clear;
         printf("%s%s", KGRN, finalString);
-        
         delay();  
-        count++;       
-    }   
+        count++;
+    }
 }
 
 /* int main(int argc, char *argv[], char *envp[]) {} */
