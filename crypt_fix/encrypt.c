@@ -25,10 +25,17 @@
  *	- mem address cipherText
  * 	- int length of plaintext/ciphertext
 *******************************************************************************/
-int encrypt(unsigned char* encryptedData) {
+int encrypt(int* encryptedData) {
+
+   /* TODO: 
+	* Current issue, unsigned char type during encryption
+	* causes ASCII int overflow to signed char which stuffs
+	* the decryption process.
+	*/
+
 
 	printf("\nENCRYPTING....\n");
-	char plainText[INPUT_STRING_BUFFER]; /* user input (either from file or console) */
+	int plainText[INPUT_STRING_BUFFER]; /* user input (either from file or console) */
 	unsigned char byteStateVector[KEY_LEN]; /* intermediate used by RC4 encryption */
 
 	char keyVal[KEY_LEN];
@@ -53,7 +60,7 @@ int encrypt(unsigned char* encryptedData) {
 	return plainTextLength;
 }
 
-int decrypt(unsigned char* encryptedData, char* decryptedData,
+int decrypt(int* encryptedData, int* decryptedData,
 	int lenEncrytpedData, char* userInputKey) {
 
 	printf("\nDECRYPTING....\n");
@@ -119,29 +126,32 @@ int getKey(char* userInputKey) {
  * Outputs:
  *	- int length of plainText entered.
 *******************************************************************************/
-int getPlainText(char* plainText) {
+int getPlainText(int* plainText) {
 	int lengthplainText;
+	char input[INPUT_STRING_BUFFER];
 
 	printf("\n%s\n", PLAINTEXT_EXPLANATION);
-	fgets(plainText, INPUT_STRING_BUFFER, stdin);
+	fgets(input, INPUT_STRING_BUFFER, stdin);
 
-	lengthplainText = strlen(plainText);
+	lengthplainText = strlen(input);
 
-	if (plainText[lengthplainText - 1] == '\n') {
+	if (input[lengthplainText - 1] == '\n') {
     	/* 
     	 * Replace last character, \n, with \0 (replace the EOL with end of
     	 * end-of-string EOS character )
     	 */
-        plainText[lengthplainText - 1] = '\0';
+        input[lengthplainText - 1] = '\0';
     } else {
         /* 
          * Set the last possible buffer index to EOS character then,
          * clear stdin of any excess characters, avoiding the possible 
          * buffer overflow
          */
-    	plainText[INPUT_STRING_BUFFER] = '\0';
+    	input[INPUT_STRING_BUFFER] = '\0';
         clearStdin();
     }
+
+    plainText = (int*) plainText; /* cast and return the mem address to rest of program */
 	return lengthplainText;
 }
 
@@ -177,8 +187,8 @@ void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector,
  * Outputs:
  *	- mem address return_key byte stream.
 *******************************************************************************/
-int genPseudoRandKey(unsigned char* byteStateVector, char* plainText, 
-	unsigned char* cipherText, int reverse, int dataLen, int keyLen)  {
+int genPseudoRandKey(unsigned char* byteStateVector, int* plainText, 
+	int* cipherText, int reverse, int dataLen, int keyLen)  {
 
     int i = 0;  /* i ~ byteStateVector 1st index "randomiser" 	*/
   	int j = 0;  /* j ~ byteStateVector 2nd index "randomiser" 	*/

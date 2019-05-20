@@ -37,28 +37,18 @@ int main(int argc, char* arv[]) {
     char decryptedData[INPUT_STRING_BUFFER];
     plainTextLen = encrypt(encryptedData);
 
-    /* test cipher output */
-	printf("\nCipherText HEX:\n");
-	
-	for (i = 0; i < plainTextLen; i++){
-		printf("%x", encryptedData[i]);
-	}
+    printf("[ENCRYPTED]:");
+    for (i = 0; i < plainTextLen; i++) {
+    	printf("%d ", encryptedData[i]);
+    }
 
 	printf("\nCipherText CHAR:\n");
-	
-	for (i = 0; i < plainTextLen; i++){
-		printf("%c", encryptedData[i]);
-	}
-
 	decrypt(encryptedData, decryptedData, plainTextLen, testKey);
-	printf("\nPlaintext HEX:\n");
+	
+	printf("\n[DECRYPTED]:");
 	for (i = 0; i < plainTextLen; i++){
-		printf("%x", decryptedData[i]);
+		printf("%d ", decryptedData[i]);
 	}
-
-	printf("\nPlaintext CHAR:\n");
-	for (i = 0; i < plainTextLen; i++){
-		printf("%c", decryptedData[i]);
-	}
+	
     return 0;
 }
