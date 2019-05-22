@@ -11,7 +11,7 @@
  * Albert Ferguson, Jayden Lee
  */
 
-# define KEY_LEN 256
+# define BYTE_STATE_LEN 256
 # define INPUT_STRING_BUFFER 1025
 # define FILENAME "encrypt.locked" /* temp file output for writing encrypt data tp */
 
@@ -39,8 +39,8 @@ int encrypt(unsigned char* encryptedData);
  * Outputs:
  *	- plainText
 *******************************************************************************/
-int decrypt(unsigned char* encryptedData, char* decryptedData, int lenEncrytpedData, 
-	char* userInputKey);
+int decrypt(unsigned char* encryptedData, char* decryptedData, 
+	int lenEncrytpedData, char* userInputKey);
 
 /*******************************************************************************
  * Key request from user, byte stream generation and pseudo 

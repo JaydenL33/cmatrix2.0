@@ -28,23 +28,28 @@
 int encrypt(unsigned char* encryptedData) {
 
 	printf("\nENCRYPTING....\n");
+	
+	unsigned char byteStateVector[BYTE_STATE_LEN]; /* intermediate used by RC4 encryption */
+
 	char plainText[INPUT_STRING_BUFFER]; /* user input (either from file or console) */
-	unsigned char byteStateVector[KEY_LEN]; /* intermediate used by RC4 encryption */
-
-	char keyVal[KEY_LEN];
-	int keyLength;
-	int plainTextLength;
-
+	char keyVal[BYTE_STATE_LEN];
 	/* Fuction Processing  */
-	plainTextLength = getPlainText(plainText);
+	int plainTextLength = getPlainText(plainText);
+	int keyLength = keyLength = getKey(keyVal);	
+	
+											int i;
 
-	int i;
-	printf("\n[ENCRYPTED INTS]:");
-    for (i = 0; i < plainTextLength; i++) {
-    	printf("%c", plainText[i]);
-    }
-
-	keyLength = getKey(keyVal);	
+	printf("\n[PLAINTEXT CHARS]:");
+    for (i = 0; i < plainTextLength; i++)
+    	printf("%c ", plainText[i]);
+  
+    printf("\n");
+    printf("\n[PLAINTEXT INTS]:");
+    for (i = 0; i < plainTextLength; i++)
+    	printf("%d ", plainText[i]);
+  
+    printf("\n");
+	
 	byteStreamInitialiser(keyVal, byteStateVector, keyLength);
 
 	genPseudoRandKey(byteStateVector, plainText, encryptedData, 0, 
@@ -57,12 +62,9 @@ int decrypt(unsigned char* encryptedData, char* decryptedData,
 	int lenEncrytpedData, char* userInputKey) {
 
 	printf("\nDECRYPTING....\n");
-	unsigned char byteStateVector[KEY_LEN]; /* intermediate used by RC4 encryption */
-
-	int keyLength;
-	/* keyLength = strlen(userInputKey); */
-	keyLength = getKey(userInputKey);
-
+	/* intermediate used by RC4 encryption */
+	unsigned char byteStateVector[BYTE_STATE_LEN]; 
+	int keyLength = getKey(userInputKey);
 	byteStreamInitialiser(userInputKey, byteStateVector, keyLength);
 
 	genPseudoRandKey(byteStateVector, decryptedData, encryptedData, 1, 
@@ -85,7 +87,8 @@ int getKey(char* userInputKey) {
 	system("echo off"); /* Do not print the key in plainText back to the shell! */
 	printf("%s\nEnter the key:\n", GETKEY_EXPLANATION);
   
-	fgets(userInputKey, KEY_LEN, stdin);
+  	/* note user input-key cannot exceed 256 bytes! */
+	fgets(userInputKey, BYTE_STATE_LEN, stdin);
 	length = strlen(userInputKey);
 
 	if (userInputKey[length - 1] == '\n') {
@@ -100,7 +103,7 @@ int getKey(char* userInputKey) {
          * clear stdin of any excess characters, avoiding the possible 
          * buffer overflow
          */
-        userInputKey[KEY_LEN] = '\0';
+        userInputKey[BYTE_STATE_LEN] = '\0';
         clearStdin();
     }
    	/*
@@ -163,10 +166,16 @@ void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector,
 		byteStateVector[i] = i;
 	}
 
-	for (i = 0; i < userKeyLength; i++) {
-		j = (j + byteStateVector[i] + userInputKey[i % userKeyLength]) % userKeyLength;
+	for (i = 0; i < BYTE_STATE_LEN; i++) {
+		j = (j + byteStateVector[i] + userInputKey[i % userKeyLength]) % BYTE_STATE_LEN;
 		swap(byteStateVector, i, j);		
 	}
+
+	printf("[BYTE VEC]:");
+	for (i = 0; i < BYTE_STATE_LEN; i++) {
+		printf("%d ", byteStateVector[i]);
+	}
+	printf("\n");
 	return;
 }
 
@@ -185,16 +194,19 @@ int genPseudoRandKey(unsigned char* byteStateVector, char* plainText,
   	int t;      /* t ~ loop counter creating temp index 		*/
 
     /* PRGA algorithm */
+    printf("[XOR ELEM]:\n");
 	for (t = 0; t < dataLen; t++) {
 		i = (i+1) % keyLen;
 		j = (j + byteStateVector[i]) % keyLen;
 		swap(byteStateVector, i, j);
-		int xorElem = byteStateVector[byteStateVector[i] + byteStateVector[j] % keyLen];
-
+		int byteStateAddition = byteStateVector[i] + byteStateVector[j] % keyLen;
+		unsigned char xorElem = byteStateVector[byteStateAddition];
+		printf("%d ", xorElem);
+		
 		if(reverse) {
-			plainText[t]  = xorElem^cipherText[t];
+			plainText[t]  = xorElem ^ cipherText[t];
 		} else {
-			cipherText[t] = xorElem^plainText[t];
+			cipherText[t] = xorElem ^ plainText[t];
 		}
 	}
 

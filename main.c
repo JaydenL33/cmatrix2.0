@@ -37,18 +37,17 @@ int main(int argc, char* arv[]) {
     char decryptedData[INPUT_STRING_BUFFER];
     plainTextLen = encrypt(encryptedData);
 
-    printf("[ENCRYPTED]:");
+    printf("[ENCRYPTED INTS]:");
     for (i = 0; i < plainTextLen; i++) {
     	printf("%d ", encryptedData[i]);
     }
-
-	printf("\nCipherText CHAR:\n");
 	decrypt(encryptedData, decryptedData, plainTextLen, testKey);
 	
-	printf("\n[DECRYPTED]:");
+	printf("\n[DECRYPTED INTS]:");
 	for (i = 0; i < plainTextLen; i++){
 		printf("%d ", decryptedData[i]);
 	}
+	printf("\n%s\n", decryptedData);
 	
     return 0;
 }
