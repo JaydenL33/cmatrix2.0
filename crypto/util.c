@@ -65,3 +65,18 @@ int readcipher(char* cipherText) {
 	    fclose(fp);
 	    return 0;
 }
+
+int checkValidRange (char firstvalue) {
+	int firstval;
+	firstval = (int) firstvalue; 
+	if (firstval >= 0 && firstval <= 255)
+	{
+		return 0;
+	}
+	else 
+	{
+		return 1;
+	}
+
+}
+
