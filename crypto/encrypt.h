@@ -69,6 +69,9 @@ void swap(unsigned char* array, int i, int j);
 int writecipher(char* cipherText);
 int readcipher(char* cipherText);
 
+int writecipher(char* cipherText);
+int readcipher(char* cipherText);
+
 /*******************************************************************************
  * Debug units required by library/
 *******************************************************************************/

@@ -79,4 +79,3 @@ int checkValidRange (char firstvalue) {
 	}
 
 }
-
