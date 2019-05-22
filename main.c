@@ -31,7 +31,15 @@ void squash_pepe();
 void matrix_quotes();
 
 int main(int argc, char* arv[]) {
-    encrypt();
+    
+    int plainTextLen;
+    char testKey[INPUT_STRING_BUFFER];
+    unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
 
+    plainTextLen = encrypt(encryptedData);
+	char* decryptedData = malloc(sizeof(char) * plainTextLen);
+	decrypt(encryptedData, decryptedData, plainTextLen, testKey);
+	printf("\n%s\n", decryptedData);
+	
     return 0;
 }
