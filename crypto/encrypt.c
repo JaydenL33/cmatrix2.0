@@ -37,24 +37,11 @@ int encrypt(unsigned char* encryptedData) {
 	int plainTextLength = getPlainText(plainText);
 	int keyLength = keyLength = getKey(keyVal);	
 	
-											int i;
-
-	printf("\n[PLAINTEXT CHARS]:");
-    for (i = 0; i < plainTextLength; i++)
-    	printf("%c ", plainText[i]);
-  
-    printf("\n");
-    printf("\n[PLAINTEXT INTS]:");
-    for (i = 0; i < plainTextLength; i++)
-    	printf("%d ", plainText[i]);
-  
-    printf("\n");
-	
 	byteStreamInitialiser(keyVal, byteStateVector, keyLength);
 
 	genPseudoRandKey(byteStateVector, plainText, encryptedData, 0, 
 					 plainTextLength, keyLength);
-	
+
 	return plainTextLength;
 }
 
@@ -162,18 +149,13 @@ void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector,
   
 	/* KSA */
 	/* loops input key, generates a byte stream vector (byte-key) of 256 */
-	for (i = 0; i < userKeyLength; i++) {
+	for (i = 0; i < BYTE_STATE_LEN; i++) {
 		byteStateVector[i] = i;
 	}
 
 	for (i = 0; i < BYTE_STATE_LEN; i++) {
 		j = (j + byteStateVector[i] + userInputKey[i % userKeyLength]) % BYTE_STATE_LEN;
 		swap(byteStateVector, i, j);		
-	}
-
-	printf("[BYTE VEC]:");
-	for (i = 0; i < BYTE_STATE_LEN; i++) {
-		printf("%d ", byteStateVector[i]);
 	}
 	printf("\n");
 	return;
@@ -194,14 +176,13 @@ int genPseudoRandKey(unsigned char* byteStateVector, char* plainText,
   	int t;      /* t ~ loop counter creating temp index 		*/
 
     /* PRGA algorithm */
-    printf("[XOR ELEM]:\n");
 	for (t = 0; t < dataLen; t++) {
 		i = (i+1) % keyLen;
 		j = (j + byteStateVector[i]) % keyLen;
 		swap(byteStateVector, i, j);
 		int byteStateAddition = byteStateVector[i] + byteStateVector[j] % keyLen;
 		unsigned char xorElem = byteStateVector[byteStateAddition];
-		printf("%d ", xorElem);
+		
 		
 		if(reverse) {
 			plainText[t]  = xorElem ^ cipherText[t];
