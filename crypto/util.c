@@ -57,3 +57,17 @@ int readcipher(unsigned char* cipherText, int plaintextlen) {
 	   	fclose(fp);
 	    return 1;
 }
+
+
+int checkValidRange (unsigned char firstvalue) {
+	int firstval;
+	firstval = (int) firstvalue; 
+	if (firstval >= 33 && firstval <= 126)
+	{
+		return 0;
+	}
+	else 
+	{
+		return 1;
+	}
+}
