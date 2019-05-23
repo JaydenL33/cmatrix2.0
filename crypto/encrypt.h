@@ -11,7 +11,7 @@
  * Albert Ferguson, Jayden Lee
  */
 
-# define KEY_LEN 256
+# define BYTE_STATE_LEN 256
 # define INPUT_STRING_BUFFER 1025
 # define FILENAME "encrypt.locked" /* temp file output for writing encrypt data tp */
 
@@ -29,7 +29,7 @@
  * Outputs:
  *	- cipherText
 *******************************************************************************/
-int encrypt(void);
+int encrypt(unsigned char* encryptedData);
 
 /*******************************************************************************
  * Implement library to decrypt data
@@ -39,7 +39,8 @@ int encrypt(void);
  * Outputs:
  *	- plainText
 *******************************************************************************/
-int decrypt(char* plainText, char* cipherText, char* keystream);
+int decrypt(unsigned char* encryptedData, char* decryptedData, 
+	int lenEncrytpedData, char* userInputKey);
 
 /*******************************************************************************
  * Key request from user, byte stream generation and pseudo 
@@ -48,12 +49,12 @@ int decrypt(char* plainText, char* cipherText, char* keystream);
 int getKey(char* userInputKey);
 
 /* TAKES SEED */
-int genPseudoRandKey(unsigned char* byteStateVector,  
-    char* plainText, unsigned char* cipherText);
+int genPseudoRandKey(unsigned char* byteStateVector, char* plainText, 
+	unsigned char* cipherText, int reverse, int dataLen, int keyLen);
 
 /* state vector initiliser - 256 list based on key */
 void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector, 
-						   int userKeyLength);
+	 int userKeyLength);
 
 /* plainText getter */
 int getPlainText(char* plainText);
@@ -63,7 +64,7 @@ int getPlainText(char* plainText);
 *******************************************************************************/
 void clearStdin();
 void StateVectorConstructor(int* initArray, int len);
-void swap(unsigned char* firstElem, unsigned char* secondElem);
+void swap(unsigned char* array, int i, int j);
 
 int writecipher(char* cipherText);
 int readcipher(char* cipherText);
@@ -84,7 +85,5 @@ void CheckUserplainText(char* plainText);
 void CheckPseudoKeyStream(int* byteStateVector, int* byteStreamKey);
 void CheckByteStreamInit(int* userInputKey,  int* byteStateVector, 
 				     	 int* keyLength);
-/* Checking if the char is within valid/printable ascii */
-int checkValidRange (char firstvalue);
 
 # endif
