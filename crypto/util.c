@@ -42,10 +42,14 @@ void swap(unsigned char* array, int i, int j) {
  * encrypt.locked. 
 *******************************************************************************/
 
-int writecipher(char* cipherText) {
+int writecipher(unsigned char* cipherText, int plaintextlen ) {
 	FILE* fp;
 	fp = fopen(FILENAME, "wb");
-	fprintf(fp, "%s", cipherText);
+	int i;
+	for (i = 0; i < plaintextlen; i++)
+	{
+		fprintf(fp, "%c", cipherText[i]);
+	}
 	fclose(fp);
 	return 0;
 }
@@ -53,29 +57,19 @@ int writecipher(char* cipherText) {
 /*******************************************************************************
  * Utility function that reads cipherText from a file called encrypt.locked. 
 *******************************************************************************/
-int readcipher(char* cipherText) {
+int readcipher(unsigned char* cipherText, int plaintextlen) {
 	FILE* fp;
+	int i;
 	fp = fopen(FILENAME, "r");
 	if (fp == NULL) /* If file doesn't exist*/
     {
         printf("Read error, make sure there is a encrypt.locked \n");
         return 0;
     }
-	   	fscanf(fp, "%s", cipherText);
-	    fclose(fp);
+   		for (i = 0; i < plaintextlen; i++)
+	   	{
+	   	fscanf(fp, "%c", &cipherText[i]);
+	   	}
+	   	fclose(fp);
 	    return 0;
-}
-
-int checkValidRange (char firstvalue) {
-	int firstval;
-	firstval = (int) firstvalue; 
-	if (firstval >= 0 && firstval <= 255)
-	{
-		return 0;
-	}
-	else 
-	{
-		return 1;
-	}
-
 }
