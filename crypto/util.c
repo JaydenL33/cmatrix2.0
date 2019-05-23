@@ -32,7 +32,7 @@ void swap(unsigned char* array, int i, int j) {
 *******************************************************************************/
 int writecipher(unsigned char* cipherText, int plaintextlen ) {
 	FILE* fp;
-	fp = fopen(FILENAME, "wb");
+	fp = fopen(FILENAME, "w");
 	int i;
 	for (i = 0; i < plaintextlen; i++) {
 		fprintf(fp, "%c", cipherText[i]);
