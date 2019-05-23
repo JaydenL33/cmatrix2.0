@@ -82,5 +82,6 @@ void clearStdin();
 void swap(unsigned char* array, int i, int j);
 int writecipher(unsigned char* cipherText, int plaintextlen);
 int readcipher(unsigned char* cipherText, int plaintextlen);
+int checkValidRange (unsigned char firstvalue);
 
 # endif
