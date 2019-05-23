@@ -10,7 +10,6 @@
  * Authors:
  * Albert Ferguson, Jayden Lee
  */
-
 # define BYTE_STATE_LEN 256
 # define INPUT_STRING_BUFFER 1025
 # define FILENAME "encrypt.locked" /* temp file output for writing encrypt data tp */
@@ -19,73 +18,69 @@
  1024 characters are supported, all remaining characters\
  will be ignored!"
 # define GETKEY_EXPLANATION "The key value may contain any ASCII valid characters\
- \n(TODO: escape sequences?? - implement testing later)\
- Only the first 256 characters inputed will be used."
+ \nOnly the first 256 characters inputed will be used."
 
 /*******************************************************************************
  * Implement library to encrypt data
- * Inputs: 
- *	- none
- * Outputs:
- *	- cipherText
+ * this function expects an external decleration of encrypted data to write to!
+ * returns int length of the encrypted data, which equals the length of 
+ * the original, unencrypted (plaintext), data.
 *******************************************************************************/
 int encrypt(unsigned char* encryptedData);
 
 /*******************************************************************************
- * Implement library to decrypt data
- * Inputs: 
- *	- encryptedData
- *	- byte key stream
- *	- length of the Encrypted Data
- * Outputs:
- *	- decryptedData
+ * Implement the library to decrypt data
+ * this function expects an external decleration of encrypted and decrypted data
+ * to write to! 
+ * This also requires the length of encrypted data as well as the key to decrypt
+ * it (obviously).
 *******************************************************************************/
-int decrypt(unsigned char* encryptedData, char* decryptedData, 
-	int lenEncrytpedData, char* userInputKey);
+int decrypt(unsigned char* encryptedData, char* decryptedData, int lenEncrytpedData,
+	char* userInputKey);
 
 /*******************************************************************************
- * Key request from user, byte stream generation and pseudo 
- * randomisation functions.
+ * Get key from user (stdin)
 *******************************************************************************/
 int getKey(char* userInputKey);
 
-/* TAKES SEED */
-int genPseudoRandKey(unsigned char* byteStateVector, char* plainText, 
-	unsigned char* cipherText, int reverse, int dataLen, int keyLen);
-
-/* state vector initiliser - 256 list based on key */
-void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector, 
-	 int userKeyLength);
-
-/* plainText getter */
+/*******************************************************************************
+ * gets the plaintext entered by the user into the program's stdin source
+ * returns the length of the plainText
+*******************************************************************************/
 int getPlainText(char* plainText);
 
 /*******************************************************************************
- * Utility functionality required by library/
+ * char userInputKey, user inputed key used in the initialisation
+ * unsigned char byteStateVector, the byte state vector TOBE randomised by 
+ * genPseudoRandKey
+ * int userKeyLength, length of the user inputed key
+ * 
+ * state vector initiliser - initialises a BYTE_STATE_LEN byte key using the 
+ * KSA algorithm (step 1 of RC4)
+*******************************************************************************/
+void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector, 
+	 int userKeyLength);
+
+/*******************************************************************************
+ * unsigned char byte state vector
+ * char plaintext, data to be encrypted
+ * unsigned char ciphertext, data encrypted
+ * int reverse, decrypt (0/false) vs encrypt (1/true)
+ * int dataLen, length of data encrypted/decrypted
+ * int keyLen, length of user inputed key
+ *
+ * Generates a "pseudo random" BYTE_STATE_LEN byte key using the PRGA algorithm 
+ * (step 2 of RC4)
+*******************************************************************************/
+int genPseudoRandKey(unsigned char* byteStateVector, char* plainText, 
+	unsigned char* cipherText, int reverse, int dataLen, int keyLen);
+
+/*******************************************************************************
+ * Utility functionality required by library: TODO: shift to own library!!!!!
 *******************************************************************************/
 void clearStdin();
-void StateVectorConstructor(int* initArray, int len);
 void swap(unsigned char* array, int i, int j);
 int writecipher(unsigned char* cipherText, int plaintextlen);
 int readcipher(unsigned char* cipherText, int plaintextlen);
-
-/*******************************************************************************
- * Debug units required by library/
-*******************************************************************************/
-
-/* Check overal encryption/decryption and XOR operation */
-void CheckEncryptDecrypt(void);
-void CheckXORencrypt(char* plainText, char* cipherText, int* byteStreamKey);
-
-/* check user inputs, assert no overflows or segmentation faults */
-void CheckUserKeyInput(void);
-void CheckUserplainText(char* plainText);
-
-/* check key stream generation process */
-void CheckPseudoKeyStream(int* byteStateVector, int* byteStreamKey);
-void CheckByteStreamInit(int* userInputKey,  int* byteStateVector, 
-				     	 int* keyLength);
-/* Checking if the char is within valid/printable ascii */
-int checkValidRange (char firstvalue);
 
 # endif

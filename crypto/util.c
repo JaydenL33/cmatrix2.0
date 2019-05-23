@@ -1,6 +1,5 @@
 /* utility functions used by the libCrypto
  * Fund-O-C Assesment 3
- *
  * See the github: github.com/rlcaust/Fund-O-C
  * 
  * Authors:
@@ -8,8 +7,8 @@
  */
 
 # include "encrypt.h" /* custom library header file for cryptography functionality */
-# include <stdlib.h> /* Using fopen, fprintf and fclose from stdlib.h */ 
-# include <stdio.h> /* getchar,  EOF*/
+# include <stdlib.h>  /* fopen, fprintf and fclose  */ 
+# include <stdio.h>   /* getchar,  EOF 		    	*/
 
 /*******************************************************************************
  * Utility function that clears stdin until newline or EOF
@@ -17,15 +16,6 @@
 void clearStdin() {
     int c;
     while (!((c = getchar() == '\n') || c == EOF));
-}
-
-/*******************************************************************************
- * Utility function that initialises int arrays to all 1
-*******************************************************************************/
-void StateVectorConstructor(int* initArray, int len) {
-	int i;
-	for (i = 0; i < len; ++i)
-		initArray[i] = 1;
 }
 
 /*******************************************************************************
@@ -38,16 +28,13 @@ void swap(unsigned char* array, int i, int j) {
 }
 
 /*******************************************************************************
- * Utility function that writes cipherText back into a file called
- * encrypt.locked. 
+ * Utility function that writes cipherText back into a file called encrypt.locked
 *******************************************************************************/
-
 int writecipher(unsigned char* cipherText, int plaintextlen ) {
 	FILE* fp;
 	fp = fopen(FILENAME, "wb");
 	int i;
-	for (i = 0; i < plaintextlen; i++)
-	{
+	for (i = 0; i < plaintextlen; i++) {
 		fprintf(fp, "%c", cipherText[i]);
 	}
 	fclose(fp);
@@ -55,21 +42,18 @@ int writecipher(unsigned char* cipherText, int plaintextlen ) {
 }
 
 /*******************************************************************************
- * Utility function that reads cipherText from a file called encrypt.locked. 
+ * Utility function that reads cipherText from a file called encrypt.locked
 *******************************************************************************/
 int readcipher(unsigned char* cipherText, int plaintextlen) {
 	FILE* fp;
 	int i;
 	fp = fopen(FILENAME, "r");
-	if (fp == NULL) /* If file doesn't exist*/
-    {
-        printf("Read error, make sure there is a encrypt.locked \n");
+	if (fp == NULL) { /* If file doesn't exist */
+        printf("Read error, make sure there is an encrypt.locked\n");
         return 0;
     }
    		for (i = 0; i < plaintextlen; i++)
-	   	{
-	   	fscanf(fp, "%c", &cipherText[i]);
-	   	}
+	   		fscanf(fp, "%c", &cipherText[i]);
 	   	fclose(fp);
 	    return 0;
 }
