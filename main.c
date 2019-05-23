@@ -53,10 +53,10 @@ int main(int argc, char *argv[])  {
 
 void delay() {
     int c, d;
-   /* Can change the time of delay with this, Cheap method but works... */
-   for (c = 1; c <= 32767 / 6; c++) {
-       for (d = 1; d <= 32767 / 6; d++) {}
-   }
+    /* Can change the time of delay with this, Cheap method but works... */
+    for (c = 1; c <= 32767 / 8; c++) {
+        for (d = 1; d <= 32767 / 8; d++) {}
+    }
 }
 
 void print_raindrops(int LINES, int COLUMNS) {
@@ -104,7 +104,7 @@ void print_raindrops(int LINES, int COLUMNS) {
             tempCount++;
         }
         clear;
-        printf("%s%s", KGRN, finalString);
+        printf("%s%s", KCYN, finalString);
         delay();  
         count++;
     }
