@@ -51,7 +51,7 @@ int decrypt(unsigned char* encryptedData, char* decryptedData,
 	int lenEncrytpedData, char* userInputKey) {
 
 	readcipher(encryptedData, lenEncrytpedData);
-
+  
 	printf("\nDECRYPTING....\n");
 	/* intermediate used by RC4 encryption */
 	unsigned char byteStateVector[BYTE_STATE_LEN]; 

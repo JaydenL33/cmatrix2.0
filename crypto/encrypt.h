@@ -66,7 +66,6 @@ int getPlainText(char* plainText);
 void clearStdin();
 void StateVectorConstructor(int* initArray, int len);
 void swap(unsigned char* array, int i, int j);
-
 int writecipher(unsigned char* cipherText, int plaintextlen);
 int readcipher(unsigned char* cipherText, int plaintextlen);
 
@@ -86,5 +85,7 @@ void CheckUserplainText(char* plainText);
 void CheckPseudoKeyStream(int* byteStateVector, int* byteStreamKey);
 void CheckByteStreamInit(int* userInputKey,  int* byteStateVector, 
 				     	 int* keyLength);
+/* Checking if the char is within valid/printable ascii */
+int checkValidRange (char firstvalue);
 
 # endif
