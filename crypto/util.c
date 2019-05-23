@@ -68,8 +68,8 @@ int readcipher(char* cipherText) {
 
 int checkValidRange (char firstvalue) {
 	int firstval;
-	firstvalue = (int) firstval; 
-	if firstval >= 0 && firstval <= 127;
+	firstval = (int) firstvalue; 
+	if (firstval >= 0 && firstval <= 255)
 	{
 		return 0;
 	}

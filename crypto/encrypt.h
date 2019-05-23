@@ -29,7 +29,7 @@
  * Outputs:
  *	- cipherText
 *******************************************************************************/
-int encrypt(unsigned char* encryptedData);
+int encrypt(void);
 
 /*******************************************************************************
  * Implement library to decrypt data

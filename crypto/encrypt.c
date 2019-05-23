@@ -42,11 +42,12 @@ int encrypt(void) {
 	lengthplainText = getPlainText(plainText); 					            printf("%d\n", lengthplainText);
 	keyLength = getKey(keyVal);
 	byteStreamInitialiser(keyVal, byteStateVector, keyLength);
+	*cipherText = malloc(sizeof(unsigned char) * lengthplainText);
 	genPseudoRandKey(byteStateVector, plainText, cipherText);				printf("%d\n", keyLength);
 
   /* test cipher output */
 	printf("cipherText:\n");
-	for (i = 0; i < 10; i++){
+	for (i = 0; i < lengthplainText; i++){
 		printf("%c", cipherText[i]);
 	}
 
