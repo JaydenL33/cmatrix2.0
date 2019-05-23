@@ -1,13 +1,17 @@
 /*
-    Authors:    
-   - Sebastian Southern 
-   - Ben Gillespie
-   - Lachlan Leslie
-   - Albert Ferguson
-   - Jayden Lee
-   - Hong Kung (steve)
-*/
+ *   Authors:    
+ *  - Sebastian Southern 
+ *  - Ben Gillespie
+ *  - Lachlan Leslie
+ *  - Albert Ferguson
+ *  - Jayden Lee
+ */
 
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <math.h>
+# include "crypto/encrypt.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,29 +30,46 @@
 void print_menu();
 void print_raindrops(int LINES, int COLUMNS);
 void rand_str(char *dest, size_t length);
+
+/* Compression functionality */
 void compress();
-int encrypt();
-int decrypt();
-int save();
-int load();
+void decompress();
+
+/* file handling */
+int save(char* input);
+int load(char* output);
+
+/* memes be like... */
 void pepe();
 void squash_pepe();
+void matrix_quotes();
 
 int main(int argc, char *argv[])  {
-    /* printf("LINES: %s\n", getenv("LINES"));
-    printf("COLUMNS: %s\n", getenv("COLUMNS")); */
-    /* Lines and Columns need to be passed in at compile time with -D flag */
+
     printf("argc is %d", argc);
     if (argc == 3) {
-    int LINES = atoi(argv[1]);
-    int COLUMNS = atoi(argv[2]);
+        int LINES = atoi(argv[1]);
+        int COLUMNS = atoi(argv[2]);
 
-    print_raindrops(LINES, COLUMNS);
+        print_raindrops(LINES, COLUMNS);
     }
     
 
     return 1;
 }
+
+/*
+    print plainTextLen;
+    char testKey[INPUT_STRING_BUFFER];
+    unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h 
+
+    plainTextLen = encrypt(encryptedData);
+	char* decryptedData = malloc(sizeof(char) * plainTextLen);
+	decrypt(encryptedData, decryptedData, plainTextLen, testKey);
+	printf("\n%s\n", decryptedData);
+	
+    return 0;
+*/
 
 
 void delay() {
