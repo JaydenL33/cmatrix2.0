@@ -34,10 +34,11 @@ int encrypt(unsigned char* encryptedData);
 /*******************************************************************************
  * Implement library to decrypt data
  * Inputs: 
- *	- cipherText
+ *	- encryptedData
  *	- byte key stream
+ *	- length of the Encrypted Data
  * Outputs:
- *	- plainText
+ *	- decryptedData
 *******************************************************************************/
 int decrypt(unsigned char* encryptedData, char* decryptedData, 
 	int lenEncrytpedData, char* userInputKey);
