@@ -30,6 +30,7 @@
 void print_menu();
 void print_raindrops(int LINES, int COLUMNS);
 void rand_str(char *dest, size_t length);
+void rand_input_str(char *dest, size_t length, char *input);
 
 /* Compression functionality */
 void compress();
@@ -43,6 +44,7 @@ int load(char* output);
 void pepe();
 void squash_pepe();
 void matrix_quotes();
+void delay();
 
 int main(int argc, char *argv[])  {
 
@@ -53,7 +55,6 @@ int main(int argc, char *argv[])  {
 
         print_raindrops(LINES, COLUMNS);
     }
-    
 
     return 1;
 }
@@ -141,10 +142,30 @@ void print_raindrops(int LINES, int COLUMNS) {
 *
 ***********************************************/
 void rand_str(char *str, size_t length) {
+    char spaces[] =  "                          "
+                     "                          "
+                     "                          "
+                     "                          "
+                     "                          "
+                     "                          "
+                     "                          "
+                     "                          ";
+    
     char charset[] = "0123456789"
                      "abcdefghijklmnopqrstuvwxyz"
-                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                     "                          "
+                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    strcat(charset, spaces);
+   
+    while (length-- > 0) {
+        size_t index = (double) rand() / RAND_MAX * (sizeof charset - 1);
+        *str++ = charset[index];
+    }
+    *str = '\0';
+}
+
+void rand_input_str(char *str, size_t length, char *input) {
+    char spaces[] =  "                          "
                      "                          "
                      "                          "
                      "                          "
@@ -153,11 +174,11 @@ void rand_str(char *str, size_t length) {
                      "                          "
                      "                          ";
 
+    strcat(input, spaces);
    
-
     while (length-- > 0) {
-        size_t index = (double) rand() / RAND_MAX * (sizeof charset - 1);
-        *str++ = charset[index];
+        size_t index = (double) rand() / RAND_MAX * (sizeof input - 1);
+        *str++ = input[index];
     }
     *str = '\0';
 }
