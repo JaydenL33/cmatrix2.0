@@ -55,5 +55,5 @@ int readcipher(unsigned char* cipherText, int plaintextlen) {
    		for (i = 0; i < plaintextlen; i++)
 	   		fscanf(fp, "%c", &cipherText[i]);
 	   	fclose(fp);
-	    return 0;
+	    return 1;
 }
