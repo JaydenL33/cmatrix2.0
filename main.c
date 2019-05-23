@@ -11,7 +11,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <math.h>
-# include "crypto\encrypt.h"
+# include "crypto/encrypt.h"
 
 /* app functionality */
 void print_menu();
