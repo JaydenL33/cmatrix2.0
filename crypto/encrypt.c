@@ -23,7 +23,7 @@
  *	- none
  * Outputs:
  *	- mem address cipherText
- * 	- int length of plaintext/ciphertext
+ * 	- int length of plainText/cipherText
 *******************************************************************************/
 int encrypt(unsigned char* encryptedData) {
 
@@ -42,11 +42,15 @@ int encrypt(unsigned char* encryptedData) {
 	genPseudoRandKey(byteStateVector, plainText, encryptedData, 0, 
 					 plainTextLength, keyLength);
 
+	writecipher(encryptedData, plainTextLength);
+
 	return plainTextLength;
 }
 
 int decrypt(unsigned char* encryptedData, char* decryptedData,
 	int lenEncrytpedData, char* userInputKey) {
+
+	readcipher(encryptedData, lenEncrytpedData);
 
 	printf("\nDECRYPTING....\n");
 	/* intermediate used by RC4 encryption */

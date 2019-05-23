@@ -66,8 +66,8 @@ void clearStdin();
 void StateVectorConstructor(int* initArray, int len);
 void swap(unsigned char* array, int i, int j);
 
-int writecipher(char* cipherText);
-int readcipher(char* cipherText);
+int writecipher(unsigned char* cipherText, int plaintextlen);
+int readcipher(unsigned char* cipherText, int plaintextlen);
 
 /*******************************************************************************
  * Debug units required by library/
