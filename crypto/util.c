@@ -58,16 +58,25 @@ int readcipher(unsigned char* cipherText, int plaintextlen) {
 	    return 0;
 }
 
-
-int checkValidRange (unsigned char firstvalue) {
-	int firstval;
-	firstval = (int) firstvalue; 
-	if (firstval >= 33 && firstval <= 126)
+/*******************************************************************************
+ * Utility function that takes an input array, the length of that array and 
+   a output array. Any unsigned char that doesn't represent ascii code that is 
+   displayable by the terminal or a space or DEL is thrown out. Everything else 
+   is appended to the output array. 
+*******************************************************************************/
+int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, unsigned char* checkedArray) {
+	int decASCII;
+	int i;
+	int j = 0;
+	
+	for (i = 0; i < plaintextlen; i++)
 	{
-		return 0;
+		decASCII = (int) unCheckedArray[i]; 
+		if (decASCII >= 33 && decASCII <= 126)
+		{
+			checkedArray[j] = unCheckedArray[i];
+			j++;
+		}
 	}
-	else 
-	{
-		return 1;
-	}
+	return 0;
 }
