@@ -57,7 +57,7 @@ int main(int argc, char *argv[])  {
 	char* decryptedData = malloc(sizeof(char) * plainTextLen);
 	decrypt(encryptedData, decryptedData, plainTextLen, testKey);
 
-    char words[130]; // Will hold the encrypted string
+    char words[130]; /* Will hold the encrypted string */
     int num = readcipher(words, 130); /* Reads in encrypted string */
     char validString[plainTextLen];
     checkValidRange(words, plainTextLen, validString);
@@ -99,7 +99,8 @@ void print_raindrops(char* encryptedString, int LINES, int COLUMNS) {
         char temp_str[COLUMNS];
 
         rand_str(temp_str, COLUMNS); /* Generates a random string of characters */
-        // rand_encrypted_str(temp_str, encryptedString, COLUMNS); /* Based on encrypted string */
+        /* Based on encrypted string */
+        /* rand_encrypted_str(temp_str, encryptedString, COLUMNS); */
 
         int i;
         for (i = LINES - 2; i >= 0; i--) {
@@ -121,15 +122,15 @@ void print_raindrops(char* encryptedString, int LINES, int COLUMNS) {
                 }
             } else {
                 /* Check for valid character, not needed on mac, not sure about linux. */
-                // if (matrix[i-1][0] >= 'a' && matrix[i-1][0] <= 'z' || 
-                //     matrix[i-1][0] >= 'A' && matrix[i-1][0] <= 'Z' ||
-                //     matrix[i-1][0] >= '0' && matrix[i-1][0] <= '9' || 
-                //     matrix[i-1][0] == ' ') {
+                /* if (matrix[i-1][0] >= 'a' && matrix[i-1][0] <= 'z'
+                    matrix[i-1][0] >= 'A' && matrix[i-1][0] <= 'Z'
+                    matrix[i-1][0] >= '0' && matrix[i-1][0] <= '9' 
+                    matrix[i-1][0] == ' ') { */
                     int j;
                     for (j = 0; j < COLUMNS; j++) {
                         matrix[i][j] = matrix[i-1][j];
                     }  
-                // }
+                /* } */
             }
         }
 
