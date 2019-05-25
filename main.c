@@ -114,7 +114,7 @@ void print_raindrops(int LINES, int COLUMNS) {
     while (1) {
         /* Generate a random string of length COLUMNS */
         char temp[COLUMNS];
-        // rand_str(temp, COLUMNS);
+        rand_str(temp, COLUMNS);
         // rand_encrypted_str(temp, COLUMNS+1);
 
         int i;
