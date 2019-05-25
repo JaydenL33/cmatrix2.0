@@ -17,8 +17,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#define CLEAR printf("\033[H\033[J")
-#define HIDE_CURSOR printf("\e[?25l")
+#define CLEAR printf("\033[H\033[J") /* Clears the entire terminal */
+#define HIDE_CURSOR printf("\e[?25l") /* Hide the cursor in the terminal */
+
+/* Various colours that can be used during printing */
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
 #define KGRN  "\x1B[32m"
@@ -119,19 +121,20 @@ void print_raindrops(int LINES, int COLUMNS) {
     }
 
     /* This should print infinitely unless input specified */
-    while (1) {     
+    while (1) {
+        /* Generate a random string of length COLUMNS */
         char temp[COLUMNS];
         rand_str(temp, COLUMNS+1);
+
         int i;
-        for (i = LINES-2; i >= 0; i--) {
+        for (i = LINES - 2; i >= 0; i--) {
             if (i == 0) {
                 int j;
                 for (j = 0; j < COLUMNS; j++) {
-                    // matrix[0][j] = temp[j];
                     if (non_spaces[j] == 0) {
                         int rand_num = (int) (rand() % LINES + 1) * 4;
                         spaces[j] = rand_num;
-                        non_spaces[j] = rand_num/4;
+                        non_spaces[j] = rand_num / 4;
                     }
                     if (spaces[j] > 0) {
                         matrix[0][j] = ' ';
@@ -159,7 +162,7 @@ void print_raindrops(int LINES, int COLUMNS) {
         char finalString[(LINES) * (COLUMNS)];
         int tempCount = 0;
         /* LINES - 1 is needed otherwise it prints on the same line.... */
-        for (i = 0; i < LINES-1; i++) {
+        for (i = 0; i < LINES - 1; i++) {
             int j;
             for (j = 0; j < COLUMNS; j++) {
                 finalString[tempCount] = matrix[i][j];
@@ -169,6 +172,7 @@ void print_raindrops(int LINES, int COLUMNS) {
             tempCount++;
         }
         CLEAR;
+        /* Prints the entire matrix in a specified colour */
         printf("%s%s", KCYN, finalString);
         delay();  
         count++;
