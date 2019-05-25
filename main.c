@@ -17,7 +17,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#define clear printf("\033[H\033[J")
+#define CLEAR printf("\033[H\033[J")
+#define HIDE_CURSOR printf("\e[?25l")
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
 #define KGRN  "\x1B[32m"
@@ -107,7 +108,7 @@ void delay() {
 void print_raindrops(int LINES, int COLUMNS) {
     char* matrix[LINES-1][COLUMNS];
     int count = 0;
-    printf("\e[?25l"); /* Hides the cursor */
+    HIDE_CURSOR;
 
     int spaces[COLUMNS]; /* Used when printing spaces */
     int non_spaces[COLUMNS]; /* Used when printing chars */
@@ -121,7 +122,6 @@ void print_raindrops(int LINES, int COLUMNS) {
     while (1) {     
         char temp[COLUMNS];
         rand_str(temp, COLUMNS+1);
-        /* Create string, can defs be done better */
         int i;
         for (i = LINES-2; i >= 0; i--) {
             if (i == 0) {
@@ -168,7 +168,7 @@ void print_raindrops(int LINES, int COLUMNS) {
             finalString[tempCount] = '\n';
             tempCount++;
         }
-        clear;
+        CLEAR;
         printf("%s%s", KCYN, finalString);
         delay();  
         count++;
@@ -185,19 +185,11 @@ void print_raindrops(int LINES, int COLUMNS) {
 *
 ***********************************************/
 void rand_str(char *str, size_t length) {
+    /* Need to have some spaces in the string, otherwise it messes up... */
     char charset[] = "0123456789"
                      "abcdefghijklmnopqrstuvwxyz"
                      "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                    //  "                          "
-                    //  "                          "
-                    //  "                          "
-                    //  "                          "
-                    //  "                          "
-                    //  "                          "
-                    //  "                          "
-                     "           ";
-
-   
+                     "          ";
 
     while (length-- > 0) {
         size_t index = (double) rand() / RAND_MAX * (sizeof charset - 1);
