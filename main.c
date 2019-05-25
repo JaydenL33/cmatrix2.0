@@ -33,6 +33,7 @@
 void print_menu();
 void print_raindrops(int LINES, int COLUMNS);
 void rand_str(char *dest, size_t length);
+void rand_encrypted_str(char *input, char *str, size_t length);
 
 /* Compression functionality */
 void compress();
@@ -48,7 +49,6 @@ void squash_pepe();
 void matrix_quotes();
 
 int main(int argc, char *argv[])  {
-
     // int plainTextLen;
     // char testKey[INPUT_STRING_BUFFER];
     // unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
@@ -57,20 +57,7 @@ int main(int argc, char *argv[])  {
 	// char* decryptedData = malloc(sizeof(char) * plainTextLen);
 	// decrypt(encryptedData, decryptedData, plainTextLen, testKey);
 
-// int readcipher(unsigned char* cipherText, int plaintextlen) {
-    // printf("\n%s\n", decryptedData);   
-    // printf("gonna print\n");
-    // char words[130];
-    // int num = readcipher(words, 130);
-    // if (num == 0) {
-    //     printf("failed");
-    // } else {
-    //     int i;
-    //     for (i = 0; i < plainTextLen; i++) {
-    //         printf("%c", words[i]);
-    //     }
-    //     printf("\nFinished!");
-    // }
+    
 
 	 
 
@@ -78,6 +65,9 @@ int main(int argc, char *argv[])  {
     if (argc == 3) {
         int LINES = atoi(argv[1]);
         int COLUMNS = atoi(argv[2]);
+        // char words[130]; // Will hold the encrypted string
+        // char validString[COLUMNS];
+        // checkValidRange(words, plainTextLen, validString);
 
         print_raindrops(LINES, COLUMNS);
     }
@@ -124,7 +114,8 @@ void print_raindrops(int LINES, int COLUMNS) {
     while (1) {
         /* Generate a random string of length COLUMNS */
         char temp[COLUMNS];
-        rand_str(temp, COLUMNS+1);
+        // rand_str(temp, COLUMNS);
+        // rand_encrypted_str(temp, COLUMNS+1);
 
         int i;
         for (i = LINES - 2; i >= 0; i--) {
@@ -161,8 +152,7 @@ void print_raindrops(int LINES, int COLUMNS) {
 
         char finalString[(LINES) * (COLUMNS)];
         int tempCount = 0;
-        /* LINES - 1 is needed otherwise it prints on the same line.... */
-        for (i = 0; i < LINES - 1; i++) {
+        for (i = 0; i < LINES; i++) {
             int j;
             for (j = 0; j < COLUMNS; j++) {
                 finalString[tempCount] = matrix[i][j];
@@ -179,7 +169,6 @@ void print_raindrops(int LINES, int COLUMNS) {
     }
 }
 
-/* int main(int argc, char *argv[], char *envp[]) {} */
 /********************************************** 
 *  *str = variable to put random string into
 *  length = size of length in bytes
@@ -189,15 +178,30 @@ void print_raindrops(int LINES, int COLUMNS) {
 *
 ***********************************************/
 void rand_str(char *str, size_t length) {
-    /* Need to have some spaces in the string, otherwise it messes up... */
+    /* Need to have some spaces in the string, otherwise it messes up... 
+       EDIT: Fixed, but leaving a comment just in case
+    */
     char charset[] = "0123456789"
                      "abcdefghijklmnopqrstuvwxyz"
-                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                     "          ";
+                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    //  "          ";
 
     while (length-- > 0) {
         size_t index = (double) rand() / RAND_MAX * (sizeof charset - 1);
         *str++ = charset[index];
+    }
+    *str = '\0';
+}
+
+void rand_encrypted_str(char *input, char *str, size_t length) {
+// char charset[] = "0123456789"
+//                      "abcdefghijklmnopqrstuvwxyz"
+//                      "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+//                      "          ";
+
+    while (length-- > 0) {
+        size_t index = (double) rand() / RAND_MAX * (sizeof input - 1);
+        *str++ = input[index];
     }
     *str = '\0';
 }

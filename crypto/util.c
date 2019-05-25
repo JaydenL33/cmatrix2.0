@@ -78,5 +78,7 @@ int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, unsigned c
 			j++;
 		}
 	}
+	checkedArray[j] = '\0';
+	/* Why return 0? */
 	return 0;
 }
