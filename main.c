@@ -46,6 +46,31 @@ void matrix_quotes();
 
 int main(int argc, char *argv[])  {
 
+    // int plainTextLen;
+    // char testKey[INPUT_STRING_BUFFER];
+    // unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
+
+    // plainTextLen = encrypt(encryptedData);
+	// char* decryptedData = malloc(sizeof(char) * plainTextLen);
+	// decrypt(encryptedData, decryptedData, plainTextLen, testKey);
+
+// int readcipher(unsigned char* cipherText, int plaintextlen) {
+    // printf("\n%s\n", decryptedData);   
+    // printf("gonna print\n");
+    // char words[130];
+    // int num = readcipher(words, 130);
+    // if (num == 0) {
+    //     printf("failed");
+    // } else {
+    //     int i;
+    //     for (i = 0; i < plainTextLen; i++) {
+    //         printf("%c", words[i]);
+    //     }
+    //     printf("\nFinished!");
+    // }
+
+	 
+
     printf("argc is %d", argc);
     if (argc == 3) {
         int LINES = atoi(argv[1]);
@@ -53,7 +78,6 @@ int main(int argc, char *argv[])  {
 
         print_raindrops(LINES, COLUMNS);
     }
-    
 
     return 1;
 }

@@ -8,3 +8,6 @@
 - Pepe default file and theme to print : extension is to print matrix background
 - Compression of data / saved themes, etc…
 - Debug menu? Unit tests?? -d option/argument (encrypt and decrypt simple message)
+
+# Running the Application
+From the terminal run `make clean && make all`
