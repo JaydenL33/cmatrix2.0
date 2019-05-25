@@ -109,6 +109,14 @@ void print_raindrops(int LINES, int COLUMNS) {
     int count = 0;
     printf("\e[?25l"); /* Hides the cursor */
 
+    int spaces[COLUMNS]; /* Used when printing spaces */
+    int non_spaces[COLUMNS]; /* Used when printing chars */
+    int i;
+    for (i = 0; i < COLUMNS; i++) {
+        spaces[i] = 0;
+        non_spaces[i] = 0;
+    }
+
     /* This should print infinitely unless input specified */
     while (count < 1000) {     
         char temp[COLUMNS];
@@ -119,7 +127,20 @@ void print_raindrops(int LINES, int COLUMNS) {
             if (i == 0) {
                 int j;
                 for (j = 0; j < COLUMNS; j++) {
-                    matrix[0][j] = temp[j];
+                    // matrix[0][j] = temp[j];
+                    if (spaces[j] == 0) {
+                        int rand_num = (int) (rand() % LINES + 1)/3;
+                        spaces[j] = rand_num;
+                        non_spaces[j] = rand_num;
+                    }
+
+                    if (non_spaces[j] > 0) {
+                        matrix[0][j] = temp[j];
+                        non_spaces[j] = non_spaces[j] - 1;
+                    } else if (spaces[j] > 0) {
+                        matrix[0][j] = ' ';
+                        spaces[j] = spaces[j] - 1;
+                    }
                 }
             } else {
                 /* Check for valid character, not needed on mac, not sure about linux. */
@@ -168,14 +189,14 @@ void rand_str(char *str, size_t length) {
     char charset[] = "0123456789"
                      "abcdefghijklmnopqrstuvwxyz"
                      "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                     "                          "
-                     "                          "
-                     "                          "
-                     "                          "
-                     "                          "
-                     "                          "
-                     "                          "
-                     "                          ";
+                    //  "                          "
+                    //  "                          "
+                    //  "                          "
+                    //  "                          "
+                    //  "                          "
+                    //  "                          "
+                    //  "                          "
+                     "           ";
 
    
 
