@@ -118,7 +118,7 @@ void print_raindrops(int LINES, int COLUMNS) {
     }
 
     /* This should print infinitely unless input specified */
-    while (count < 1000) {     
+    while (1) {     
         char temp[COLUMNS];
         rand_str(temp, COLUMNS+1);
         /* Create string, can defs be done better */
@@ -128,18 +128,17 @@ void print_raindrops(int LINES, int COLUMNS) {
                 int j;
                 for (j = 0; j < COLUMNS; j++) {
                     // matrix[0][j] = temp[j];
-                    if (spaces[j] == 0) {
-                        int rand_num = (int) (rand() % LINES + 1)/3;
+                    if (non_spaces[j] == 0) {
+                        int rand_num = (int) (rand() % LINES + 1) * 4;
                         spaces[j] = rand_num;
-                        non_spaces[j] = rand_num;
+                        non_spaces[j] = rand_num/4;
                     }
-
-                    if (non_spaces[j] > 0) {
-                        matrix[0][j] = temp[j];
-                        non_spaces[j] = non_spaces[j] - 1;
-                    } else if (spaces[j] > 0) {
+                    if (spaces[j] > 0) {
                         matrix[0][j] = ' ';
                         spaces[j] = spaces[j] - 1;
+                    }   else if (non_spaces[j] > 0) {
+                        matrix[0][j] = temp[j];
+                        non_spaces[j] = non_spaces[j] - 1;
                     }
                 }
             } else {
