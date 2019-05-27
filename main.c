@@ -31,7 +31,8 @@
 #define KWHT  "\x1B[37m"
 
 void print_menu();
-void print_raindrops(char* encryptedString, int LINES, int COLUMNS);
+void print_raindrops(char* encryptedString, int LINES, int COLUMNS, char* color, unsigned int isRandom);
+void getOptions(int argc, char* argv[], char* color, int* is_random);
 void rand_str(char *dest, size_t length);
 void rand_encrypted_str(char *input, char *str, size_t length);
 
@@ -67,15 +68,59 @@ int main(int argc, char *argv[])  {
         /* if LINES and COLUMNS are passed in from the CLI we can access them this way */
         // int LINES = atoi(argv[1]);
         // int COLUMNS = atoi(argv[2]);
-        
-        /* If lines and columns is set in env variables we can use them this way */
-        int LINES = atoi(getenv("LINES"));
-        int COLUMNS = atoi(getenv("COLUMNS"));
-        printf("COLUMNS is %d\n", COLUMNS);
-        print_raindrops(validString, LINES, COLUMNS);
-    }
 
+        // print_raindrops(validString, LINES, COLUMNS);
+    }
+    
+    char* color = KGRN;
+    int is_random = 0;
+    getOptions(argc, argv, color, &is_random);
+      
+
+    /* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT */
+    int LINES = atoi(getenv("LINES"));
+    int COLUMNS = atoi(getenv("COLUMNS"));
+    print_raindrops(validString, LINES, COLUMNS, color, is_random);
     return 1;
+}
+
+void getOptions(int argc, char* argv[], char* color, int* is_random) {
+    // put ':' in the starting of the 
+    // string so that program can  
+    // distinguish between '?' and ':'  
+    int opt; 
+    while((opt = getopt(argc, argv, "rmcybwztf:")) != -1) {  
+        switch(opt) {  
+            case 'r':    
+                // strcpy(color, &KRED);
+                color = KRED;
+                break;
+            case 'm':    
+                color = KMAG;
+                break;
+            case 'c':
+                color = KCYN;
+                break;
+            case 'y': 
+                color = KYEL;
+                break;
+            case 'b':
+                color = KBLU;
+                break;
+            case 'w':
+                color = KWHT;
+                break;
+            case 'z': /* Random */
+                *is_random = 1;
+                break;
+            case ':':  
+                printf("option needs a value\n");  
+                break;  
+            case '?':  
+                printf("???");
+                break;
+        }  
+    }
 }
 
 /**************************************************************************
@@ -98,7 +143,7 @@ void delay() {
 *  'falling raindrop' effect. The length of the raindrops are randomly 
 *  generated.
 ****************************************************************************/
-void print_raindrops(char* encryptedString, int LINES, int COLUMNS) {
+void print_raindrops(char* encryptedString, int LINES, int COLUMNS, char* color, unsigned int isRandom) {
     char matrix[LINES][COLUMNS];
     int count = 0;
     HIDE_CURSOR;
@@ -110,17 +155,20 @@ void print_raindrops(char* encryptedString, int LINES, int COLUMNS) {
         spaces[i] = 0;
         non_spaces[i] = 0;
     }
+    printf("Is random is %c\n", isRandom);
 
     /* This should print infinitely unless input specified */
     while (1) {
         /* Generate a random string of length COLUMNS */
         char temp_str[COLUMNS];
         
-        /* Generates a random string of characters */
-        rand_str(temp_str, COLUMNS); 
-        
-        /* Based on encrypted string */
-        /* rand_encrypted_str(temp_str, encryptedString, COLUMNS); */
+        if (isRandom) {
+            /* Generates a random string of characters */
+            rand_str(temp_str, COLUMNS);
+        } else {
+            /* Based on encrypted string */
+            rand_encrypted_str(temp_str, encryptedString, COLUMNS);
+        }
 
         int i;
         /* Loop from bottom of matrix and shift elements down */
@@ -169,7 +217,7 @@ void print_raindrops(char* encryptedString, int LINES, int COLUMNS) {
         /* Clear the terminal */
         CLEAR;
         /* Prints the entire matrix in a specified colour */
-        printf("%s%s", KMAG, finalString);
+        printf("%s%s", color, finalString);
         delay();  
         count++;
     }
