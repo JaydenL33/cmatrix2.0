@@ -64,8 +64,14 @@ int main(int argc, char *argv[])  {
 
     printf("argc is %d", argc);
     if (argc == 3) {
-        int LINES = atoi(argv[1]);
-        int COLUMNS = atoi(argv[2]);
+        /* if LINES and COLUMNS are passed in from the CLI we can access them this way */
+        // int LINES = atoi(argv[1]);
+        // int COLUMNS = atoi(argv[2]);
+        
+        /* If lines and columns is set in env variables we can use them this way */
+        int LINES = atoi(getenv("LINES"));
+        int COLUMNS = atoi(getenv("COLUMNS"));
+        printf("COLUMNS is %d\n", COLUMNS);
         print_raindrops(validString, LINES, COLUMNS);
     }
 
@@ -93,7 +99,7 @@ void delay() {
 *  generated.
 ****************************************************************************/
 void print_raindrops(char* encryptedString, int LINES, int COLUMNS) {
-    char* matrix[LINES-1][COLUMNS];
+    char matrix[LINES][COLUMNS];
     int count = 0;
     HIDE_CURSOR;
 
@@ -109,8 +115,10 @@ void print_raindrops(char* encryptedString, int LINES, int COLUMNS) {
     while (1) {
         /* Generate a random string of length COLUMNS */
         char temp_str[COLUMNS];
-
-        rand_str(temp_str, COLUMNS); /* Generates a random string of characters */
+        
+        /* Generates a random string of characters */
+        rand_str(temp_str, COLUMNS); 
+        
         /* Based on encrypted string */
         /* rand_encrypted_str(temp_str, encryptedString, COLUMNS); */
 
@@ -126,10 +134,11 @@ void print_raindrops(char* encryptedString, int LINES, int COLUMNS) {
                         int rand_num = (int) (rand() % LINES + 1) * 4;
                         spaces[j] = rand_num;
                         non_spaces[j] = rand_num / 4;
+                        // non_spaces[j] = (int) (rand() % rand_num + 1) / 2;
                     }
                     /* If spaces[j] isn't empty, print a space and -1 */
                     if (spaces[j] > 0) {
-                        matrix[0][j] = ' ';
+                        matrix[0][j] =  ' ';
                         spaces[j] = spaces[j] - 1;
                     }   else if (non_spaces[j] > 0) {
                         matrix[0][j] = temp_str[j];
