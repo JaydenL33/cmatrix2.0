@@ -72,6 +72,10 @@ int main(int argc, char *argv[])  {
     return 1;
 }
 
+/**************************************************************************
+*  Delay utility function that mimics a 'sleep' or 'setTimeout'. This is
+*  used to control the speed that the characters fall down the screen.
+****************************************************************************/
 void delay() {
     int c, d;
     /* Can change the time of delay with this, Cheap method but works... */
@@ -80,6 +84,14 @@ void delay() {
     }
 }
 
+/**************************************************************************
+*  Generates a 2D matrix that fills up the terminal via LINES and COLUMNS.
+*  This then fills the 0th index with a random string or random string that
+*  is generated from an encrypted string. It will then loop infinitely
+*  continuously shifting elements down and clearing the screen to produce a
+*  'falling raindrop' effect. The length of the raindrops are randomly 
+*  generated.
+****************************************************************************/
 void print_raindrops(char* encryptedString, int LINES, int COLUMNS) {
     char* matrix[LINES-1][COLUMNS];
     int count = 0;
@@ -103,15 +115,19 @@ void print_raindrops(char* encryptedString, int LINES, int COLUMNS) {
         /* rand_encrypted_str(temp_str, encryptedString, COLUMNS); */
 
         int i;
+        /* Loop from bottom of matrix and shift elements down */
         for (i = LINES - 2; i >= 0; i--) {
             if (i == 0) {
                 int j;
+                /* Loop through width of terminal */
                 for (j = 0; j < COLUMNS; j++) {
+                    /* Used to control the length of the 'raindrop' */
                     if (non_spaces[j] == 0) {
                         int rand_num = (int) (rand() % LINES + 1) * 4;
                         spaces[j] = rand_num;
                         non_spaces[j] = rand_num / 4;
                     }
+                    /* If spaces[j] isn't empty, print a space and -1 */
                     if (spaces[j] > 0) {
                         matrix[0][j] = ' ';
                         spaces[j] = spaces[j] - 1;
@@ -121,19 +137,14 @@ void print_raindrops(char* encryptedString, int LINES, int COLUMNS) {
                     }
                 }
             } else {
-                /* Check for valid character, not needed on mac, not sure about linux. */
-                /* if (matrix[i-1][0] >= 'a' && matrix[i-1][0] <= 'z'
-                    matrix[i-1][0] >= 'A' && matrix[i-1][0] <= 'Z'
-                    matrix[i-1][0] >= '0' && matrix[i-1][0] <= '9' 
-                    matrix[i-1][0] == ' ') { */
-                    int j;
-                    for (j = 0; j < COLUMNS; j++) {
-                        matrix[i][j] = matrix[i-1][j];
-                    }  
-                /* } */
+                int j;
+                for (j = 0; j < COLUMNS; j++) {
+                    matrix[i][j] = matrix[i-1][j];
+                }  
             }
         }
 
+        /* Creates a string of the entire matrix that can be printed to the terminal */
         char finalString[(LINES) * (COLUMNS)];
         int tempCount = 0;
         for (i = 0; i < LINES; i++) {
@@ -145,9 +156,11 @@ void print_raindrops(char* encryptedString, int LINES, int COLUMNS) {
             finalString[tempCount] = '\n';
             tempCount++;
         }
+        
+        /* Clear the terminal */
         CLEAR;
         /* Prints the entire matrix in a specified colour */
-        printf("%s%s", KCYN, finalString);
+        printf("%s%s", KMAG, finalString);
         delay();  
         count++;
     }
