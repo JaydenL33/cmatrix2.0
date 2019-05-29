@@ -61,7 +61,7 @@ void print_raindrops(char* encryptedString, int LINES, int COLUMNS, char* color,
 						int rand_num = (int) (rand() % LINES + 1) * 4;
 						spaces[j] = rand_num;
 						non_spaces[j] = rand_num / 4;
-						// non_spaces[j] = (int) (rand() % rand_num + 1) / 2;
+						/* non_spaces[j] = (int) (rand() % rand_num + 1) / 2; */
 					}
 					/* If spaces[j] isn't empty, print a space and -1 */
 					if (spaces[j] > 0) {

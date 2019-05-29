@@ -7,8 +7,8 @@
  * Sebastian Southern
  */
 
-# ifndef _MYLIB_H_
-# define _MYLIB_H_
+# ifndef _RAINDROPS_H_
+# define _RAINDROPS_H_
 
 /* Various colours that can be used during printing */
 # define KNRM  "\x1B[0m"
