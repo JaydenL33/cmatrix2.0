@@ -58,20 +58,20 @@ $(LINK_TARGET) : libraries
 #	Compile libraries (static),
 # 	compile each of the three libraries required
 ################################################################################
-libraries : $(UTIL_SRC:.c=.o) $(CRYPTO_SRC:.c=o) $(RAINDROPS_SRC:.c=.o)
+libraries : $(UTIL_SRC:.c=.o) $(CRYPTO_SRC:.c=.o) $(RAINDROPS_SRC:.c=.o)
 	$(LIBFLAGS) $(STATIC_UTIL) $(UTIL_SRC:.c=.o)
 	$(LIBFLAGS) $(STATIC_CRYPTO) $(CRYPTO_SRC:.c=o)
 	$(LIBFLAGS) $(STATIC_RAINDROPS) $(RAINDROPS_SRC:.c=.o)
 	@echo ============== Libraries compilled! =============
 
-$(UTIL_SRC:.c=.o) : $(UTIL_SRC)
-	$(CCFLAGS) -c $^
+$(UTIL_SRC:.c=.o) : $(STATIC_UTIL)
+	$(CCFLAGS) -c $(wildcard $^/*.c)
 
-$(CRYPTO_SRC:.c=.o) : $(CRYPTO_SRC)
-	$(CCFLAGS) -c $^
+$(CRYPTO_SRC:.c=.o) : $(STATIC_CRYPTO)
+	$(CCFLAGS) -c $(wildcard $^/*.c)
 
-$(RAINDROPS_SRC:.c=.o) : $(RAINDROPS_SRC)
-	$(CCFLAGS) -c $^
+$(RAINDROPS_SRC:.c=.o) : $(STATIC_RAINDROPS)
+	$(CCFLAGS) -c $(wildcard $^/*.c)
 
 ################################################################################
 #	Clean directory
@@ -82,7 +82,7 @@ clean :
 	@echo ============== Clean all complete! ==============
 
 .PHONY : test
-test :
-	$(CCFLAGS) -c $(wildcard $(STATIC_CRYPTO)/*.c)
+test : $(STATIC_CRYPTO)
+	$(CCFLAGS) -c $(wildcard $^/*.c)
 	@echo $()
 

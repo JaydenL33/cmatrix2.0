@@ -10,9 +10,10 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
-# include <math.h>
-# include "crypto/encrypt.h"
 
+# include "libs/Crypto/encrypt.h"
+# include "libs/Util/util.h"
+# include "libs/PrintRaindrops/printraindrops.h"
 
 void print_menu();
 

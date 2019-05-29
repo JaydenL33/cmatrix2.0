@@ -8,8 +8,8 @@
  * Albert Ferguson, Jayden Lee
  */
 
-# ifndef _MYLIB_H_
-# define _MYLIB_H_
+# ifndef _ENCRYPT_H_
+# define _ENCRYPT_H_
 
 # define BYTE_STATE_LEN 256
 # define INPUT_STRING_BUFFER 1025
