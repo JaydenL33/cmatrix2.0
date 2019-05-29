@@ -19,6 +19,7 @@ int getArguments(int argc,char* argv[])
     {
         printf("Test \n");
         /* Execute Some Function */
+    }
 
     if(argc>=2) 
     { 
