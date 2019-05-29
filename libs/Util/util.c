@@ -1,14 +1,16 @@
-/* utility functions used by the libCrypto
+/* utility functions used by all libs
  * Fund-O-C Assesment 3
  * See the github: github.com/rlcaust/Fund-O-C
  * 
  * Authors:
- * Albert Ferguson Jayden Lee
+ * Albert Ferguson Jayden Lee, Sebastian Southern
  */
 
-# include "encrypt.h" /* custom library header file for cryptography functionality */
 # include <stdlib.h>  /* fopen, fprintf and fclose  */ 
-# include <stdio.h>   /* getchar,  EOF 		    	*/
+# include <stdio.h>   /* getchar, EOF 		    	*/
+# include <string.h>  /* strlen 					*/
+
+# include "util.h" 	  /* custom library header file for cryptography functionality */
 
 /*******************************************************************************
  * Utility function that clears stdin until newline or EOF
@@ -79,6 +81,17 @@ int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, unsigned c
 		}
 	}
 	checkedArray[j] = '\0';
-	/* Why return 0? */
-	return 0;
+	return 1;
+}
+
+/**************************************************************************
+ * Delay utility function that mimics a 'sleep' or 'setTimeout'. This is
+ * used to control the speed that the characters fall down the screen.
+****************************************************************************/
+void delay() {
+	int c, d;
+	/* Can change the time of delay with this, Cheap method but works... */
+	for (c = 1; c <= 32767 / 8; c++) {
+		for (d = 1; d <= 32767 / 8; d++) {}
+	}
 }

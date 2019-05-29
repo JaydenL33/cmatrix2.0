@@ -16,6 +16,6 @@ The application is runnable per environment. Simply use the included makefile to
 * `make clean`, cleans all .o, .a and program generated files created during the compile process.
 * `make all`, compiles all libraries and links them to the implementer (main.c).
 * `make libraries`, compiles all libraries but doesn't link them, this is useful for debugging purposes. Otherwise, in typical use, simply call make all.
-### *chaing commands:*
+### *Chaing commands:*
 * The usual double-ampersand (&&) used in bash allows chaining makefile commands;
 	`make clean && make all`

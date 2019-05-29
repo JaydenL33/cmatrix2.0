@@ -1,6 +1,3 @@
-# ifndef _MYLIB_H_
-# define _MYLIB_H_
-
 /* Encryption header file for libCrypto
  * also includes utility functions used by the library.
  * Fund-O-C Assesment 3
@@ -10,9 +7,12 @@
  * Authors:
  * Albert Ferguson, Jayden Lee
  */
+
+# ifndef _MYLIB_H_
+# define _MYLIB_H_
+
 # define BYTE_STATE_LEN 256
 # define INPUT_STRING_BUFFER 1025
-# define FILENAME "encrypt.locked" /* temp file output for writing encrypt data tp */
 
 # define PLAINTEXT_EXPLANATION "Enter the data to be encrypted!\nNote: currently only\
  1024 characters are supported, all remaining characters\
@@ -74,14 +74,5 @@ void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector,
 *******************************************************************************/
 int genPseudoRandKey(unsigned char* byteStateVector, char* plainText, 
 	unsigned char* cipherText, int reverse, int dataLen, int keyLen);
-
-/*******************************************************************************
- * Utility functionality required by library: TODO: shift to own library!!!!!
-*******************************************************************************/
-void clearStdin();
-void swap(unsigned char* array, int i, int j);
-int writecipher(unsigned char* cipherText, int plaintextlen);
-int readcipher(unsigned char* cipherText, int plaintextlen);
-int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, unsigned char* checkedArray);
 
 # endif

@@ -14,38 +14,64 @@
 # $@ is target & $^ is dependency(s)
 ################################################################################
 
+# primary link target and source file
 LINK_TARGET = main.out
-LINK_SRC  = $(wildcard *.c)
+LINK_SRC  = $(LINK_TARGET:.out=.c)
 
-STATIC_LIB_TARGET = libCrypto.a
-STATIC_LIB_SRC = $(wildcard crypto/*.c)
+# lib directory macros
+STATIC_LIBS = libs
+STATIC_CRYPTO = $(STATIC_LIBS)/Crypto
+STATIC_RAINDROPS = $(STATIC_LIBS)/PrintRaindrops
+STATIC_UTIL = $(STATIC_LIBS)/Util
 
+# src and target macros
+CRYPTO_SRC = $(wildcard $(STATIC_CRYPTO)/*.c)
+CRYPTO_TARGET = libCrypto.a
+RAINDROPS_SRC = $(wildcard $(STATIC_RAINDROPS)/*.c)
+RAINDROPS_TARGET = libRaindrops.a
+UTIL_SRC = $(wildcard $(STATIC_UTIL)/*.c)
+UTIL_TARGET = libUtil.a
+
+# object files
 OBJS = $(LINK_SRC:.c=.o)
-STATIC_OBJS = $(STATIC_LIB_SRC:.c=.o)
-CLEAN_OBJS = $(wildcard *.o)
 
+# clean targets, any object and/or compiled libs
+CLEAN_OBJS = $(wildcard *.o)
+CLEAN_LIBS = $(CRYPTO_TARGET) $(RAINDROPS_TARGET) $(UTIL_TARGET)
+
+# compile flags
 LIBFLAGS = ar -rcs
 CCFLAGS = gcc -g -Wall -Werror -ansi
 
 ################################################################################
 #	 Compile all (default make command)
 ################################################################################
+.PHONY : all
 all : $(LINK_TARGET)
 	@echo $(OSFLAG)
 
 $(LINK_TARGET) : libraries
-	$(CCFLAGS) -o $@ $(LINK_SRC) $(STATIC_LIB_TARGET) -lm
-	@echo ======================== All done! =============
+	$(CCFLAGS) -o $@ $(LINK_SRC) $(STATIC_LIB_TARGET)
+	@echo ============== All done! ========================
 
 ################################################################################
-#	 Compile libraries (static)
+#	Compile libraries (static),
+# 	compile each of the three libraries required
 ################################################################################
-libraries : $(STATIC_OBJS)
-	$(LIBFLAGS) $(STATIC_LIB_TARGET) encrypt.o util.o
-	@echo ============= Libraries compilled! =============
+libraries : $(UTIL_SRC:.c=.o) $(CRYPTO_SRC:.c=o) $(RAINDROPS_SRC:.c=.o)
+	$(LIBFLAGS) $(STATIC_UTIL) $(UTIL_SRC:.c=.o)
+	$(LIBFLAGS) $(STATIC_CRYPTO) $(CRYPTO_SRC:.c=o)
+	$(LIBFLAGS) $(STATIC_RAINDROPS) $(RAINDROPS_SRC:.c=.o)
+	@echo ============== Libraries compilled! =============
 
-$(STATIC_OBJS) : $(STATIC_LIB_SRC)
-	$(CCFLAGS) -c $^ -lm
+$(UTIL_SRC:.c=.o) : $(UTIL_SRC)
+	$(CCFLAGS) -c $^
+
+$(CRYPTO_SRC:.c=.o) : $(CRYPTO_SRC)
+	$(CCFLAGS) -c $^
+
+$(RAINDROPS_SRC:.c=.o) : $(RAINDROPS_SRC)
+	$(CCFLAGS) -c $^
 
 ################################################################################
 #	Clean directory
@@ -53,4 +79,10 @@ $(STATIC_OBJS) : $(STATIC_LIB_SRC)
 .PHONY : clean
 clean :
 	rm -f $(CLEAN_OBJS) $(LINK_TARGET) $(STATIC_LIB_TARGET)
-	@echo ============== Clean all complete! =============
+	@echo ============== Clean all complete! ==============
+
+.PHONY : test
+test :
+	$(CCFLAGS) -c $(wildcard $(STATIC_CRYPTO)/*.c)
+	@echo $()
+
