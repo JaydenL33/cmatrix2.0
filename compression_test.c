@@ -125,8 +125,9 @@ void printArr(int arr[], int n) {
 void writeArr(int arr[], int n) {
     FILE *fp;
 	fp = fopen(COMPRESS_NAME, "ab");
-    fwrite(arr, sizeof(arr), 1, fp);
+    fwrite(arr, sizeof(int), n, fp);
     fclose(fp);
+    //Prints the huff code to terminal
     printArr(arr, n);
 }
   
@@ -205,20 +206,36 @@ void printCodes(struct MinHeapNode* root, int arr[], int top) {
     } 
 } 
 
-void writeCode(struct MinHeapNode* root, int arr[], int top, char c) {
+void saveCode(struct MinHeapNode* root, int arr[], int top, char c) {
     if(root->left){ 
         arr[top] = 0;
-        writeCode(root->left, arr, top + 1, c); 
+        saveCode(root->left, arr, top + 1, c); 
     } 
     if(root->right){ 
         arr[top] = 1;
-        writeCode(root->right, arr, top + 1, c); 
+        saveCode(root->right, arr, top + 1, c); 
     } 
     if(isLeaf(root) && root->data == c){ 
+        //Prints the huff code for every char that appears in original text file
+        printf("Huff code for %c is:", c);
+        //Writes that chars code to binary file
+        writeArr(arr, top);
+    } 
+}
+
+void writeCode(struct MinHeapNode* root, int arr[], int top) {
+    if(root->left && arr[top] == 0){ 
+        writeCode(root->left, arr, top + 1); 
+    } 
+    if(root->right && arr[top] == 1){ 
+        writeCode(root->right, arr, top + 1); 
+    } 
+    if(isLeaf(root)){ 
         //printf("%c: ", root->data);
         //printArr(arr, top);
-        printf("Huff code for %c is:", c);
-        writeArr(arr, top);
+        printf("Char is:");
+        char c = root->data;
+        printf("%c\n", c);
     } 
 }
   
@@ -255,14 +272,18 @@ void load(char *str) {
     }
 }
 
-void loadCompressed(struct MinHeapNode* root) {
+void loadCompressed(struct MinHeapNode* root, int  binary[]) {
     FILE *fp;
 	fp = fopen(COMPRESS_NAME, "rb");
     /*Check if database exists.*/
 	if(fp != NULL){
-		fread(root, sizeof(root), 1, fp);
+        fread(binary, sizeof(int), 200, fp);
 		fclose(fp);
-        printf("DONE LOAD");
+        printf("LOAD BINARY CODES\n");
+        int i;
+        for(i = 0; i < 400; i++){
+            printf("%d", binary[i]);
+        }
 	}
     else {
         printf("Read error\n");
@@ -270,17 +291,13 @@ void loadCompressed(struct MinHeapNode* root) {
 }
 
 void save(char data[], int freq[], int size, char *str) {
-	FILE *fp;
-	fp = fopen(COMPRESS_NAME, "wb");
     struct MinHeapNode* root = buildHuffmanTree(data, freq, size);
-    fwrite(root, sizeof(root), 1, fp);
-    fclose(fp);
     size_t len = strlen(str);
     int i;
-    //For every character in loaded string
+    //For every character from database file(original string) save its huffman code value to binary file
     int arr[MAX_TREE_HT], top = 0;
     for(i = 0; i < len; i++){
-        writeCode(root, arr, top, str[i]);
+        saveCode(root, arr, top, str[i]);
     }
 }
 
@@ -378,14 +395,34 @@ int* getFreq(char *arr, char *str) {
 // Driver program to test above functions 
 int main() { 
     char *str = malloc(350);
+    //Load string from file
     load(str);
+    //Create string of every char that appears in file
     char *arr = getChars(str);
+    //Gets frequency of every char in the file
     int *freq = getFreq(arr, str);
+    //Size of the string contain each char
     int size = strlen(arr)/sizeof(arr[0]);
+    //Save binary to file
     save(arr, freq, size, str);
-    //Prints huffman codes
-    //HuffmanCodes(arr, freq, size);
-    struct MinHeapNode* root  = (struct MinHeapNode*)malloc(sizeof(struct MinHeapNode));
-    loadCompressed(root);
+
+    //Builds tree
+    struct MinHeapNode* root  = buildHuffmanTree(arr, freq, size);
+
+    int arr1[MAX_TREE_HT], top = 0;
+    printf("HUFFMAN CODES ARE: \n");
+    printCodes(root, arr1, top);
+
+    int binary[400];
+    int count, loadTop = 12; //Changing loadTop changes from where writeCode looks in the binary code. starting at 0 = h, 2 = e, 6 = l, 9 = l, 12 = 0 ... etc
+    //-1 is going to be used for end of binary
+    for(count = 0; count < 400; count++){
+        binary[count] = -1;
+    }
+    //Load bits from compressed file to binary array and prints code
+    loadCompressed(root, binary);
+    printf("\n");
+    writeCode(root, binary, loadTop);
+
     return 0; 
 } 
