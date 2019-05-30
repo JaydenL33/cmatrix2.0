@@ -26,22 +26,25 @@ int getArguments(int arguCounter, char* argv[])
     if(arguCounter>=2) 
     {
         printf("\nNumber Of Arguments Passed: %d",arguCounter); 
-        printf("\n Case and Switch Testing "); 
+        printf("\n Case/if Statement Testing.  "); 
         for (i=0; i<arguCounter; i++) 
         {
-            if (strcmp(argv[i], "-c") == 0)
+            if ((int) *argv[i] == '-')
             {
-                printf("\n The Code is %s, and the number in front of it is %s. \n", argv[i], argv[i+1]);
-                if (strcmp(argv[i + 1], "1") == 0)
+                if (strcmp(argv[i], "-c") == 0)
                 {
-                    printf("HOLY FUCK ITS WORK \n");
-                    
+                    printf("\n The Code is %s, and the number in front of it is %s. \n", argv[i], argv[i+1]);
+                    if (strcmp(argv[i + 1], "1") == 0)
+                    {
+                        printf("HOLY FUCK ITS WORK \n");
+                        
+                    }
                 }
+                if (strcmp(argv[i], "-E") == 0)
+                {
+                    
+                }  
             }
-            if (strcmp(argv[i], "-E") == 0)
-            {
-                
-            }  
         }
     } 
     return 0; 

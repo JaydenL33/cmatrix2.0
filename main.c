@@ -27,8 +27,55 @@ int main(int argc, char *argv[])  {
 	char testKey[INPUT_STRING_BUFFER];
 	unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
 
-	plainTextLen = encrypt(encryptedData);
 	char* decryptedData = malloc(sizeof(char) * plainTextLen);
+
+
+
+/**************************************************************************
+ * Reading Arguments to the Program
+****************************************************************************/
+	
+	int i; 
+    printf("Program Name Is: %s",argv[0]); 
+    if(arguCounter==1) 
+    {
+        printf("Test \n");
+        /* Execute Some Function */
+    }
+
+    if(arguCounter>=2) 
+    {
+        printf("\nNumber Of Arguments Passed: %d",arguCounter); 
+        printf("\n Case/if Statement Testing. "); 
+        for (i=0; i<arguCounter; i++) 
+        {
+            if ((int) *argv[i] == '-')
+            {
+                if (strcmp(argv[i], "-c") == 0)
+                {
+                    printf("\n The Code is %s, and the number in front of it is %s. \n", argv[i], argv[i+1]);
+                    if (strcmp(argv[i + 1], "1") == 0)
+                    {
+                        printf("HOLY FUCK ITS WORK \n");
+                        
+                    }
+                }
+                if (strcmp(argv[i], "-E") == 0)
+                {
+                    plainTextLen = encrypt(encryptedData);
+                }  
+            }
+        }
+        return 0; 
+    } 
+
+/**************************************************************************
+ * End of Reading Arguments to the Program. 
+****************************************************************************/
+
+
+
+
 	decrypt(encryptedData, decryptedData, plainTextLen, testKey);
 
 	char words[130]; /* Will hold the encrypted string */
@@ -36,23 +83,54 @@ int main(int argc, char *argv[])  {
 	char validString[plainTextLen];
 	checkValidRange(words, plainTextLen, validString);
 
-	printf("argc is %d", argc);
-	if (argc == 3) {
-		/* if LINES and COLUMNS are passed in from the CLI we can access them this way */
-		// int LINES = atoi(argv[1]);
-		// int COLUMNS = atoi(argv[2]);
-
-		// print_raindrops(validString, LINES, COLUMNS);
-	}
-	
-	char* color = KGRN;
 	int is_random = 0;
-	getOptions(argc, argv, color, &is_random);
-	  
 
 	/* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT */
 	int LINES = atoi(getenv("LINES"));
 	int COLUMNS = atoi(getenv("COLUMNS"));
-	print_raindrops(validString, LINES, COLUMNS, color, is_random);
+	/* print_raindrops(validString, LINES, COLUMNS, color, is_random); */
 	return 1;
-}
+
+/**************************************************************************
+ * Reading Arguments to the Program
+****************************************************************************/
+	
+	int i; 
+    printf("Program Name Is: %s",argv[0]); 
+    if(arguCounter==1) 
+    {
+        printf("Test \n");
+        /* Execute Some Function */
+    }
+
+    if(arguCounter>=2) 
+    {
+        printf("\nNumber Of Arguments Passed: %d",arguCounter); 
+        printf("\n Case/if Statement Testing. "); 
+        for (i=0; i<arguCounter; i++) 
+        {
+            if ((int) *argv[i] == '-')
+            {
+                if (strcmp(argv[i], "-c") == 0)
+                {
+                    printf("\n The Code is %s, and the number in front of it is %s. \n", argv[i], argv[i+1]);
+                    if (strcmp(argv[i + 1], "1") == 0)
+                    {
+                        printf("HOLY FUCK ITS WORK \n");
+                        
+                    }
+                }
+                if (strcmp(argv[i], "-E") == 0)
+                {
+                    plainTextLen = encrypt(encryptedData);
+                }  
+            }
+        }
+    } 
+/**************************************************************************
+ * End of Reading Arguments to the Program. 
+****************************************************************************/
+    return 0; 
+} 
+
+
