@@ -33,8 +33,6 @@ void print_raindrops(char* encryptedString, int LINES, int COLUMNS, char* color,
 		spaces[i] = 0;
 		non_spaces[i] = 0;
 	}
-	// printf("Is random is %d\n", isRandom);
-	// printf("color is %s", color);
 
 	/* This should print infinitely unless input specified */
 	while (1) {

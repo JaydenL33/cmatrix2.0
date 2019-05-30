@@ -28,7 +28,6 @@ int main(int argc, char *argv[])  {
 	char testKey[INPUT_STRING_BUFFER];
 
 /***************************************************************************/
- 	int i; 
     printf("Program Name Is: %s", argv[0]); 
 
     if(argc==1) {
