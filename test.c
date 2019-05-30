@@ -2,7 +2,13 @@
  #include <stdlib.h>
  #include <string.h> 
 
-/* Function Prototype */
+/*
+ *   Authors:    
+ *  - Jayden Lee
+ *   Date: 
+ *   30/05/2019
+ */
+
 
 int getArguments(int arguCounter, char* argv[]);
 
@@ -26,7 +32,7 @@ int getArguments(int arguCounter, char* argv[])
     if(arguCounter>=2) 
     {
         printf("\nNumber Of Arguments Passed: %d",arguCounter); 
-        printf("\n Case/if Statement Testing.  "); 
+        printf("\n Case/if Statement Testing. "); 
         for (i=0; i<arguCounter; i++) 
         {
             if ((int) *argv[i] == '-')
