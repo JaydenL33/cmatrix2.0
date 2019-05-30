@@ -30,38 +30,58 @@ int main(int argc, char *argv[])  {
 
 /***************************************************************************/
  	int i; 
-    printf("Program Name Is: %s",argv[0]); 
+    printf("Program Name Is: %s", argv[0]); 
 
-    if(argc==1) 
-    {
+    if(argc==1) {
         printf("Test \n");
         /* Execute Some Function */
     }
 
-    if(argc>=2) 
-    {
-        printf("\nNumber Of Arguments Passed: %d",argc); 
-        printf("\n Case/if Statement Testing. "); 
-        for (i=0; i<argc; i++) 
-        {
-            if ((int) *argv[i] == '-')
-            {
-                if (strcmp(argv[i], "-c") == 0)
-                {
-                    
-                    if (strcmp(argv[i + 1], "r") == 0)
-                    {
-                    	printf("Hello \n");
-                    }
-                }
-                if (strcmp(argv[i], "-E") == 0)
-                {
-                   	plainTextLen = encrypt(encryptedData);
-                   	printf("%d \n", plainTextLen);
-                }  
-            }
+    char* color = KGRN;
+    int is_random = 0;
+    if (argc > 1) {
+        int i;
+        for (i = 0; i < argc; i++) {
+            /*
+           if (*argv[i] == 'z') {
+               printf("random\n\n\n");
+           } else if ()
+            */
+            switch(*argv[i]) {  
+                case 'r':    
+                    // strcpy(color, &KRED);
+                    color = KRED;
+                    break;
+                case 'm':    
+                    color = KMAG;
+                    break;
+                case 'c':
+                    color = KCYN;
+                    break;
+                case 'y': 
+                    color = KYEL;
+                    break;
+                case 'b':
+                    color = KBLU;
+                    break;
+                case 'w':
+                    color = KWHT;
+                    break;
+                case 'z': /* Random */
+                    is_random = 1;
+                    break;
+                case ':':  
+                    printf("option needs a value\n");  
+                    break;  
+                case '?':  
+                    printf("???");
+                    break;
+            } 
         }
-    }
+    } 
+    printf("\n\ncolor: %s", color);
+    printf("\n\nisrandom: %d", is_random);
+
     char* decryptedData = malloc(sizeof(char) * plainTextLen);
 	decrypt(encryptedData, decryptedData, plainTextLen, testKey);
 
@@ -71,16 +91,16 @@ int main(int argc, char *argv[])  {
 
 	checkValidRange(words, plainTextLen, validString);
 
-	char* color = KGRN;
-	int is_random = 0;
 	/* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT 
 	   TO Export: export LINES=$LINES
 	   export COLUMNS=$COLUMNS
 	*/
+    /*
 	int LINES = atoi(getenv("LINES"));
 	int COLUMNS = atoi(getenv("COLUMNS"));
 	print_raindrops(validString, LINES, COLUMNS, color, is_random);
 	return 1; 
+    */
 
 /**************************************************************************
  * End of Reading Arguments to the Program. 
