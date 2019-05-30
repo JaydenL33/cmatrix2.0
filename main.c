@@ -23,7 +23,7 @@ void squash_pepe();
 void matrix_quotes();
 
 int main(int argc, char *argv[])  {
-	int plainTextLen;
+	int plainTextLen = 0;
 	unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
 	char testKey[INPUT_STRING_BUFFER];
 
@@ -36,18 +36,14 @@ int main(int argc, char *argv[])  {
         /* Execute Some Function */
     }
 
+    /* Default is green and random */
     char* color = KGRN;
     unsigned int is_random = 0;
     if (argc > 1) {
         int i;
         for (i = 0; i < argc; i++) {
-            /*
-           if (*argv[i] == 'z') {
-               printf("random\n\n\n");
-           } else if ()
-            */
             switch(*argv[i]) {  
-                case 'E':
+                case 'e':
                     plainTextLen = encrypt(encryptedData);
                    	printf("%d \n", plainTextLen);
                     break;
@@ -69,14 +65,16 @@ int main(int argc, char *argv[])  {
                 case 'w':
                     color = KWHT;
                     break;
-                case 'z': /* Random */
+                case 'z': /* Print Random */
                     is_random = 1;
                     break;
             } 
         }
     } 
-    // printf("\n\ncolor: %s", color);
-    printf("\n\nisrandom: %d", is_random);
+    if (plainTextLen == 0 && is_random == 0) {
+        printf("Printing random string as encrypted was not selected.\n");
+        is_random = 1;
+    }
 
     char* decryptedData = malloc(sizeof(char) * plainTextLen);
 	decrypt(encryptedData, decryptedData, plainTextLen, testKey);
