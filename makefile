@@ -79,10 +79,8 @@ $(RAINDROPS_SRC:.c=.o) : $(STATIC_RAINDROPS)
 .PHONY : clean
 clean :
 	rm -f $(CLEAN_OBJS) $(LINK_TARGET) $(STATIC_LIB_TARGET)
+	rm -f $(wildcard $(STATIC_CRYPTO)/*.o)
+	rm -f $(wildcard $(STATIC_RAINDROPS)/*.o)
+	rm -f $(wildcard $(STATIC_UTIL)/*.o)
 	@echo ============== Clean all complete! ==============
-
-.PHONY : test
-test : $(STATIC_CRYPTO)
-	$(CCFLAGS) -c $(wildcard $^/*.c)
-	@echo $()
 
