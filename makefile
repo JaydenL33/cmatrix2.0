@@ -51,7 +51,7 @@ all : $(LINK_TARGET)
 	@echo $(OSFLAG)
 
 $(LINK_TARGET) : libraries
-	$(CCFLAGS) -o $@ $(LINK_SRC) $(STATIC_LIB_TARGET)
+	$(CCFLAGS) -o $@ $(LINK_SRC) $(CRYPTO_TARGET) $(UTIL_TARGET) $(RAINDROPS_TARGET)
 	@echo ============== All done! ========================
 
 ################################################################################
