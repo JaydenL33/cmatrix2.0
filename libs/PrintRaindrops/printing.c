@@ -12,7 +12,6 @@
 # include <string.h>  			/* strlen 			*/
 
 # include "printraindrops.h" /* printing functionality 		*/
-# include "../Util/util.h"	/* utility functions 			*/
 
 /**************************************************************************
  * Generates a 2D matrix that fills up the terminal via LINES and COLUMNS.
@@ -97,7 +96,7 @@ void print_raindrops(char* encryptedString, int LINES, int COLUMNS, char* color,
 		CLEAR;
 		/* Prints the entire matrix in a specified colour */
 		printf("%s%s", color, finalString);
-		delay();  
+		delay();
 		count++;
 	}
 }
@@ -135,5 +134,17 @@ void rand_encrypted_str(char *new_str, char *encrypted_str, size_t length) {
 	while (length-- > 0) {
 		size_t index = (int) rand() % i;
 		*new_str++ = encrypted_str[index];
+	}
+}
+
+/**************************************************************************
+ * Delay utility function that mimics a 'sleep' or 'setTimeout'. This is
+ * used to control the speed that the characters fall down the screen.
+****************************************************************************/
+void delay() {
+	int c, d;
+	/* Can change the time of delay with this, Cheap method but works... */
+	for (c = 1; c <= 32767 / 8; c++) {
+		for (d = 1; d <= 32767 / 8; d++) {}
 	}
 }

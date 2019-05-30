@@ -22,9 +22,6 @@ int writecipher(unsigned char* cipherText, int plaintextlen);
 
 int readcipher(unsigned char* cipherText, int plaintextlen);
 
-int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, 
-	unsigned char* checkedArray);
-
-void delay();
+int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, char* checkedArray);
 
 # endif

@@ -25,6 +25,7 @@ void matrix_quotes();
 int main(int argc, char *argv[])  {
 	int plainTextLen;
 	unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
+	char testKey[INPUT_STRING_BUFFER];
 
 
 /***************************************************************************/
@@ -60,7 +61,26 @@ int main(int argc, char *argv[])  {
                 }  
             }
         }
-    } 
+    }
+    char* decryptedData = malloc(sizeof(char) * plainTextLen);
+	decrypt(encryptedData, decryptedData, plainTextLen, testKey);
+
+	unsigned char words[plainTextLen]; /* Will hold the encrypted string */
+	readcipher(words, plainTextLen); /* Reads in encrypted string */
+	char validString[plainTextLen];
+
+	checkValidRange(words, plainTextLen, validString);
+
+	char* color = KGRN;
+	int is_random = 0;
+	/* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT 
+	   TO Export: export LINES=$LINES
+	   export COLUMNS=$COLUMNS
+	*/
+	int LINES = atoi(getenv("LINES"));
+	int COLUMNS = atoi(getenv("COLUMNS"));
+	print_raindrops(validString, LINES, COLUMNS, color, is_random);
+	return 1; 
 
 /**************************************************************************
  * End of Reading Arguments to the Program. 

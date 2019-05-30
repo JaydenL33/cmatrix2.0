@@ -27,4 +27,6 @@ void print_raindrops(char* encryptedString, int LINES, int COLUMNS, char* color,
 void rand_str(char *dest, size_t length);
 void rand_encrypted_str(char *input, char *str, size_t length);
 
+void delay();
+
 # endif

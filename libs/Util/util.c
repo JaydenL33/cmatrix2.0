@@ -66,7 +66,7 @@ int readcipher(unsigned char* cipherText, int plaintextlen) {
    displayable by the terminal or a space or DEL is thrown out. Everything else 
    is appended to the output array. 
 *******************************************************************************/
-int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, unsigned char* checkedArray) {
+int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, char* checkedArray) {
 	int decASCII;
 	int i;
 	int j = 0;
@@ -76,7 +76,7 @@ int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, unsigned c
 		decASCII = (int) unCheckedArray[i]; 
 		if (decASCII >= 33 && decASCII <= 126)
 		{
-			checkedArray[j] = unCheckedArray[i];
+			checkedArray[j] = (char) (decASCII - 127) ;
 			j++;
 		}
 	}
@@ -84,14 +84,3 @@ int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, unsigned c
 	return 1;
 }
 
-/**************************************************************************
- * Delay utility function that mimics a 'sleep' or 'setTimeout'. This is
- * used to control the speed that the characters fall down the screen.
-****************************************************************************/
-void delay() {
-	int c, d;
-	/* Can change the time of delay with this, Cheap method but works... */
-	for (c = 1; c <= 32767 / 8; c++) {
-		for (d = 1; d <= 32767 / 8; d++) {}
-	}
-}
