@@ -27,7 +27,6 @@ int main(int argc, char *argv[])  {
 	unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
 	char testKey[INPUT_STRING_BUFFER];
 
-
 /***************************************************************************/
  	int i; 
     printf("Program Name Is: %s", argv[0]); 
@@ -38,7 +37,7 @@ int main(int argc, char *argv[])  {
     }
 
     char* color = KGRN;
-    int is_random = 0;
+    unsigned int is_random = 0;
     if (argc > 1) {
         int i;
         for (i = 0; i < argc; i++) {
@@ -48,8 +47,11 @@ int main(int argc, char *argv[])  {
            } else if ()
             */
             switch(*argv[i]) {  
+                case 'E':
+                    plainTextLen = encrypt(encryptedData);
+                   	printf("%d \n", plainTextLen);
+                    break;
                 case 'r':    
-                    // strcpy(color, &KRED);
                     color = KRED;
                     break;
                 case 'm':    
@@ -70,16 +72,10 @@ int main(int argc, char *argv[])  {
                 case 'z': /* Random */
                     is_random = 1;
                     break;
-                case ':':  
-                    printf("option needs a value\n");  
-                    break;  
-                case '?':  
-                    printf("???");
-                    break;
             } 
         }
     } 
-    printf("\n\ncolor: %s", color);
+    // printf("\n\ncolor: %s", color);
     printf("\n\nisrandom: %d", is_random);
 
     char* decryptedData = malloc(sizeof(char) * plainTextLen);
@@ -92,15 +88,13 @@ int main(int argc, char *argv[])  {
 	checkValidRange(words, plainTextLen, validString);
 
 	/* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT 
-	   TO Export: export LINES=$LINES
-	   export COLUMNS=$COLUMNS
+	   TO Export, run: 
+       export LINES=$LINES; export COLUMNS=$COLUMNS
 	*/
-    /*
 	int LINES = atoi(getenv("LINES"));
 	int COLUMNS = atoi(getenv("COLUMNS"));
 	print_raindrops(validString, LINES, COLUMNS, color, is_random);
 	return 1; 
-    */
 
 /**************************************************************************
  * End of Reading Arguments to the Program. 
