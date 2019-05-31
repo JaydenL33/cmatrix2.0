@@ -20,9 +20,12 @@
 *.x86_64
 *.hex
 
-# encrypted data
-
+# encrypted data & compressed
+*.bin
 *.locked
 
 # VSCode
 .vscode
+
+# TestFile
+test.c

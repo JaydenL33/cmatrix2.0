@@ -14,6 +14,7 @@
 # include "libs/Crypto/encrypt.h"
 # include "libs/Util/util.h"
 # include "libs/PrintRaindrops/printraindrops.h"
+# include "libs/Compression/compression.h"
 
 /* memes be like... */
 void pepe();
@@ -24,7 +25,7 @@ int main(int argc, char *argv[])  {
 	int plainTextLen = 0;
 	unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
 	char testKey[INPUT_STRING_BUFFER];
-
+	char *decryptedData = malloc(sizeof(char) * plainTextLen); 
 /* - Main program control logic follows */
 /*****************************************************************************/
     /* Defaults:
@@ -45,7 +46,6 @@ int main(int argc, char *argv[])  {
             switch(*argv[i]) {  
                 case 'e': /* request console data input to encrypt */
                     plainTextLen = encrypt(encryptedData);
-                   	printf("%d \n", plainTextLen);
                     break;
                 case 'r': /* red */
                     color = KRED;
@@ -68,6 +68,12 @@ int main(int argc, char *argv[])  {
                 case 'z': /* Print rand vals */
                     isRandom = 1;
                     break;
+                case 'd':
+                plainTextLen = readcipher(encryptedData, plainTextLen);
+                decryptedData = (char*) malloc(sizeof(char) * plainTextLen); 
+                decrypt(encryptedData, decryptedData, plainTextLen, testKey);
+               		break;
+
             } 
         }
     } else {
@@ -91,13 +97,16 @@ int main(int argc, char *argv[])  {
 /******************************************************************************
  * Matrix will now print entered (encrypted) data as screensaver
 ******************************************************************************/
-        char* decryptedData = malloc(sizeof(char) * plainTextLen); 
+        decryptedData = (char *) malloc(sizeof(char) * plainTextLen); 
         unsigned char words[plainTextLen]; /* holds encrypted string */
         char validString[plainTextLen];	/* hold validated string */
 
 		decrypt(encryptedData, decryptedData, plainTextLen, testKey);
 		readcipher(words, plainTextLen); /* Reads in encrypted datafile */
-		checkValidRange(words, plainTextLen, validString);
+		checkValidRange(words, plainTextLen, validString); /* Checks if the 
+		string is valid or not.  */
+		int binaryNumber;
+		compression(validString, plainTextLen, &binaryNumber);
 
 		/* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT 
 		 *  TO Export, run: 
