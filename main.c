@@ -14,6 +14,7 @@
 # include "libs/Crypto/encrypt.h"
 # include "libs/Util/util.h"
 # include "libs/PrintRaindrops/printraindrops.h"
+# include "libs/Compression/compression.h"
 
 /* memes be like... */
 void pepe();
@@ -69,9 +70,10 @@ int main(int argc, char *argv[])  {
                     break;
                 case 'd':
                 plainTextLen = readcipher(encryptedData, plainTextLen);
-                &decryptedData = malloc(sizeof(char) * plainTextLen); 
+                decryptedData = (char*) malloc(sizeof(char) * plainTextLen); 
                 decrypt(encryptedData, decryptedData, plainTextLen, testKey);
                		break;
+
             } 
         }
     } else {
@@ -95,7 +97,7 @@ int main(int argc, char *argv[])  {
 /******************************************************************************
  * Matrix will now print entered (encrypted) data as screensaver
 ******************************************************************************/
-        &decryptedData = malloc(sizeof(char) * plainTextLen); 
+        decryptedData = (char *) malloc(sizeof(char) * plainTextLen); 
         unsigned char words[plainTextLen]; /* holds encrypted string */
         char validString[plainTextLen];	/* hold validated string */
 
@@ -103,6 +105,8 @@ int main(int argc, char *argv[])  {
 		readcipher(words, plainTextLen); /* Reads in encrypted datafile */
 		checkValidRange(words, plainTextLen, validString); /* Checks if the 
 		string is valid or not.  */
+		int binaryNumber;
+		compression(validString, plainTextLen, &binaryNumber);
 
 		/* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT 
 		 *  TO Export, run: 

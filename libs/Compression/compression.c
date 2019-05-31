@@ -36,7 +36,7 @@ struct MinHeapNode* newNode(char data, unsigned freq) {
 *******************************************************************************/
 struct MinHeap* createMinHeap(unsigned capacity) {
     struct MinHeap* minHeap = (struct MinHeap*)malloc(sizeof(struct MinHeap));
-    minHeap->size = 0; // current size is 0
+    minHeap->size = 0; 
     minHeap->capacity = capacity;
     minHeap->array = (struct MinHeapNode**)malloc(minHeap->capacity * 
 sizeof(struct MinHeapNode*));
@@ -196,8 +196,11 @@ int isLeaf(struct MinHeapNode* root) {
 *******************************************************************************/
 struct MinHeap* createAndBuildMinHeap(char data[], int freq[], int size) { 
     struct MinHeap* minHeap = createMinHeap(size); 
-    for(int i = 0; i < size; ++i) 
+    int i;
+    for (i = 0; i < size; ++i) 
+    {
         minHeap->array[i] = newNode(data[i], freq[i]); 
+    }
     
     minHeap->size = size; 
     buildMinHeap(minHeap); 
