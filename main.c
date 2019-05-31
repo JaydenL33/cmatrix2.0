@@ -15,8 +15,6 @@
 # include "libs/Util/util.h"
 # include "libs/PrintRaindrops/printraindrops.h"
 
-void print_menu();
-
 /* memes be like... */
 void pepe();
 void squash_pepe();
@@ -27,75 +25,88 @@ int main(int argc, char *argv[])  {
 	unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
 	char testKey[INPUT_STRING_BUFFER];
 
-/***************************************************************************/
-    printf("Program Name Is: %s", argv[0]); 
-
-    if(argc==1) {
-        printf("Test \n");
-        /* Execute Some Function */
-    }
-
-    /* Default is green and random */
+/* - Main program control logic follows */
+/*****************************************************************************/
+    /* Defaults:
+     * Colour: green 
+     * Print vals: random
+     */
     char* color = KGRN;
-    unsigned int is_random = 0;
+    unsigned int isRandom = 0;
+
+    /* 
+     * - Handle flags
+     * test if arguments passed, 
+     * else program cannot decrypt un-entered data!! 
+     */
     if (argc > 1) {
         int i;
         for (i = 0; i < argc; i++) {
             switch(*argv[i]) {  
-                case 'e':
+                case 'e': /* request console data input to encrypt */
                     plainTextLen = encrypt(encryptedData);
                    	printf("%d \n", plainTextLen);
                     break;
-                case 'r':    
+                case 'r': /* red */
                     color = KRED;
                     break;
-                case 'm':    
+                case 'm': /* magenta */ 
                     color = KMAG;
                     break;
-                case 'c':
+                case 'c': /* cyan */
                     color = KCYN;
                     break;
-                case 'y': 
+                case 'y': /* yellow */
                     color = KYEL;
                     break;
-                case 'b':
+                case 'b': /* blue */
                     color = KBLU;
                     break;
-                case 'w':
+                case 'w': /* white */
                     color = KWHT;
                     break;
-                case 'z': /* Print Random */
-                    is_random = 1;
+                case 'z': /* Print rand vals */
+                    isRandom = 1;
                     break;
             } 
         }
-    } 
-    if (plainTextLen == 0 && is_random == 0) {
-        printf("Printing random string as encrypted was not selected.\n");
-        is_random = 1;
+    } else {
+    	/* no arguments were passed! */
+    	printf("No arguments were passed, check your inputs and try again!\n");
+    	return 0;
     }
 
-    char* decryptedData = malloc(sizeof(char) * plainTextLen);
-	decrypt(encryptedData, decryptedData, plainTextLen, testKey);
+    if (plainTextLen == 0 && isRandom == 0) { /* no encrypted data exists! */
+        printf("Printing random string as encrypted was not selected.\n");
+        isRandom = 1;
+    } else if (plainTextLen > 0) { /* encrypted data was returned */
+/******************************************************************************
+ * Matrix will now print entered (encrypted) data as screensaver
+******************************************************************************/
+        char* decryptedData = malloc(sizeof(char) * plainTextLen); 
+        unsigned char words[plainTextLen]; /* holds encrypted string */
+        char validString[plainTextLen];	/* hold validated string */
 
-	unsigned char words[plainTextLen]; /* Will hold the encrypted string */
-	readcipher(words, plainTextLen); /* Reads in encrypted string */
-	char validString[plainTextLen];
+		decrypt(encryptedData, decryptedData, plainTextLen, testKey);
+		readcipher(words, plainTextLen); /* Reads in encrypted datafile */
+		checkValidRange(words, plainTextLen, validString);
 
-	checkValidRange(words, plainTextLen, validString);
-
-	/* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT 
-	   TO Export, run: 
-       export LINES=$LINES; export COLUMNS=$COLUMNS
-	*/
-	int LINES = atoi(getenv("LINES"));
-	int COLUMNS = atoi(getenv("COLUMNS"));
-	print_raindrops(validString, LINES, COLUMNS, color, is_random);
-	return 1; 
-
-/**************************************************************************
+		/* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT 
+		 *  TO Export, run: 
+	     *  export LINES=$LINES; export COLUMNS=$COLUMNS
+		 */
+		int LINES = atoi(getenv("LINES"));
+		int COLUMNS = atoi(getenv("COLUMNS"));
+		print_raindrops(validString, LINES, COLUMNS, color, isRandom);
+		/* success! */
+		return 1; 
+    } else {
+    	print(UNKNOWN);
+    }
+/******************************************************************************
  * End of Reading Arguments to the Program. 
-****************************************************************************/
+******************************************************************************/
+    /* if you have reached this point, something is quite wrong */
 	return 0; 
 }
 

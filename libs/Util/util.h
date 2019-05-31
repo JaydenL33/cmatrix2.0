@@ -10,6 +10,8 @@
 # define _UTIL_H_
 
 # define FILENAME "encrypt.locked" /* temp file output for writing encrypt data tp */
+/* call this an easter egg....idek */
+# define UNKNOWN "An unknown error has occured, please try again or contact your system administator\n"
 
 /*******************************************************************************
  * Utility functions required by all libraries
