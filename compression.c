@@ -7,6 +7,7 @@
 #define MAX_TREE_HT 100
 #define DB_NAME "database.txt"
 #define COMPRESS_NAME "compressed.bin"
+#define TREE_STORE "tree.dat"
   
 // A Huffman tree node
 struct MinHeapNode {
@@ -57,8 +58,8 @@ void swapMinHeapNode(struct MinHeapNode** a, struct MinHeapNode** b) {
 // The standard minHeapify function. 
 void minHeapify(struct MinHeap* minHeap, int idx) {
     int smallest = idx;
-    int left = 2 * idx + 1;
-    int right = 2 * idx + 2;
+    unsigned int left = 2 * idx + 1;
+    unsigned int right = 2 * idx + 2;
   
     if(left < minHeap->size && minHeap->array[left]->
 freq < minHeap->array[smallest]->freq)
@@ -117,8 +118,6 @@ void printArr(int arr[], int n) {
     int i;
     for(i = 0; i < n; ++i)
         printf("%d", arr[i]);
-    
-    printf("\n");
 }
 
 // A utility function to write to file an array of size n
@@ -127,7 +126,6 @@ void writeArr(int arr[], int n) {
 	fp = fopen(COMPRESS_NAME, "ab");
     fwrite(arr, sizeof(int), n, fp);
     fclose(fp);
-    //Prints the huff code to terminal
     printArr(arr, n);
 }
   
@@ -151,120 +149,121 @@ struct MinHeap* createAndBuildMinHeap(char data[], int freq[], int size) {
     return minHeap; 
 } 
   
-// The main function that builds Huffman tree 
+
 struct MinHeapNode* buildHuffmanTree(char data[], int freq[], int size) { 
     struct MinHeapNode *left, *right, *top; 
-    // Step 1: Create a min heap of capacity 
-    // equal to size.  Initially, there are 
-    // modes equal to size. 
     struct MinHeap* minHeap = createAndBuildMinHeap(data, freq, size); 
-    // Iterate while size of heap doesn't become 1 
     while(!isSizeOne(minHeap)){ 
-        // Step 2: Extract the two minimum 
-        // freq items from min heap 
         left = extractMin(minHeap); 
-        right = extractMin(minHeap); 
-        // Step 3:  Create a new internal 
-        // node with frequency equal to the 
-        // sum of the two nodes frequencies. 
-        // Make the two extracted node as 
-        // left and right children of this new node. 
-        // Add this node to the min heap 
-        // '$' is a special value for internal nodes, not used 
+        right = extractMin(minHeap);  
         top = newNode('$', left->freq + right->freq); 
-  
         top->left = left; 
         top->right = right; 
-  
         insertMinHeap(minHeap, top); 
-    } 
-    // Step 4: The remaining node is the 
-    // root node and the tree is complete. 
+    }  
     return extractMin(minHeap); 
 } 
   
-// Prints huffman codes from the root of Huffman Tree. 
-// It uses arr[] to store codes 
-void printCodes(struct MinHeapNode* root, int arr[], int top) { 
-    // Assign 0 to left edge and recur 
-    if(root->left){ 
-        arr[top] = 0; 
-        printCodes(root->left, arr, top + 1); 
-    } 
-    // Assign 1 to right edge and recur 
-    if(root->right){ 
-        arr[top] = 1; 
-        printCodes(root->right, arr, top + 1); 
-    } 
-    // If this is a leaf node, then 
-    // it contains one of the input 
-    // characters, print the character 
-    // and its code from arr[] 
-    if(isLeaf(root)){ 
-        printf("%c: ", root->data); 
-        printArr(arr, top); 
-    } 
-} 
-
-void saveCode(struct MinHeapNode* root, int arr[], int top, char c) {
-    if(root->left){ 
-        arr[top] = 0;
-        saveCode(root->left, arr, top + 1, c); 
-    } 
-    if(root->right){ 
-        arr[top] = 1;
-        saveCode(root->right, arr, top + 1, c); 
-    } 
-    if(isLeaf(root) && root->data == c){ 
-        //Prints the huff code for every char that appears in original text file
-        printf("Huff code for %c is:", c);
-        //Writes that chars code to binary file
-        writeArr(arr, top);
-    } 
-}
-
-void writeCode(struct MinHeapNode* root, int arr[], int top) {
-    if(root->left && arr[top] == 0){ 
-        writeCode(root->left, arr, top + 1); 
-    } 
-    if(root->right && arr[top] == 1){ 
-        writeCode(root->right, arr, top + 1); 
-    } 
-    if(isLeaf(root)){ 
-        //printf("%c: ", root->data);
-        //printArr(arr, top);
-        printf("Char is:");
-        char c = root->data;
-        printf("%c\n", c);
-    } 
-}
-  
-// The main function that builds a 
-// Huffman Tree and print codes by traversing 
-// the built Huffman Tree 
-void HuffmanCodes(char data[], int freq[], int size) {
-    // Construct Huffman Tree
-    struct MinHeapNode* root
-        = buildHuffmanTree(data, freq, size);
-    // Print Huffman codes using
-    // the Huffman tree built above
-    int arr[MAX_TREE_HT], top = 0;
-    printCodes(root, arr, top);
-} 
 /*******************************************************************************
- * This function loads file "database.txt"
- * string
+ * This function transverses the huffman tree and prints codes for every 
+ * character in the tree
  * inputs:
- * - char *str = string to load file to
+ * - struct MinHeapNode* tree = Current node on tree as it's traversed
+ * - int binary[] = Binary code produced for character by the traversal
+ * - int top = Keeps track of current position of binary
  * outputs:
  * - None
 *******************************************************************************/
-void load(char *str) {
+void printCodes(struct MinHeapNode* tree, int binary[], int top) {  
+    if(tree->left){ 
+        binary[top] = 0; 
+        printCodes(tree->left, binary, top + 1); 
+    } 
+    if(tree->right){ 
+        binary[top] = 1; 
+        printCodes(tree->right, binary, top + 1); 
+    } 
+    if(isLeaf(tree)){ 
+        printf("%c: ", tree->data); 
+        printArr(binary, top); 
+        printf(" ");
+    } 
+} 
+/*******************************************************************************
+ * This function transverses the huffman tree for every character in text file
+ * and writes it to binary to file
+ * inputs:
+ * - struct MinHeapNode* current = Current node on tree as it's traversed
+ * - int binary[] = Binary code produced for character by the traversal
+ * - int top = Keeps track of current position of binary
+ * - char c = The character whos binary is being found
+ * - int * binaryNumber = Pointer to int representing amount of bits in compressed file
+ * outputs:
+ * - None
+*******************************************************************************/
+void saveCode(struct MinHeapNode* current, int binary[], int top, char c, int * binaryNumber) {
+    if(current->left){ 
+        binary[top] = 0;
+        saveCode(current->left, binary, top + 1, c, binaryNumber); 
+    } 
+    if(current->right){ 
+        binary[top] = 1;
+        saveCode(current->right, binary, top + 1, c, binaryNumber); 
+    } 
+    if(isLeaf(current) && current->data == c){ 
+        /*DEBUG
+         *Prints the huff code for every char that appears in original text file
+        if(DEBUG){
+            printf("Huff code for %c is:", c);
+        }*/
+        *binaryNumber = *binaryNumber + top;
+        writeArr(binary, top);
+    } 
+}
+/*******************************************************************************
+ * This function transverses the huffman tree from the binary file and  prints
+ * every character as it is found
+ * Inputs:
+ * - struct MinHeapNode* current = Current node on tree as it's traversed
+ * - struct MinHeapNode* tree = Huffman tree
+ * - int binary[] = binary of compressed binary file
+ * - int top = Keeps track of current position of binary
+ * Outputs:
+ * - None
+*******************************************************************************/
+void writeCode(struct MinHeapNode* current, struct MinHeapNode* tree, int binary[], int top) {
+    if(current->left && binary[top] == 0){ 
+        writeCode(current->left, tree, binary, top + 1); 
+    } 
+    if(current->right && binary[top] == 1){ 
+        writeCode(current->right, tree, binary, top + 1); 
+    } 
+    if(isLeaf(current)){
+        /*DEBUG
+         *Print character found and its binary code from binary file
+        if(DEBUG){
+            printf("%c: ", current->data);
+            printArr(arr, top);
+        }*/
+        char c = current->data;
+        printf("%c", c);
+        writeCode(tree, tree, binary, top);
+    } 
+}
+
+/*******************************************************************************
+ * This function loads text file to a string
+ * Inputs:
+ * - char *str = String to load file to
+ * - int n = Number of characters to read into str
+ * Outputs:
+ * - None
+*******************************************************************************/
+void load(char *str, int n) {
     FILE *fp;
 	fp = fopen(DB_NAME, "r");
-    /*Check if database exists.*/
 	if(fp != NULL){
-		while(fgets(str, 350, fp) != NULL)
+		while(fgets(str, n, fp) != NULL)
 		fclose(fp);
 	}
     else {
@@ -272,16 +271,15 @@ void load(char *str) {
     }
 }
 
-void loadCompressed(struct MinHeapNode* root, int  binary[]) {
+void loadCompressed(struct MinHeapNode* root, int  binary[], int binaryNumber) {
     FILE *fp;
 	fp = fopen(COMPRESS_NAME, "rb");
-    /*Check if database exists.*/
 	if(fp != NULL){
-        fread(binary, sizeof(int), 200, fp);
+        fread(binary, sizeof(int), binaryNumber, fp);
 		fclose(fp);
-        printf("LOAD BINARY CODES\n");
+        printf("\nLOAD BINARY CODES\n");
         int i;
-        for(i = 0; i < 400; i++){
+        for(i = 0; i < binaryNumber; i++){
             printf("%d", binary[i]);
         }
 	}
@@ -290,42 +288,47 @@ void loadCompressed(struct MinHeapNode* root, int  binary[]) {
     }
 }
 
-void save(char data[], int freq[], int size, char *str) {
+void save(char data[], int freq[], int size, char *str, int * binaryNumber) {
     struct MinHeapNode* root = buildHuffmanTree(data, freq, size);
-    size_t len = strlen(str);
+    int len = strlen(str);
     int i;
-    //For every character from database file(original string) save its huffman code value to binary file
-    int arr[MAX_TREE_HT], top = 0;
+    printf("Compressed binary code for text file\n");
+    /*For every character from database file(original string) save its huffman code value to binary file*/
+    int binary[MAX_TREE_HT], top = 0;
     for(i = 0; i < len; i++){
-        saveCode(root, arr, top, str[i]);
+        saveCode(root, binary, top, str[i], binaryNumber);
     }
 }
 
 /*******************************************************************************
  * This function adds a char to the back of input string
- * inputs:
- * - char *str
- * - char c
- * outputs:
- * - char* arr
+ * Inputs:
+ * - char *str = String to add to
+ * - char c = Character to add to string
+ * Outputs:
+ * - char* arr = String with character appended
 *******************************************************************************/
 void addChar(char *str, char c) {
     size_t len = strlen(str);
-    char *str2 = malloc(len + 1 + 1 ); /* one for extra char, one for trailing zero */
+    char *str2 = malloc(len + 1 + 1 );
     strcpy(str2, str);
     str2[len] = c;
     str2[len + 1] = '\0';
-    //printf("%s\n", str2);
+    /*DEBUG 
+     *Print string everytime a char is added
+    if(DEBUG){
+        printf("%s\n", str2);
+    }*/
     strcpy(str, str2);
     free(str2);
 }
 /*******************************************************************************
  * This function returns a string with every character that appears in the input
  * string
- * inputs:
- * - char *str
- * outputs:
- * - char* arr
+ * Inputs:
+ * - char *str = String of text file
+ * Outputs:
+ * - char* arr = String containing every character that appeared
 *******************************************************************************/
 char* getChars(char *str) {
     int i;
@@ -337,8 +340,13 @@ char* getChars(char *str) {
     for(i = 0; i < len; i++){
         char c = str[i];
         ret = strchr(arr, c);
-        if(!ret && c >= 0 && c <= 126){
-            //printf("add char %c\n", c);
+        if(!ret){
+            /*DEBUG
+             *Print every char that appears and will be added to str
+            if(DEBUG){
+                printf("add char %c\n", c);
+            }
+            */
             addChar(arr, c);
         }
     }
@@ -346,12 +354,11 @@ char* getChars(char *str) {
 }
 /*******************************************************************************
  * This function returns the index of a character within a string
- * string
- * inputs:
- * - char *str
- * - char c
- * outputs:
- * - int index
+ * Inputs:
+ * - char *str = String to search through
+ * - char c =  Character to find in string
+ * Outputs:
+ * - int index = Index of character in the string
 *******************************************************************************/
 int indexOfChar(char *str, char c) {
     int index;
@@ -364,12 +371,11 @@ int indexOfChar(char *str, char c) {
 }
 /*******************************************************************************
  * This function returns the frequency of every character in string str
- * string
- * inputs:
- * - char *str = string from file
- * - char *arr = string of every character that appears in file
- * outputs:
- * - int *freq = int array of frequency of each character
+ * Inputs:
+ * - char *str = String from file
+ * - char *arr = String of every character that appears in file
+ * Outputs:
+ * - int *freq = Int array of frequency of each character
 *******************************************************************************/
 int* getFreq(char *arr, char *str) {
     int i, index;
@@ -385,44 +391,64 @@ int* getFreq(char *arr, char *str) {
             freq[index]++;
         }
     }
-    /*Prints each character in file and ammount it occurrs*/
-    // for(i = 0; i < strlen(arr); i++){
-    //     printf("char %c occurs %d\n", arr[i], freq[i]);
-    // }
+    /*DEBUG
+     *Prints each character in file and ammount it occurrs
+    if(DEBUG){
+        for(i = 0; i < strlen(arr); i++){
+            printf("char %c occurs %d\n", arr[i], freq[i]);
+        }
+    }
+    */
     return freq;
 }
-  
-// Driver program to test above functions 
-int main() { 
-    char *str = malloc(350);
-    //Load string from file
-    load(str);
-    //Create string of every char that appears in file
-    char *arr = getChars(str);
-    //Gets frequency of every char in the file
-    int *freq = getFreq(arr, str);
-    //Size of the string contain each char
-    int size = strlen(arr)/sizeof(arr[0]);
-    //Save binary to file
-    save(arr, freq, size, str);
 
-    //Builds tree
+void compression(char* str, int n, int * binaryNumber){
+    load(str, n);
+    char *arr = getChars(str);
+    int *freq = getFreq(arr, str);
+    int size = strlen(arr)/sizeof(arr[0]);
+    save(arr, freq, size, str, binaryNumber);
+
+    /*DEBUG
+     *Prints huffman code for every charcter in file - allows manual compression/decompression
+     *to calculate expected results
+    if(DEBUG){
+        struct MinHeapNode* root = buildHuffmanTree(arr, freq, size);
+        int arr1[MAX_TREE_HT], top = 0;
+        printf("\n\nHUFFMAN CODES ARE: \n");
+        printCodes(root, arr1, top);
+    }
+    */
+}
+
+void decompression(char* str, int binaryNumber){
+    /*Build tree for decompression*/
+    char *arr = getChars(str);
+    int *freq = getFreq(arr, str);
+    int size = strlen(arr)/sizeof(arr[0]);
     struct MinHeapNode* root  = buildHuffmanTree(arr, freq, size);
 
-    int arr1[MAX_TREE_HT], top = 0;
-    printf("HUFFMAN CODES ARE: \n");
-    printCodes(root, arr1, top);
-
-    int binary[400];
-    int count, loadTop = 12; //Changing loadTop changes from where writeCode looks in the binary code. starting at 0 = h, 2 = e, 6 = l, 9 = l, 12 = 0 ... etc
-    //-1 is going to be used for end of binary
-    for(count = 0; count < 400; count++){
+    int binary[binaryNumber];
+    int count, loadTop = 0;
+    /*Initialise binary array*/
+    for(count = 0; count < binaryNumber; count++){
         binary[count] = -1;
     }
-    //Load bits from compressed file to binary array and prints code
-    loadCompressed(root, binary);
-    printf("\n");
-    writeCode(root, binary, loadTop);
-
+    /*Load bits from compressed file to binary array and prints code*/
+    loadCompressed(root, binary, binaryNumber);
+    printf("\nORIGINGAL STRING IS: \n%s\n", str);
+    printf("\nDECOMPRESSED STRING IS:\n");
+    writeCode(root, root, binary, loadTop);
+}
+  
+int main() { 
+    /* All to be done in main and called when compress/decompress is desired
+     * n - is the number of chars in text file to read from
+     */
+    int n = 5000;
+    int binaryNumber;
+    char *str = malloc(n);
+    compression(str, n, &binaryNumber);
+    decompression(str, binaryNumber);
     return 0; 
 } 
