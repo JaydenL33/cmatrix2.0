@@ -79,6 +79,14 @@ int main(int argc, char *argv[])  {
     if (plainTextLen == 0 && isRandom == 0) { /* no encrypted data exists! */
         printf("Printing random string as encrypted was not selected.\n");
         isRandom = 1;
+        char validString[plainTextLen];	/* hold validated string */
+        
+        int LINES = atoi(getenv("LINES"));
+		int COLUMNS = atoi(getenv("COLUMNS"));
+
+		print_raindrops(validString, LINES, COLUMNS, color, isRandom);
+		/* success! */
+		return 1; 
     } else if (plainTextLen > 0) { /* encrypted data was returned */
 /******************************************************************************
  * Matrix will now print entered (encrypted) data as screensaver
