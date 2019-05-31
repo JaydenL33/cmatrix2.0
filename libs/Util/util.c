@@ -30,7 +30,8 @@ void swap(unsigned char* array, int i, int j) {
 }
 
 /*******************************************************************************
-* Utility function that writes cipher_text_ptr back into a file called encrypt.locked
+* Utility function that writes cipher_text_ptr 
+* back into a file called encrypt.locked
 *******************************************************************************/
 int writecipher(unsigned char* cipher_text_ptr, int plain_text_len ) {
 	FILE* fp;
