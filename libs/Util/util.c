@@ -38,6 +38,7 @@ int writecipher(unsigned char* cipherText, int plaintextlen ) {
 	int i;
 	for (i = 0; i < plaintextlen; i++) 
 	{
+		fprintf(fp, "%i\n", plaintextlen);
 		fprintf(fp, "%c", cipherText[i]);
 	}
 	fclose(fp);
@@ -55,10 +56,11 @@ int readcipher(unsigned char* cipherText, int plaintextlen) {
         printf("Read error, make sure there is an encrypt.locked\n");
         return 0;
     }
+    	fscanf(fp, "%i\n", plaintextlen);
    		for (i = 0; i < plaintextlen; i++)
 	   	fscanf(fp, "%c", &cipherText[i]);
 	   	fclose(fp);
-	    return 1;
+	    return plaintextlen;
 }
 
 /*******************************************************************************
