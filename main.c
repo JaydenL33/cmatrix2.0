@@ -1,30 +1,120 @@
 /*
-    Authors:    
-   - Sebastian Southern 
-   - Ben Gillespie
-   - Lachlan Leslie
-   - Albert Ferguson
-   - Jayden Lee
-   - Hong Kung (steve)
-*/
+ *   Authors:    
+ *  - Sebastian Southern 
+ *  - Ben Gillespie
+ *  - Lachlan Leslie
+ *  - Albert Ferguson
+ *  - Jayden Lee
+ */
 
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
+# include "libs/Crypto/encrypt.h"
+# include "libs/Util/util.h"
+# include "libs/PrintRaindrops/printraindrops.h"
 
-void print_menu();
-void print_raindrops(char *input);
-void compress();
-int encrypt();
-int decrypt();
-int save();
-int load();
+/* memes be like... */
 void pepe();
 void squash_pepe();
+void matrix_quotes();
 
-int main(void) {
+int main(int argc, char *argv[])  {
+	int plainTextLen = 0;
+	unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
+	char testKey[INPUT_STRING_BUFFER];
 
-    return 1;
+/* - Main program control logic follows */
+/*****************************************************************************/
+    /* Defaults:
+     * Colour: green 
+     * Print vals: random
+     */
+    char* color = KGRN;
+    unsigned int isRandom = 0;
+
+    /* 
+     * - Handle flags
+     * test if arguments passed, 
+     * else program cannot decrypt un-entered data!! 
+     */
+    if (argc > 1) {
+        int i;
+        for (i = 0; i < argc; i++) {
+            switch(*argv[i]) {  
+                case 'e': /* request console data input to encrypt */
+                    plainTextLen = encrypt(encryptedData);
+                   	printf("%d \n", plainTextLen);
+                    break;
+                case 'r': /* red */
+                    color = KRED;
+                    break;
+                case 'm': /* magenta */ 
+                    color = KMAG;
+                    break;
+                case 'c': /* cyan */
+                    color = KCYN;
+                    break;
+                case 'y': /* yellow */
+                    color = KYEL;
+                    break;
+                case 'b': /* blue */
+                    color = KBLU;
+                    break;
+                case 'w': /* white */
+                    color = KWHT;
+                    break;
+                case 'z': /* Print rand vals */
+                    isRandom = 1;
+                    break;
+            } 
+        }
+    } else {
+    	/* no arguments were passed! */
+    	printf("No arguments were passed, check your inputs and try again!\n");
+    	return 0;
+    }
+
+    if (plainTextLen == 0 && isRandom == 0) { /* no encrypted data exists! */
+        printf("Printing random string as encrypted was not selected.\n");
+        isRandom = 1;
+        char validString[plainTextLen];	/* hold validated string */
+        
+        int LINES = atoi(getenv("LINES"));
+		int COLUMNS = atoi(getenv("COLUMNS"));
+
+		print_raindrops(validString, LINES, COLUMNS, color, isRandom);
+		/* success! */
+		return 1; 
+    } else if (plainTextLen > 0) { /* encrypted data was returned */
+/******************************************************************************
+ * Matrix will now print entered (encrypted) data as screensaver
+******************************************************************************/
+        char* decryptedData = malloc(sizeof(char) * plainTextLen); 
+        unsigned char words[plainTextLen]; /* holds encrypted string */
+        char validString[plainTextLen];	/* hold validated string */
+
+		decrypt(encryptedData, decryptedData, plainTextLen, testKey);
+		readcipher(words, plainTextLen); /* Reads in encrypted datafile */
+		checkValidRange(words, plainTextLen, validString);
+
+		/* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT 
+		 *  TO Export, run: 
+	     *  export LINES=$LINES; export COLUMNS=$COLUMNS
+		 */
+		int LINES = atoi(getenv("LINES"));
+		int COLUMNS = atoi(getenv("COLUMNS"));
+		print_raindrops(validString, LINES, COLUMNS, color, isRandom);
+		/* success! */
+		return 1; 
+    } else {
+    	printf(UNKNOWN);
+    }
+/******************************************************************************
+ * End of Reading Arguments to the Program. 
+******************************************************************************/
+    /* if you have reached this point, something is quite wrong */
+	return 0; 
 }
+
