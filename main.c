@@ -101,7 +101,7 @@ int main(int argc, char *argv[])  {
 		/* success! */
 		return 1; 
     } else {
-    	print(UNKNOWN);
+    	printf(UNKNOWN);
     }
 /******************************************************************************
  * End of Reading Arguments to the Program. 
