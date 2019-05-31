@@ -28,7 +28,7 @@
  * returns int length of the encrypted data, which equals the length of 
  * the original, unencrypted (plaintext), data.
 *******************************************************************************/
-int encrypt(unsigned char* encrypted_data);
+int encrypt(unsigned char* encrypted_data_ptr);
 
 /*******************************************************************************
  * Implement the library to decrypt data
@@ -37,31 +37,31 @@ int encrypt(unsigned char* encrypted_data);
  * This also requires the length of encrypted data as well as the key to decrypt
  * it (obviously).
 *******************************************************************************/
-int decrypt(unsigned char* encrypted_data, 
-char* decrypted_data, int len_encrytped_data,
-	char* user_input_key);
+int decrypt(unsigned char* encrypted_data_ptr, 
+char* decrypted_data_ptr, int len_encrytped_data,
+	char* user_input_key_ptr);
 
 /*******************************************************************************
  * Get key from user (stdin)
 *******************************************************************************/
-int getKey(char* user_input_key);
+int getKey(char* user_input_key_ptr);
 
 /*******************************************************************************
  * gets the plaintext entered by the user into the program's stdin source
- * returns the length of the plain_text
+ * returns the length of the plain_text_ptr
 *******************************************************************************/
-int getPlainText(char* plain_text);
+int getPlainText(char* plain_text_ptr);
 
 /*******************************************************************************
- * char user_input_key, user inputed key used in the initialisation
- * unsigned char byte_state_vector, the byte state vector TOBE randomised by 
+ * char user_input_key_ptr, user inputed key used in the initialisation
+ * unsigned char byte_state_vector_ptr, the byte state vector TOBE randomised by 
  * genPseudoRandKey
  * int user_key_length, length of the user inputed key
  * 
  * state vector initiliser - initialises a BYTE_STATE_LEN byte key using the 
  * KSA algorithm (step 1 of RC4)
 *******************************************************************************/
-void byteStreamInitialiser(char* user_input_key, unsigned char* byte_state_vector, 
+void byteStreamInitialiser(char* user_input_key_ptr, unsigned char* byte_state_vector_ptr, 
 	 int user_key_length);
 
 /*******************************************************************************
@@ -75,7 +75,7 @@ void byteStreamInitialiser(char* user_input_key, unsigned char* byte_state_vecto
  * Generates a "pseudo random" BYTE_STATE_LEN byte key using the PRGA algorithm 
  * (step 2 of RC4)
 *******************************************************************************/
-int genPseudoRandKey(unsigned char* byte_state_vector, char* plain_text, 
-	unsigned char* cipher_text, int reverse, int data_len, int key_len);
+int genPseudoRandKey(unsigned char* byte_state_vector_ptr, char* plain_text_ptr, 
+	unsigned char* cipher_text_ptr, int reverse, int data_len, int key_len);
 
 # endif
