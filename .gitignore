@@ -24,3 +24,5 @@
 
 *.locked
 
+# VSCode
+.vscode
