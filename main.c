@@ -46,7 +46,6 @@ int main(int argc, char *argv[])  {
             switch(*argv[i]) {  
                 case 'e': /* request console data input to encrypt */
                     plainTextLen = encrypt(encryptedData);
-                    printf("%d \n", plainTextLen);
                     break;
                 case 'r': /* red */
                     color = KRED;
@@ -106,6 +105,7 @@ int main(int argc, char *argv[])  {
          */
         int LINES = atoi(getenv("LINES"));
         int COLUMNS = atoi(getenv("COLUMNS"));
+
         int binaryNumber;
 
         char forCompression[plainTextLen]; 
