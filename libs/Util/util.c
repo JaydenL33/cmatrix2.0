@@ -1,14 +1,16 @@
-/* utility functions used by the libCrypto
+/* utility functions used by all libs
  * Fund-O-C Assesment 3
  * See the github: github.com/rlcaust/Fund-O-C
  * 
  * Authors:
- * Albert Ferguson Jayden Lee
+ * Albert Ferguson Jayden Lee, Sebastian Southern
  */
 
-# include "encrypt.h" /* custom library header file for cryptography functionality */
 # include <stdlib.h>  /* fopen, fprintf and fclose  */ 
-# include <stdio.h>   /* getchar,  EOF 		    	*/
+# include <stdio.h>   /* getchar, EOF 		    	*/
+# include <string.h>  /* strlen 					*/
+
+# include "util.h" 	  /* custom library header file for cryptography functionality */
 
 /*******************************************************************************
  * Utility function that clears stdin until newline or EOF
@@ -55,7 +57,7 @@ int readcipher(unsigned char* cipherText, int plaintextlen) {
    		for (i = 0; i < plaintextlen; i++)
 	   		fscanf(fp, "%c", &cipherText[i]);
 	   	fclose(fp);
-	    return 0;
+	    return 1;
 }
 
 /*******************************************************************************
@@ -64,7 +66,7 @@ int readcipher(unsigned char* cipherText, int plaintextlen) {
    displayable by the terminal or a space or DEL is thrown out. Everything else 
    is appended to the output array. 
 *******************************************************************************/
-int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, unsigned char* checkedArray) {
+int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, char* checkedArray) {
 	int decASCII;
 	int i;
 	int j = 0;
@@ -74,9 +76,11 @@ int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, unsigned c
 		decASCII = (int) unCheckedArray[i]; 
 		if (decASCII >= 33 && decASCII <= 126)
 		{
-			checkedArray[j] = unCheckedArray[i];
+			checkedArray[j] = (char) (decASCII - 127) ;
 			j++;
 		}
 	}
-	return 0;
+	checkedArray[j] = '\0';
+	return 1;
 }
+

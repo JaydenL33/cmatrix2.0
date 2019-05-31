@@ -8,10 +8,12 @@
  * Jayden Lee
  */
 
-# include <stdio.h>   /* fgets, printf 	*/
-# include <stdlib.h>  /* system 		*/
-# include <string.h>  /* strlen 		*/
-# include "encrypt.h" /* custom library header file for cryptography functionality */
+# include <stdio.h>   	/* fgets, printf 	*/
+# include <stdlib.h>  	/* system 			*/
+# include <string.h>  	/* strlen 			*/
+
+# include "encrypt.h" 		/* cryptography functionality 	*/
+# include "../Util/util.h"	/* utility functions 			*/
 
 /*******************************************************************************
  * Implement library to encrypt data
