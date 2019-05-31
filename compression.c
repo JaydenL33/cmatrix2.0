@@ -424,12 +424,11 @@ void addChar(char *str, char c) {
  * - char* arr = String containing every character that appeared
 *******************************************************************************/
 char* getChars(char *str) {
-    int i;
-    size_t len = strlen(str);
-    char *arr = (char*) malloc(26 * sizeof(char));
-    memset(arr, '\0', sizeof(arr));
+    int i, size = 26;
+    int len = strlen(str);
+    char *arr = (char*) malloc(size * sizeof(char));
+    memset(arr, '\0', size);
     char *ret;
-    char c;
     for(i = 0; i < len; i++){
         char c = str[i];
         ret = strchr(arr, c);
@@ -456,7 +455,7 @@ char* getChars(char *str) {
 *******************************************************************************/
 int indexOfChar(char *str, char c) {
     int index;
-    size_t len = strlen(str);
+    int len = strlen(str);
     for(index = 0; index < len; index++){
         if(str[index] == c)
             return index;
@@ -474,7 +473,7 @@ int indexOfChar(char *str, char c) {
 *******************************************************************************/
 int* getFreq(char *arr, char *str) {
     int i, index;
-    size_t len = strlen(str);
+    int len = strlen(str);
     int *freq = malloc(strlen(arr) * sizeof(int));
     /*Initialises freq array to 0*/
     for(i = 0; i < strlen(arr); i++){
