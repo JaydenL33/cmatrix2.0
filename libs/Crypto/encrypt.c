@@ -187,11 +187,11 @@ int genPseudoRandKey(unsigned char* byte_state_vector_ptr, char* plain_text_ptr,
 		j = (j + byte_state_vector_ptr[i]) % key_len;
 		swap(byte_state_vector_ptr, i, j);
 		int byte_state_addition = byte_state_vector_ptr[i] +
-         byte_state_vector_ptr[j] % key_len;
+        byte_state_vector_ptr[j] % key_len;
 		unsigned char xor_elem = byte_state_vector_ptr[byte_state_addition];
 		
 		
-		if(reverse) {
+		if (reverse) {
 			plain_text_ptr[t]  = xor_elem ^ cipher_text[t];
 		} else {
 			cipher_text[t] = xor_elem ^ plain_text_ptr[t];

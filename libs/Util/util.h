@@ -26,6 +26,6 @@ int writecipher(unsigned char* cipher_text_ptr, int plain_text_len);
 int readcipher(unsigned char* cipher_text_ptr, int plain_text_len);
 
 int checkValidRange (unsigned char *un_checked_array_ptr,
- int plain_text_len, char* checked_array_ptr);
+int plain_text_len, char* checked_array_ptr);
 
 # endif

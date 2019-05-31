@@ -37,8 +37,7 @@ int writecipher(unsigned char* cipher_text_ptr, int plain_text_len ) {
 	FILE* fp;
 	fp = fopen(FILENAME, "w");
 	int i;
-	for (i = 0; i < plain_text_len; i++) 
-	{
+	for (i = 0; i < plain_text_len; i++) {
 		fprintf(fp, "%c", cipher_text_ptr[i]);
 	}
 	fclose(fp);
@@ -56,10 +55,12 @@ int readcipher(unsigned char* cipher_text_ptr, int plain_text_len) {
         printf("Read error, make sure there is an encrypt.locked\n");
         return 0;
     }
-   		for (i = 0; i < plain_text_len; i++)
-	   	fscanf(fp, "%c", &cipher_text_ptr[i]);
-	   	fclose(fp);
-	    return 1;
+	for (i = 0; i < plain_text_len; i++) {
+		fscanf(fp, "%c", &cipher_text_ptr[i]);
+	}
+	
+	fclose(fp);
+	return 1;
 }
 
 /*******************************************************************************
