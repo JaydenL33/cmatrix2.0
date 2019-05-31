@@ -163,7 +163,11 @@ void writeArr(int arr[], int size) {
 	fp = fopen(COMPRESS_NAME, "ab");
     fwrite(arr, sizeof(int), size, fp);
     fclose(fp);
-    printArr(arr, size);
+    /*DEBUG
+     *Prints all the binary code that is being written to the binary file
+    if(DEBUG){
+        printArr(arr, size);
+    }*/
 }
 
 /*******************************************************************************
@@ -345,11 +349,15 @@ void loadCompressed(int binary[], int binaryNumber) {
 	if(fp != NULL){
         fread(binary, sizeof(int), binaryNumber, fp);
 		fclose(fp);
-        printf("\nLOAD BINARY CODES\n");
-        int i;
-        for(i = 0; i < binaryNumber; i++){
-            printf("%d", binary[i]);
-        }
+        /*DEBUG
+         *Prints the binary code that has been read from compressed file
+        if(DEBUG){
+            printf("\nLOAD BINARY CODES\n");
+            int i;
+            for(i = 0; i < binaryNumber; i++){
+                printf("%d", binary[i]);
+            }
+        }*/
 	}
     else {
         printf("Read error\n");
@@ -371,7 +379,12 @@ void save(char data[], int freq[], int size, char *str, int * binaryNumber) {
     struct MinHeapNode* root = buildHuffmanTree(data, freq, size);
     int len = strlen(str);
     int i;
-    printf("Compressed binary code for text file\n");
+    /*DEBUG
+     *Indicator that binary code will be printed
+    if(DEBUG){
+        printf("Compressed binary code for text file\n");
+    }*/
+
     /*For every character from database file(original string) save its huffman code value to binary file*/
     int binary[MAX_TREE_HT], top = 0;
     for(i = 0; i < len; i++){
@@ -489,6 +502,8 @@ void compression(char* str, int n, int * binaryNumber){
     fp = fopen(COMPRESS_NAME, "wb");
     fclose(fp);
     load(str, n);
+    printf("\nSTRING BEING COMPRESSED IS:\n %s\n", str);
+    printf("\nCOMPRESSING....\n");
     char *arr = getChars(str);
     int *freq = getFreq(arr, str);
     int size = strlen(arr)/sizeof(arr[0]);
@@ -507,6 +522,7 @@ void compression(char* str, int n, int * binaryNumber){
 }
 
 void decompression(char* str, int binaryNumber){
+    printf("\nDECOMPRESSING....\n");
     /*Build tree for decompression*/
     char *arr = getChars(str);
     int *freq = getFreq(arr, str);
@@ -521,7 +537,6 @@ void decompression(char* str, int binaryNumber){
     }
     /*Load bits from compressed file to binary array and prints code*/
     loadCompressed(binary, binaryNumber);
-    printf("\n\nORIGINGAL STRING IS: \n%s\n", str);
     printf("\nDECOMPRESSED STRING IS:\n");
     writeCode(root, root, binary, loadTop);
 }
