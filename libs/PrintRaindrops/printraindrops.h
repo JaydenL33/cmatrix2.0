@@ -23,10 +23,10 @@
 # define CLEAR printf("\033[H\033[J") /* Clears the entire terminal */
 # define HIDE_CURSOR printf("\e[?25l") /* Hide the cursor in the terminal */
 
-void print_raindrops(char* encryptedString, int LINES, int COLUMNS, char* color,
- unsigned int isRandom);
-void rand_str(char *dest, size_t length);
-void rand_encrypted_str(char *input, char *str, size_t length);
+void print_raindrops(char* encrypted_string_ptr, int LINES, int COLUMNS, char* color_ptr,
+ unsigned int is_random);
+void rand_str(char *dest_ptr, size_t length);
+void rand_encrypted_str(char *input_ptr, char *str_ptr, size_t length);
 
 void delay();
 

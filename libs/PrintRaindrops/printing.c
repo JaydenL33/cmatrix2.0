@@ -21,8 +21,8 @@
  * 'falling raindrop' effect. The length of the raindrops are randomly 
  * generated.
 ****************************************************************************/
-void print_raindrops(char* encryptedString, int LINES,
-int COLUMNS, char* color, unsigned int isRandom) {
+void print_raindrops(char* encrypted_string_ptr, int LINES,
+int COLUMNS, char* color_ptr, unsigned int is_random) {
 	char matrix[LINES][COLUMNS];
 	int count = 0;
 	HIDE_CURSOR;
@@ -40,12 +40,12 @@ int COLUMNS, char* color, unsigned int isRandom) {
 		/* Generate a random string of length COLUMNS */
 		char temp_str[COLUMNS];
 		
-		if (isRandom) {
+		if (is_random) {
 			/* Generates a random string of characters */
 			rand_str(temp_str, COLUMNS);
 		} else {
 			/* Based on encrypted string */
-			rand_encrypted_str(temp_str, encryptedString, COLUMNS);
+			rand_encrypted_str(temp_str, encrypted_string_ptr, COLUMNS);
 		}
 
 		int i;
@@ -81,60 +81,60 @@ int COLUMNS, char* color, unsigned int isRandom) {
 
 		/* Creates a string of the entire matrix
         that can be printed to the terminal */
-		char finalString[(LINES) * (COLUMNS)];
-		int tempCount = 0;
+		char final_string[(LINES) * (COLUMNS)];
+		int temp_count = 0;
 		for (i = 0; i < LINES; i++) {
 			int j;
 			for (j = 0; j < COLUMNS; j++) {
-				finalString[tempCount] = matrix[i][j];
-				tempCount++;
+				final_string[temp_count] = matrix[i][j];
+				temp_count++;
 			}   
-			finalString[tempCount] = '\n';
-			tempCount++;
+			final_string[temp_count] = '\n';
+			temp_count++;
 		}
 		
 		/* Clear the terminal */
 		CLEAR;
 		/* Prints the entire matrix in a specified colour */
-		printf("%s%s", color, finalString);
+		printf("%s%s", color_ptr, final_string);
 		delay();
 		count++;
 	}
 }
 
 /********************************************** 
- * *str = variable to put random string into
+ * *str_ptr = variable to put random string into
  * length = size of length in bytes
  *
  * Generates random string 
- * rand_str(str, sizeof str - 1)
+ * rand_str(str_ptr, sizeof str_ptr - 1)
 ***********************************************/
-void rand_str(char *str, size_t length) {
+void rand_str(char *str_ptr, size_t length) {
 	char charset[] = "0123456789"
 					 "abcdefghijklmnopqrstuvwxyz"
 					 "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 	while (length-- > 0) {
 		size_t index = (double) rand() / RAND_MAX * (sizeof charset - 1);
-		*str++ = charset[index];
+		*str_ptr++ = charset[index];
 	}
-	*str = '\0';
+	*str_ptr = '\0';
 }
 
 /**************************************************************************
  * Generates a random string from the encrypted string of size COLUMNS
- * 'new_str' will be the generated string from this function.
- * 'encrypted_str' is the encrypted string to generate the new string from.
+ * 'new_str_ptr' will be the generated string from this function.
+ * 'encrypted_str_ptr' is the encrypted string to generate the new string from.
  * 'length' is the desired width of the string, generally will be width of
  * the terminal.
 ****************************************************************************/
-void rand_encrypted_str(char *new_str, char *encrypted_str, size_t length) {
+void rand_encrypted_str(char *new_str_ptr, char *encrypted_str_ptr, size_t length) {
 	int i;
-	for (i = 0; encrypted_str[i] != '\0'; i++) {}
+	for (i = 0; encrypted_str_ptr[i] != '\0'; i++) {}
 	
 	while (length-- > 0) {
 		size_t index = (int) rand() % i;
-		*new_str++ = encrypted_str[index];
+		*new_str_ptr++ = encrypted_str_ptr[index];
 	}
 }
 
