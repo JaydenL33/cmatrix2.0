@@ -87,4 +87,3 @@ int plain_text_len, char* checked_array_ptr) {
 	checked_array_ptr[j] = '\0';
 	return 1;
 }
-
