@@ -21,7 +21,8 @@
  * 'falling raindrop' effect. The length of the raindrops are randomly 
  * generated.
 ****************************************************************************/
-void print_raindrops(char* encryptedString, int LINES, int COLUMNS, char* color, unsigned int isRandom) {
+void print_raindrops(char* encryptedString, int LINES,
+int COLUMNS, char* color, unsigned int isRandom) {
 	char matrix[LINES][COLUMNS];
 	int count = 0;
 	HIDE_CURSOR;
@@ -78,7 +79,8 @@ void print_raindrops(char* encryptedString, int LINES, int COLUMNS, char* color,
 			}
 		}
 
-		/* Creates a string of the entire matrix that can be printed to the terminal */
+		/* Creates a string of the entire matrix
+        that can be printed to the terminal */
 		char finalString[(LINES) * (COLUMNS)];
 		int tempCount = 0;
 		for (i = 0; i < LINES; i++) {
