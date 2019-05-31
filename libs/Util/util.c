@@ -84,4 +84,3 @@ int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, char* chec
 	checkedArray[j] = '\0';
 	return 1;
 }
-

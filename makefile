@@ -23,6 +23,7 @@ STATIC_LIBS = libs
 STATIC_CRYPTO = $(STATIC_LIBS)/Crypto
 STATIC_RAINDROPS = $(STATIC_LIBS)/PrintRaindrops
 STATIC_UTIL = $(STATIC_LIBS)/Util
+STATIC_COMPRESSION = $(STATIC_LIBS)/Compression
 
 # src and target macros
 CRYPTO_SRC = $(wildcard $(STATIC_CRYPTO)/*.c)
@@ -31,13 +32,15 @@ RAINDROPS_SRC = $(wildcard $(STATIC_RAINDROPS)/*.c)
 RAINDROPS_TARGET = libRaindrops.a
 UTIL_SRC = $(wildcard $(STATIC_UTIL)/*.c)
 UTIL_TARGET = libUtil.a
+COMPRESSION_SRC = $(wildcard $(STATIC_COMPRESSION)/*.c)
+COMPRESSION_TARGET = libCompression.a
 
 # object files
 OBJS = $(LINK_SRC:.c=.o)
 
 # clean targets, any object and/or compiled libs
 CLEAN_OBJS = $(wildcard *.o)
-CLEAN_LIBS = $(CRYPTO_TARGET) $(RAINDROPS_TARGET) $(UTIL_TARGET)
+CLEAN_LIBS = $(CRYPTO_TARGET) $(RAINDROPS_TARGET) $(UTIL_TARGET) $(COMPRESSION_TARGET)
 
 # compile flags
 LIBFLAGS = ar -rcs
@@ -51,17 +54,18 @@ all : $(LINK_TARGET)
 	@echo $(OSFLAG)
 
 $(LINK_TARGET) : libraries
-	$(CCFLAGS) -o $@ $(LINK_SRC) $(CRYPTO_TARGET) $(UTIL_TARGET) $(RAINDROPS_TARGET)
+	$(CCFLAGS) -o $@ $(LINK_SRC) $(CRYPTO_TARGET) $(UTIL_TARGET) $(RAINDROPS_TARGET) $(COMPRESSION_TARGET)
 	@echo ============== All done! ========================
 
 ################################################################################
 #	Compile libraries (static),
 # 	compile each of the three libraries required
 ################################################################################
-libraries : $(UTIL_SRC:.c=.o) $(CRYPTO_SRC:.c=.o) $(RAINDROPS_SRC:.c=.o)
+libraries : $(UTIL_SRC:.c=.o) $(CRYPTO_SRC:.c=.o) $(RAINDROPS_SRC:.c=.o) $(COMPRESSION_SRC:.c=.o)
 	$(LIBFLAGS) $(UTIL_TARGET) $(UTIL_SRC:.c=.o)
 	$(LIBFLAGS) $(CRYPTO_TARGET) $(CRYPTO_SRC:.c=.o)
 	$(LIBFLAGS) $(RAINDROPS_TARGET) $(RAINDROPS_SRC:.c=.o)
+	$(LIBFLAGS) $(COMPRESSION_TARGET) $(COMPRESSION_SRC:.c=.o)
 	@echo ============== Libraries compilled! =============
 
 $(UTIL_SRC:.c=.o) : $(STATIC_UTIL)
@@ -73,6 +77,9 @@ $(CRYPTO_SRC:.c=.o) : $(STATIC_CRYPTO)
 $(RAINDROPS_SRC:.c=.o) : $(STATIC_RAINDROPS)
 	$(CCFLAGS) -c $(wildcard $^/*.c) -o $@
 
+$(COMPRESSION_SRC:.c=.o) : $(STATIC_COMPRESSION)
+	$(CCFLAGS) -c $(wildcard $^/*.c) -o $@
+
 ################################################################################
 #	Clean directory
 ################################################################################
@@ -82,5 +89,7 @@ clean :
 	rm -f $(wildcard $(STATIC_CRYPTO)/*.o)
 	rm -f $(wildcard $(STATIC_RAINDROPS)/*.o)
 	rm -f $(wildcard $(STATIC_UTIL)/*.o)
+	rm -f $(wildcard $(STATIC_COMPRESSION)/*.o)
+	
 	@echo ============== Clean all complete! ==============
 

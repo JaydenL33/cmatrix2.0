@@ -14,6 +14,7 @@
 # include "libs/Crypto/encrypt.h"
 # include "libs/Util/util.h"
 # include "libs/PrintRaindrops/printraindrops.h"
+# include "libs/Compression/compression.h"
 
 /* memes be like... */
 void pepe();
@@ -21,9 +22,9 @@ void squash_pepe();
 void matrix_quotes();
 
 int main(int argc, char *argv[])  {
-	int plainTextLen = 0;
-	unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
-	char testKey[INPUT_STRING_BUFFER];
+    int plainTextLen = 0;
+    unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
+    char testKey[INPUT_STRING_BUFFER];
 
 /* - Main program control logic follows */
 /*****************************************************************************/
@@ -45,7 +46,6 @@ int main(int argc, char *argv[])  {
             switch(*argv[i]) {  
                 case 'e': /* request console data input to encrypt */
                     plainTextLen = encrypt(encryptedData);
-                   	printf("%d \n", plainTextLen);
                     break;
                 case 'r': /* red */
                     color = KRED;
@@ -83,51 +83,57 @@ int main(int argc, char *argv[])  {
             } 
         }
     } else {
-    	/* no arguments were passed! */
-    	printf("No arguments were passed, check your inputs and try again!\n");
-        
-    	return 0;
+        /* no arguments were passed! */
+        printf("No arguments were passed, check your inputs and try again!\n");
+        return 0;
     }
 
     if (plainTextLen == 0 && isRandom == 0) { /* no encrypted data exists! */
         printf("Printing random string as encrypted was not selected.\n");
         isRandom = 1;
-        char validString[plainTextLen];	/* hold validated string */
+        char validString[plainTextLen]; /* hold validated string */
         
         int LINES = atoi(getenv("LINES"));
-		int COLUMNS = atoi(getenv("COLUMNS"));
+        int COLUMNS = atoi(getenv("COLUMNS"));
 
-		print_raindrops(validString, LINES, COLUMNS, color, isRandom);
-		/* success! */
-		return 1; 
+        print_raindrops(validString, LINES, COLUMNS, color, isRandom);
+        /* success! */
+        return 1; 
     } else if (plainTextLen > 0) { /* encrypted data was returned */
 /******************************************************************************
  * Matrix will now print entered (encrypted) data as screensaver
 ******************************************************************************/
         char* decryptedData = malloc(sizeof(char) * plainTextLen); 
         unsigned char words[plainTextLen]; /* holds encrypted string */
-        char validString[plainTextLen];	/* hold validated string */
+        char validString[plainTextLen]; /* hold validated string */
 
-		decrypt(encryptedData, decryptedData, plainTextLen, testKey);
-		readcipher(words, plainTextLen); /* Reads in encrypted datafile */
-		checkValidRange(words, plainTextLen, validString);
+        decrypt(encryptedData, decryptedData, plainTextLen, testKey);
+        readcipher(words, plainTextLen); /* Reads in encrypted datafile */
+        checkValidRange(words, plainTextLen, validString);
 
-		/* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT 
-		 *  TO Export, run: 
-	     *  export LINES=$LINES; export COLUMNS=$COLUMNS
-		 */
-		int LINES = atoi(getenv("LINES"));
-		int COLUMNS = atoi(getenv("COLUMNS"));
-		print_raindrops(validString, LINES, COLUMNS, color, isRandom);
-		/* success! */
-		return 1; 
+        /* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT 
+         *  TO Export, run: 
+         *  export LINES=$LINES; export COLUMNS=$COLUMNS
+         */
+        int LINES = atoi(getenv("LINES"));
+        int COLUMNS = atoi(getenv("COLUMNS"));
+
+        int binaryNumber;
+
+        char forCompression[plainTextLen]; 
+
+        *forCompression = *validString;
+
+        compression(forCompression, plainTextLen, &binaryNumber);
+        print_raindrops(validString, LINES, COLUMNS, color, isRandom);
+        /* success! */
+        return 1; 
     } else {
-    	printf(UNKNOWN);
+        printf(UNKNOWN);
     }
 /******************************************************************************
  * End of Reading Arguments to the Program. 
 ******************************************************************************/
     /* if you have reached this point, something is quite wrong */
-	return 0; 
+    return 0; 
 }
-
