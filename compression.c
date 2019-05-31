@@ -1,43 +1,38 @@
+/* Printing functionality source code for libCompression.
+ * Note: utility functions moved to seperate util lib!!!
+ *
+ * See the github: github.com/rlcaust/Fund-O-C
+ * 
+ * Authors:
+ * Benjamin Gillespie
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-  
-// This constant can be avoided by explicitly
-// calculating height of Huffman Tree
-#define MAX_TREE_HT 100
-#define DB_NAME "database.txt"
-#define COMPRESS_NAME "compressed.bin"
-#define TREE_STORE "tree.dat"
-  
-// A Huffman tree node
-struct MinHeapNode {
-    char data; // An input character
-    unsigned freq; // Frequency of the character
-    struct MinHeapNode *left, *right; // Left and right child of this node
-};
+#include "compression.h"
 
-// A Min Heap:  Collection of
-// min-heap (or Huffman tree) nodes
-struct MinHeap {
-    unsigned size; // Current size of min heap
-    unsigned capacity; // Capacity of min heap
-    struct MinHeapNode** array; // Array of minheap node pointers
-};
-
-// A utility function allocate a new
-// min heap node with given character
-// and frequency of the character
+/*******************************************************************************
+ * This is a utility function to allocate a new Min Heap/Tree node with a given
+ * character and frequency of the character
+ * - unsinged capacity - Size of Min Heap/Tree node to create
+ * Outputs:
+ * - struct MinHeapNode* newNode = Min Heap/Tree node that was created 
+*******************************************************************************/
 struct MinHeapNode* newNode(char data, unsigned freq) {
-    struct MinHeapNode* temp  = (struct MinHeapNode*)malloc(sizeof(struct MinHeapNode));
-    temp->left = temp->right = NULL;
-    temp->data = data;
-    temp->freq = freq;
+    struct MinHeapNode* newNode  = (struct MinHeapNode*)malloc(sizeof(struct MinHeapNode));
+    newNode->left = newNode->right = NULL;
+    newNode->data = data;
+    newNode->freq = freq;
 
-    return temp;
+    return newNode;
 }
 
-// A utility function to create
-// a min heap of given capacity
+/*******************************************************************************
+ * This is a utility function to create a Min Heap/Tree of given capacity
+ * - unsinged capacity - Size of Min Heap/Tree to create
+ * Outputs:
+ * - None
+*******************************************************************************/
 struct MinHeap* createMinHeap(unsigned capacity) {
     struct MinHeap* minHeap = (struct MinHeap*)malloc(sizeof(struct MinHeap));
     minHeap->size = 0; // current size is 0
@@ -46,20 +41,31 @@ struct MinHeap* createMinHeap(unsigned capacity) {
 
     return minHeap;
 }
-  
-// A utility function to
-// swap two min heap nodes
+
+/*******************************************************************************
+ * This is a utility function to swap two Min Heap/Tree nodes
+ * - struct MinHeapNode** a = Pointer to node a
+ * - struct MinHeapNode** b = Pointer to node b
+ * Outputs:
+ * - None
+*******************************************************************************/
 void swapMinHeapNode(struct MinHeapNode** a, struct MinHeapNode** b) {
-    struct MinHeapNode* t = *a;
+    struct MinHeapNode* temp = *a;
     *a = *b;
-    *b = t;
+    *b = temp;
 }
-  
-// The standard minHeapify function. 
-void minHeapify(struct MinHeap* minHeap, int idx) {
-    int smallest = idx;
-    unsigned int left = 2 * idx + 1;
-    unsigned int right = 2 * idx + 2;
+
+/*******************************************************************************
+ * This is a utility function to Min Heapify a Min Heap/Tree
+ * - struct MinHeap* minHeap = Min Heap/Tree
+ * - int index = Starting index
+ * Outputs:
+ * - None
+*******************************************************************************/
+void minHeapify(struct MinHeap* minHeap, int index) {
+    int smallest = index;
+    unsigned int left = 2 * index + 1;
+    unsigned int right = 2 * index + 2;
   
     if(left < minHeap->size && minHeap->array[left]->
 freq < minHeap->array[smallest]->freq)
@@ -69,21 +75,29 @@ freq < minHeap->array[smallest]->freq)
 freq < minHeap->array[smallest]->freq)
         smallest = right;
   
-    if(smallest != idx){
+    if(smallest != index){
         swapMinHeapNode(&minHeap->array[smallest],
-                        &minHeap->array[idx]);
+                        &minHeap->array[index]);
         minHeapify(minHeap, smallest);
     }
 }
-  
-// A utility function to check
-// if size of heap is 1 or not
+
+/*******************************************************************************
+ * This is a utility function to check if size of heap is 1
+ * - struct MinHeap* minHeap = Min Heap/Tree
+ * Outputs:
+ * - int = Size of Min Heap
+*******************************************************************************/
 int isSizeOne(struct MinHeap* minHeap) {
     return (minHeap->size == 1);
 }
-  
-// A standard function to extract 
-// minimum value node from heap 
+
+/*******************************************************************************
+ * This is a utility function to extract the minimum value node from Heap/Tree
+ * - struct MinHeap* minHeap = Min Heap/Tree
+ * Outputs:
+ * - None
+*******************************************************************************/
 struct MinHeapNode* extractMin(struct MinHeap* minHeap) {
     struct MinHeapNode* temp = minHeap->array[0];
     minHeap->array[0] = minHeap->array[minHeap->size - 1];
@@ -92,9 +106,14 @@ struct MinHeapNode* extractMin(struct MinHeap* minHeap) {
   
     return temp;
 }
-  
-// A utility function to insert 
-// a new node to Min Heap 
+
+/*******************************************************************************
+ * This is a utility function to insert a new node to Min Heap
+ * - struct MinHeap* minHeap = Min Heap/Tree
+ * - struct MinHeapNode* minHeapNode = Node to insert into Heap/Tree
+ * Outputs:
+ * - None
+*******************************************************************************/
 void insertMinHeap(struct MinHeap* minHeap, struct MinHeapNode* minHeapNode) {
     ++minHeap->size;
     int i = minHeap->size - 1;
@@ -104,40 +123,71 @@ void insertMinHeap(struct MinHeap* minHeap, struct MinHeapNode* minHeapNode) {
     }
     minHeap->array[i] = minHeapNode;
 }
-  
-// A standard function to build min heap
+
+/*******************************************************************************
+ * This is a utility function to build Min Heap
+ * - struct MinHeap* minHeap = Min Heap/Tree
+ * Outputs:
+ * - None
+*******************************************************************************/
 void buildMinHeap(struct MinHeap* minHeap) {
     int n = minHeap->size - 1;
     int i;
     for(i = (n - 1) / 2; i >= 0; --i)
         minHeapify(minHeap, i);
 }
-  
-// A utility function to print an array of size n
-void printArr(int arr[], int n) {
+
+/*******************************************************************************
+ * This is a utility function to print an array of size
+ * - int arr[] = Array of integers
+ * - int size = Size of the array
+ * Outputs:
+ * - None
+*******************************************************************************/
+void printArr(int arr[], int size) {
     int i;
-    for(i = 0; i < n; ++i)
+    for(i = 0; i < size; ++i)
         printf("%d", arr[i]);
 }
 
-// A utility function to write to file an array of size n
-void writeArr(int arr[], int n) {
+/*******************************************************************************
+ * This function writes the huffman binary to the compressed file
+ * Inputs:
+ * - int arr[] = Array of bits representing the Huffman binary of a character
+ * - int size = Number of bits in array
+ * Outputs:
+ * - int = 1 if root is a leaf
+*******************************************************************************/
+void writeArr(int arr[], int size) {
     FILE *fp;
 	fp = fopen(COMPRESS_NAME, "ab");
-    fwrite(arr, sizeof(int), n, fp);
+    fwrite(arr, sizeof(int), size, fp);
     fclose(fp);
-    printArr(arr, n);
+    printArr(arr, size);
 }
-  
-// Utility function to check if this node is leaf
+
+/*******************************************************************************
+ * This function builds a MinHeap of capacity equal to size and inserts all 
+ * characters of data[] in the heap.
+ * Inputs:
+ * - struct MinHeapNode* root = Huffman tree node
+ * Outputs:
+ * - int = 1 if root is a leaf
+*******************************************************************************/
 int isLeaf(struct MinHeapNode* root) { 
     return !(root->left) && !(root->right); 
 }
-  
-// Creates a min heap of capacity 
-// equal to size and inserts all character of 
-// data[] in min heap. Initially size of 
-// min heap is equal to capacity 
+
+/*******************************************************************************
+ * This function builds a MinHeap of capacity equal to size and inserts all 
+ * characters of data[] in the heap.
+ * Inputs:
+ * - char data[] = String containing each character that appeared
+ * - int freq[] = Frequency of every character that appeared
+ * - int size = Number of characters in data
+ * Outputs:
+ * - struct MinHeapNode* = MinHeap node that was built
+*******************************************************************************/
 struct MinHeap* createAndBuildMinHeap(char data[], int freq[], int size) { 
     struct MinHeap* minHeap = createMinHeap(size); 
     for(int i = 0; i < size; ++i) 
@@ -148,8 +198,16 @@ struct MinHeap* createAndBuildMinHeap(char data[], int freq[], int size) {
   
     return minHeap; 
 } 
-  
 
+/*******************************************************************************
+ * This function builds the Huffman tree
+ * Inputs:
+ * - char data[] = String containing each character that appeared
+ * - int freq[] = Frequency of every character that appeared
+ * - int size = Number of characters in data
+ * Outputs:
+ * - struct MinHeapNode* = Huffman tree root node was built
+*******************************************************************************/
 struct MinHeapNode* buildHuffmanTree(char data[], int freq[], int size) { 
     struct MinHeapNode *left, *right, *top; 
     struct MinHeap* minHeap = createAndBuildMinHeap(data, freq, size); 
@@ -163,7 +221,7 @@ struct MinHeapNode* buildHuffmanTree(char data[], int freq[], int size) {
     }  
     return extractMin(minHeap); 
 } 
-  
+
 /*******************************************************************************
  * This function transverses the huffman tree and prints codes for every 
  * character in the tree
@@ -188,7 +246,8 @@ void printCodes(struct MinHeapNode* tree, int binary[], int top) {
         printArr(binary, top); 
         printf(" ");
     } 
-} 
+}
+
 /*******************************************************************************
  * This function transverses the huffman tree for every character in text file
  * and writes it to binary to file
@@ -220,6 +279,7 @@ void saveCode(struct MinHeapNode* current, int binary[], int top, char c, int * 
         writeArr(binary, top);
     } 
 }
+
 /*******************************************************************************
  * This function transverses the huffman tree from the binary file and  prints
  * every character as it is found
@@ -271,7 +331,15 @@ void load(char *str, int n) {
     }
 }
 
-void loadCompressed(struct MinHeapNode* root, int  binary[], int binaryNumber) {
+/*******************************************************************************
+ * This function loads binary from compressed file into an array
+ * Inputs:
+ * - int  binary[] = Array to load binary from file into 
+ * - int binaryNumber = How many bits are in the binary file
+ * Outputs:
+ * - None
+*******************************************************************************/
+void loadCompressed(int binary[], int binaryNumber) {
     FILE *fp;
 	fp = fopen(COMPRESS_NAME, "rb");
 	if(fp != NULL){
@@ -288,6 +356,17 @@ void loadCompressed(struct MinHeapNode* root, int  binary[], int binaryNumber) {
     }
 }
 
+/*******************************************************************************
+ * This function saves the compressed string
+ * Inputs:
+ * - char data[] = String containing each character that appeared
+ * - int freq[] = Frequency of every character that appeared
+ * - int size = Number of characters in data
+ * - char *str = Loaded string of text in saved file
+ * - int * binaryNumber = Pointer to int representing amount of bits in compressed file
+ * Outputs:
+ * - None
+*******************************************************************************/
 void save(char data[], int freq[], int size, char *str, int * binaryNumber) {
     struct MinHeapNode* root = buildHuffmanTree(data, freq, size);
     int len = strlen(str);
@@ -306,7 +385,7 @@ void save(char data[], int freq[], int size, char *str, int * binaryNumber) {
  * - char *str = String to add to
  * - char c = Character to add to string
  * Outputs:
- * - char* arr = String with character appended
+ * - None
 *******************************************************************************/
 void addChar(char *str, char c) {
     size_t len = strlen(str);
@@ -322,6 +401,7 @@ void addChar(char *str, char c) {
     strcpy(str, str2);
     free(str2);
 }
+
 /*******************************************************************************
  * This function returns a string with every character that appears in the input
  * string
@@ -352,6 +432,7 @@ char* getChars(char *str) {
     }
     return arr;
 }
+
 /*******************************************************************************
  * This function returns the index of a character within a string
  * Inputs:
@@ -369,6 +450,7 @@ int indexOfChar(char *str, char c) {
     }
     return -1;
 }
+
 /*******************************************************************************
  * This function returns the frequency of every character in string str
  * Inputs:
@@ -403,6 +485,9 @@ int* getFreq(char *arr, char *str) {
 }
 
 void compression(char* str, int n, int * binaryNumber){
+    FILE *fp;
+    fp = fopen(COMPRESS_NAME, "wb");
+    fclose(fp);
     load(str, n);
     char *arr = getChars(str);
     int *freq = getFreq(arr, str);
@@ -435,8 +520,8 @@ void decompression(char* str, int binaryNumber){
         binary[count] = -1;
     }
     /*Load bits from compressed file to binary array and prints code*/
-    loadCompressed(root, binary, binaryNumber);
-    printf("\nORIGINGAL STRING IS: \n%s\n", str);
+    loadCompressed(binary, binaryNumber);
+    printf("\n\nORIGINGAL STRING IS: \n%s\n", str);
     printf("\nDECOMPRESSED STRING IS:\n");
     writeCode(root, root, binary, loadTop);
 }
