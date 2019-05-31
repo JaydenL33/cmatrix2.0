@@ -105,8 +105,14 @@ int main(int argc, char *argv[])  {
 		readcipher(words, plainTextLen); /* Reads in encrypted datafile */
 		checkValidRange(words, plainTextLen, validString); /* Checks if the 
 		string is valid or not.  */
+
 		int binaryNumber;
-		compression(validString, plainTextLen, &binaryNumber);
+
+		char forCompression[plainTextLen]; 
+
+		*forCompression = *validString;
+
+		compression(forCompression, plainTextLen, &binaryNumber);
 
 		/* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT 
 		 *  TO Export, run: 

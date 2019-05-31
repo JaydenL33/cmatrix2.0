@@ -52,13 +52,16 @@ int readcipher(unsigned char* cipherText, int plaintextlen) {
 	FILE* fp;
 	int i;
 	fp = fopen(FILENAME, "r");
-	if (fp == NULL) { /* If file doesn't exist */
+	if (fp == NULL) 
+	{ /* If file doesn't exist */
         printf("Read error, make sure there is an encrypt.locked\n");
         return 0;
     }
     	fscanf(fp, "%i\n", &plaintextlen);
    		for (i = 0; i < plaintextlen; i++)
-	   	fscanf(fp, "%c", &cipherText[i]);
+   		{
+   			fscanf(fp, "%c", &cipherText[i]);
+   		}
 	   	fclose(fp);
 	    return plaintextlen;
 }
