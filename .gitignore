@@ -26,3 +26,6 @@
 
 # VSCode
 .vscode
+
+# TestFile
+test.c
