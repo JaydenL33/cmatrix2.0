@@ -10,7 +10,8 @@
  */
 
 
-int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, char* checkedArray);
+int checkValidRange (unsigned char *unCheckedArray,
+ int plaintextlen, char* checkedArray);
 
 int main(int argc, char *argv[])
 {
@@ -30,7 +31,8 @@ int main(int argc, char *argv[])
  * crappy input, no input. 
 ****************************************************************************/
   
-int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, char* checkedArray) {
+int checkValidRange (unsigned char *unCheckedArray,
+ int plaintextlen, char* checkedArray) {
     int decASCII;
     int i;
     int j = 0;

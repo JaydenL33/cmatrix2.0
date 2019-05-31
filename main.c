@@ -20,10 +20,10 @@ void pepe();
 void squash_pepe();
 void matrix_quotes();
 
-int main(int argc, char *argv[])  {
-	int plainTextLen = 0;
-	unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
-	char testKey[INPUT_STRING_BUFFER];
+int main(int argc, char *argv_ptr[])  {
+	int plain_text_len = 0;
+	unsigned char encrypted_data[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
+	char test_key[INPUT_STRING_BUFFER];
 
 /* - Main program control logic follows */
 /*****************************************************************************/
@@ -31,8 +31,8 @@ int main(int argc, char *argv[])  {
      * Colour: green 
      * Print vals: random
      */
-    char* color = KGRN;
-    unsigned int isRandom = 0;
+    char* color_ptr = KGRN;
+    unsigned int is_random = 0;
 
     /* 
      * - Handle flags
@@ -42,36 +42,37 @@ int main(int argc, char *argv[])  {
     if (argc > 1) {
         int i;
         for (i = 1; i < argc; i++) {
-            switch(*argv[i]) {  
+            switch(*argv_ptr[i]) {  
                 case 'e': /* request console data input to encrypt */
-                    plainTextLen = encrypt(encryptedData);
-                   	printf("%d \n", plainTextLen);
+                    plain_text_len = encrypt(encrypted_data);
+                   	printf("%d \n", plain_text_len);
+                    break;
+                case 'g': /* green */
+                    color_ptr = KGRN;
                     break;
                 case 'r': /* red */
-                    color = KRED;
+                    color_ptr = KRED;
                     break;
                 case 'm': /* magenta */ 
-                    color = KMAG;
+                    color_ptr = KMAG;
                     break;
                 case 'c': /* cyan */
-                    color = KCYN;
+                    color_ptr = KCYN;
                     break;
                 case 'y': /* yellow */
-                    color = KYEL;
+                    color_ptr = KYEL;
                     break;
                 case 'b': /* blue */
-                    color = KBLU;
+                    color_ptr = KBLU;
                     break;
                 case 'w': /* white */
-                    color = KWHT;
-                    break;
-                case 'z': /* Print rand vals */
-                    isRandom = 1;
+                    color_ptr = KWHT;
                     break;
                 default:
                     printf("------------------------------------------------"
                     "\nPlease pass in a valid option:"
                     "\ne: Encrypt"
+                    "\ng: Green"
                     "\nr: Red"
                     "\nm: Magenta"
                     "\nc: Cyan"
@@ -89,28 +90,27 @@ int main(int argc, char *argv[])  {
     	return 0;
     }
 
-    if (plainTextLen == 0 && isRandom == 0) { /* no encrypted data exists! */
+    if (plain_text_len == 0 && is_random == 0) { /* no encrypted data exists! */
         printf("Printing random string as encrypted was not selected.\n");
-        isRandom = 1;
-        char validString[plainTextLen];	/* hold validated string */
+        is_random = 1;
+        char valid_string[plain_text_len];	/* hold validated string */
         
         int LINES = atoi(getenv("LINES"));
 		int COLUMNS = atoi(getenv("COLUMNS"));
 
-		print_raindrops(validString, LINES, COLUMNS, color, isRandom);
-		/* success! */
+		print_raindrops(valid_string, LINES, COLUMNS, color_ptr, is_random);
 		return 1; 
-    } else if (plainTextLen > 0) { /* encrypted data was returned */
+    } else if (plain_text_len > 0) { /* encrypted data was returned */
 /******************************************************************************
  * Matrix will now print entered (encrypted) data as screensaver
 ******************************************************************************/
-        char* decryptedData = malloc(sizeof(char) * plainTextLen); 
-        unsigned char words[plainTextLen]; /* holds encrypted string */
-        char validString[plainTextLen];	/* hold validated string */
+        char* decryptedData = malloc(sizeof(char) * plain_text_len); 
+        unsigned char words[plain_text_len]; /* holds encrypted string */
+        char valid_string[plain_text_len];	/* hold validated string */
 
-		decrypt(encryptedData, decryptedData, plainTextLen, testKey);
-		readcipher(words, plainTextLen); /* Reads in encrypted datafile */
-		checkValidRange(words, plainTextLen, validString);
+		decrypt(encrypted_data, decryptedData, plain_text_len, test_key);
+		readcipher(words, plain_text_len); /* Reads in encrypted datafile */
+		checkValidRange(words, plain_text_len, valid_string);
 
 		/* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT 
 		 *  TO Export, run: 
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])  {
 		 */
 		int LINES = atoi(getenv("LINES"));
 		int COLUMNS = atoi(getenv("COLUMNS"));
-		print_raindrops(validString, LINES, COLUMNS, color, isRandom);
+		print_raindrops(valid_string, LINES, COLUMNS, color_ptr, is_random);
 		/* success! */
 		return 1; 
     } else {

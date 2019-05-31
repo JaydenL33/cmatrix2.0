@@ -24,18 +24,18 @@
 int encrypt(unsigned char* encryptedData) {
 
 	printf("\nENCRYPTING....\n");
-	
-	unsigned char byteStateVector[BYTE_STATE_LEN]; /* intermediate used by RC4 encryption */
-
-	char plainText[INPUT_STRING_BUFFER]; /* user input (either from file or console) */
+	/* intermediate used by RC4 encryption */
+	unsigned char byte_state_vector_ptr[BYTE_STATE_LEN]; 
+    /* user input (either from file or console) */
+	char plain_text[INPUT_STRING_BUFFER]; 
 	char keyVal[BYTE_STATE_LEN];
 	/* Fuction Processing  */
-	int plainTextLength = getPlainText(plainText);
+	int plainTextLength = getPlainText(plain_text);
 	int keyLength = keyLength = getKey(keyVal);	
 	
-	byteStreamInitialiser(keyVal, byteStateVector, keyLength);
+	byteStreamInitialiser(keyVal, byte_state_vector_ptr, keyLength);
 
-	genPseudoRandKey(byteStateVector, plainText, encryptedData, 0, 
+	genPseudoRandKey(byte_state_vector_ptr, plain_text, encryptedData, 0, 
 					 plainTextLength, keyLength);
 
 	writecipher(encryptedData, plainTextLength);
@@ -51,17 +51,17 @@ int encrypt(unsigned char* encryptedData) {
  * it (obviously).
 *******************************************************************************/
 int decrypt(unsigned char* encryptedData, char* decryptedData,
-	int lenEncrytpedData, char* userInputKey) {
+	int lenEncrytpedData, char* user_input_key) {
 
 	readcipher(encryptedData, lenEncrytpedData);
   
 	printf("\nDECRYPTING....\n");
 	/* intermediate used by RC4 encryption */
-	unsigned char byteStateVector[BYTE_STATE_LEN]; 
-	int keyLength = getKey(userInputKey);
-	byteStreamInitialiser(userInputKey, byteStateVector, keyLength);
+	unsigned char byte_state_vector_ptr[BYTE_STATE_LEN]; 
+	int keyLength = getKey(user_input_key);
+	byteStreamInitialiser(user_input_key, byte_state_vector_ptr, keyLength);
 
-	genPseudoRandKey(byteStateVector, decryptedData, encryptedData, 1, 
+	genPseudoRandKey(byte_state_vector_ptr, decryptedData, encryptedData, 1, 
 					 lenEncrytpedData, keyLength);
 	return 0;
 }
@@ -69,29 +69,30 @@ int decrypt(unsigned char* encryptedData, char* decryptedData,
 /*******************************************************************************
  * Get key from user (stdin)
 *******************************************************************************/
-int getKey(char* userInputKey) {
+int getKey(char* user_input_key) {
   
 	int length;
-	system("echo off"); /* Do not print the key in plainText back to the shell! */
+    /* Do not print the key in plain_text back to the shell!*/
+	system("echo off"); 
 	printf("%s\nEnter the key:\n", GETKEY_EXPLANATION);
   
   	/* note user input-key cannot exceed 256 bytes! */
-	fgets(userInputKey, BYTE_STATE_LEN, stdin);
-	length = strlen(userInputKey);
+	fgets(user_input_key, BYTE_STATE_LEN, stdin);
+	length = strlen(user_input_key);
 
-	if (userInputKey[length - 1] == '\n') {
+	if (user_input_key[length - 1] == '\n') {
     	/* 
     	 * Replace last character, \n, with \0 (replace the EOL with end of
     	 * end-of-string EOS character )
     	 */
-        userInputKey[length - 1] = '\0';
+        user_input_key[length - 1] = '\0';
     } else {
     	/* 
          * Set the last possible buffer index to EOS character then,
          * clear stdin of any excess characters, avoiding the possible 
          * buffer overflow
          */
-        userInputKey[BYTE_STATE_LEN] = '\0';
+        user_input_key[BYTE_STATE_LEN] = '\0';
         clearStdin();
     }
    	/*
@@ -104,56 +105,57 @@ int getKey(char* userInputKey) {
 
 /*******************************************************************************
  * gets the plaintext entered by the user into the program's stdin source
- * returns the length of the plainText
+ * returns the length of the plain_text
 *******************************************************************************/
-int getPlainText(char* plainText) {
+int getPlainText(char* plain_text) {
 	int lengthplainText;
 
 	printf("\n%s\n", PLAINTEXT_EXPLANATION);
-	fgets(plainText, INPUT_STRING_BUFFER, stdin);
+	fgets(plain_text, INPUT_STRING_BUFFER, stdin);
 
-	lengthplainText = strlen(plainText);
+	lengthplainText = strlen(plain_text);
 
-	if (plainText[lengthplainText - 1] == '\n') {
+	if (plain_text[lengthplainText - 1] == '\n') {
     	/* 
     	 * Replace last character, \n, with \0 (replace the EOL with end of
     	 * end-of-string EOS character )
     	 */
-        plainText[lengthplainText - 1] = '\0';
+        plain_text[lengthplainText - 1] = '\0';
     } else {
         /* 
          * Set the last possible buffer index to EOS character then,
          * clear stdin of any excess characters, avoiding the possible 
          * buffer overflow
          */
-    	plainText[INPUT_STRING_BUFFER] = '\0';
+    	plain_text[INPUT_STRING_BUFFER] = '\0';
         clearStdin();
     }
 	return lengthplainText;
 }
 
 /*******************************************************************************
- * char userInputKey, user inputed key used in the initialisation
- * unsigned char byteStateVector, the byte state vector TOBE randomised by 
+ * char user_input_key, user inputed key used in the initialisation
+ * unsigned char byte_state_vector_ptr, the byte state vector TOBE randomised by 
  * genPseudoRandKey
- * int userKeyLength, length of the user inputed key
+ * int user_key_length, length of the user inputed key
  * 
  * state vector initiliser - initialises a BYTE_STATE_LEN byte key using the 
  * KSA algorithm (step 1 of RC4)
 *******************************************************************************/
-void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector, 
-	int userKeyLength) {
+void byteStreamInitialiser(char* user_input_key, 
+unsigned char* byte_state_vector_ptr, int user_key_length) {
 	int i, j = 0;
   
 	/* KSA */
 	/* loops input key, generates a byte stream vector (byte-key) of 256 */
 	for (i = 0; i < BYTE_STATE_LEN; i++) {
-		byteStateVector[i] = i;
+		byte_state_vector_ptr[i] = i;
 	}
 
 	for (i = 0; i < BYTE_STATE_LEN; i++) {
-		j = (j + byteStateVector[i] + userInputKey[i % userKeyLength]) % BYTE_STATE_LEN;
-		swap(byteStateVector, i, j);		
+		j = (j + byte_state_vector_ptr[i] + user_input_key[i % user_key_length]) 
+        % BYTE_STATE_LEN;
+		swap(byte_state_vector_ptr, i, j);		
 	}
 	printf("\n");
 	return;
@@ -164,32 +166,33 @@ void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector,
  * char plaintext, data to be encrypted
  * unsigned char ciphertext, data encrypted
  * int reverse, decrypt (0/false) vs encrypt (1/true)
- * int dataLen, length of data encrypted/decrypted
- * int keyLen, length of user inputed key
+ * int data_len, length of data encrypted/decrypted
+ * int key_len, length of user inputed key
  *
  * Generates a "pseudo random" BYTE_STATE_LEN byte key using the PRGA algorithm 
  * (step 2 of RC4)
 *******************************************************************************/
-int genPseudoRandKey(unsigned char* byteStateVector, char* plainText, 
-	unsigned char* cipherText, int reverse, int dataLen, int keyLen)  {
+int genPseudoRandKey(unsigned char* byte_state_vector_ptr, char* plain_text, 
+	unsigned char* cipher_text, int reverse, int data_len, int key_len)  {
 
-    int i = 0;  /* i ~ byteStateVector 1st index "randomiser" 	*/
-  	int j = 0;  /* j ~ byteStateVector 2nd index "randomiser" 	*/
+    int i = 0;  /* i ~ byte_state_vector_ptr 1st index "randomiser" 	*/
+  	int j = 0;  /* j ~ byte_state_vector_ptr 2nd index "randomiser" 	*/
   	int t;      /* t ~ loop counter creating temp index 		*/
 
     /* PRGA algorithm */
-	for (t = 0; t < dataLen; t++) {
-		i = (i+1) % keyLen;
-		j = (j + byteStateVector[i]) % keyLen;
-		swap(byteStateVector, i, j);
-		int byteStateAddition = byteStateVector[i] + byteStateVector[j] % keyLen;
-		unsigned char xorElem = byteStateVector[byteStateAddition];
+	for (t = 0; t < data_len; t++) {
+		i = (i+1) % key_len;
+		j = (j + byte_state_vector_ptr[i]) % key_len;
+		swap(byte_state_vector_ptr, i, j);
+		int byte_state_addition = byte_state_vector_ptr[i] +
+         byte_state_vector_ptr[j] % key_len;
+		unsigned char xor_elem = byte_state_vector_ptr[byte_state_addition];
 		
 		
 		if(reverse) {
-			plainText[t]  = xorElem ^ cipherText[t];
+			plain_text[t]  = xor_elem ^ cipher_text[t];
 		} else {
-			cipherText[t] = xorElem ^ plainText[t];
+			cipher_text[t] = xor_elem ^ plain_text[t];
 		}
 	}
 
