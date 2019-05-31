@@ -41,7 +41,7 @@ int main(int argc, char *argv[])  {
      */
     if (argc > 1) {
         int i;
-        for (i = 0; i < argc; i++) {
+        for (i = 1; i < argc; i++) {
             switch(*argv[i]) {  
                 case 'e': /* request console data input to encrypt */
                     plainTextLen = encrypt(encryptedData);
@@ -68,11 +68,24 @@ int main(int argc, char *argv[])  {
                 case 'z': /* Print rand vals */
                     isRandom = 1;
                     break;
+                default:
+                    printf("------------------------------------------------"
+                    "\nPlease pass in a valid option:"
+                    "\ne: Encrypt"
+                    "\nr: Red"
+                    "\nm: Magenta"
+                    "\nc: Cyan"
+                    "\ny: Yellow"
+                    "\nb: Blue"
+                    "\nw: White"
+                    "\n------------------------------------------------\n");
+                    return 0;
             } 
         }
     } else {
     	/* no arguments were passed! */
     	printf("No arguments were passed, check your inputs and try again!\n");
+        
     	return 0;
     }
 
