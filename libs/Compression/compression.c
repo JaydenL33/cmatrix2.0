@@ -550,15 +550,3 @@ void decompression(char* str, int binaryNumber){
     printf("\nDECOMPRESSED STRING IS:\n");
     writeCode(root, root, binary, loadTop);
 }
-  
-int main() { 
-    /* All to be done in main and called when compress/decompress is desired
-     * n - is the number of chars in text file to read from
-     */
-    int n = 5000;
-    int binaryNumber;
-    char* str = malloc(n);
-    compression(str, n, &binaryNumber);
-    decompression(str, binaryNumber);
-    return 0; 
-} 

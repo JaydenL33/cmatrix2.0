@@ -65,7 +65,7 @@ libraries : $(UTIL_SRC:.c=.o) $(CRYPTO_SRC:.c=.o) $(RAINDROPS_SRC:.c=.o) $(COMPR
 	$(LIBFLAGS) $(UTIL_TARGET) $(UTIL_SRC:.c=.o)
 	$(LIBFLAGS) $(CRYPTO_TARGET) $(CRYPTO_SRC:.c=.o)
 	$(LIBFLAGS) $(RAINDROPS_TARGET) $(RAINDROPS_SRC:.c=.o)
-	$(LIBFLAGS) $(COMPRESSION_TARGET) $(RAINDROPS_SRC:.c=.o)
+	$(LIBFLAGS) $(COMPRESSION_TARGET) $(COMPRESSION_SRC:.c=.o)
 	@echo ============== Libraries compilled! =============
 
 $(UTIL_SRC:.c=.o) : $(STATIC_UTIL)
