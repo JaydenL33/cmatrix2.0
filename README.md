@@ -11,6 +11,8 @@
 
 ## Running the Application
 The application is runnable per environment. Simply use the included makefile to clean, recompile all or recompile libraries.
+__Note:__ The application requires $LINES and $COLUMNS to be available to the program. 
+To enable this, run: `export LINES=$LINES;export COLUMNS=$COLUMNS`
 
 ### *Using make:*
 * `make clean`, cleans all .o, .a and program generated files created during the compile process.
