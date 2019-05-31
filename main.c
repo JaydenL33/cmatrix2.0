@@ -22,10 +22,10 @@ void squash_pepe();
 void matrix_quotes();
 
 int main(int argc, char *argv[])  {
-	int plainTextLen = 0;
-	unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
-	char testKey[INPUT_STRING_BUFFER];
-	char *decryptedData = malloc(sizeof(char) * plainTextLen); 
+    int plainTextLen = 0;
+    unsigned char encryptedData[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
+    char testKey[INPUT_STRING_BUFFER];
+
 /* - Main program control logic follows */
 /*****************************************************************************/
     /* Defaults:
@@ -46,6 +46,7 @@ int main(int argc, char *argv[])  {
             switch(*argv[i]) {  
                 case 'e': /* request console data input to encrypt */
                     plainTextLen = encrypt(encryptedData);
+                    printf("%d \n", plainTextLen);
                     break;
                 case 'r': /* red */
                     color = KRED;
@@ -68,68 +69,59 @@ int main(int argc, char *argv[])  {
                 case 'z': /* Print rand vals */
                     isRandom = 1;
                     break;
-                case 'd':
-                plainTextLen = readcipher(encryptedData, plainTextLen);
-                decryptedData = (char*) malloc(sizeof(char) * plainTextLen); 
-                decrypt(encryptedData, decryptedData, plainTextLen, testKey);
-               		break;
-
             } 
         }
     } else {
-    	/* no arguments were passed! */
-    	printf("No arguments were passed, check your inputs and try again!\n");
-    	return 0;
+        /* no arguments were passed! */
+        printf("No arguments were passed, check your inputs and try again!\n");
+        return 0;
     }
 
     if (plainTextLen == 0 && isRandom == 0) { /* no encrypted data exists! */
         printf("Printing random string as encrypted was not selected.\n");
         isRandom = 1;
-        char validString[plainTextLen];	/* hold validated string */
+        char validString[plainTextLen]; /* hold validated string */
         
         int LINES = atoi(getenv("LINES"));
-		int COLUMNS = atoi(getenv("COLUMNS"));
+        int COLUMNS = atoi(getenv("COLUMNS"));
 
-		print_raindrops(validString, LINES, COLUMNS, color, isRandom);
-		/* success! */
-		return 1; 
+        print_raindrops(validString, LINES, COLUMNS, color, isRandom);
+        /* success! */
+        return 1; 
     } else if (plainTextLen > 0) { /* encrypted data was returned */
 /******************************************************************************
  * Matrix will now print entered (encrypted) data as screensaver
 ******************************************************************************/
-        decryptedData = (char *) malloc(sizeof(char) * plainTextLen); 
+        char* decryptedData = malloc(sizeof(char) * plainTextLen); 
         unsigned char words[plainTextLen]; /* holds encrypted string */
-        char validString[plainTextLen];	/* hold validated string */
+        char validString[plainTextLen]; /* hold validated string */
 
-		decrypt(encryptedData, decryptedData, plainTextLen, testKey);
-		readcipher(words, plainTextLen); /* Reads in encrypted datafile */
-		checkValidRange(words, plainTextLen, validString); /* Checks if the 
-		string is valid or not.  */
+        decrypt(encryptedData, decryptedData, plainTextLen, testKey);
+        readcipher(words, plainTextLen); /* Reads in encrypted datafile */
+        checkValidRange(words, plainTextLen, validString);
 
-		int binaryNumber;
+        /* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT 
+         *  TO Export, run: 
+         *  export LINES=$LINES; export COLUMNS=$COLUMNS
+         */
+        int LINES = atoi(getenv("LINES"));
+        int COLUMNS = atoi(getenv("COLUMNS"));
+        int binaryNumber;
 
-		char forCompression[plainTextLen]; 
+        char forCompression[plainTextLen]; 
 
-		*forCompression = *validString;
+        *forCompression = *validString;
 
-		compression(forCompression, plainTextLen, &binaryNumber);
-
-		/* MAKE SURE THESE ARE EXPORTED OTHERWISE WE SEGFAULT 
-		 *  TO Export, run: 
-	     *  export LINES=$LINES; export COLUMNS=$COLUMNS
-		 */
-		int LINES = atoi(getenv("LINES"));
-		int COLUMNS = atoi(getenv("COLUMNS"));
-		print_raindrops(validString, LINES, COLUMNS, color, isRandom);
-		/* success! */
-		return 1; 
+        compression(forCompression, plainTextLen, &binaryNumber);
+        print_raindrops(validString, LINES, COLUMNS, color, isRandom);
+        /* success! */
+        return 1; 
     } else {
-    	printf(UNKNOWN);
+        printf(UNKNOWN);
     }
 /******************************************************************************
  * End of Reading Arguments to the Program. 
 ******************************************************************************/
     /* if you have reached this point, something is quite wrong */
-	return 0; 
+    return 0; 
 }
-
