@@ -36,7 +36,8 @@ int writecipher(unsigned char* cipherText, int plaintextlen ) {
 	FILE* fp;
 	fp = fopen(FILENAME, "w");
 	int i;
-	for (i = 0; i < plaintextlen; i++) {
+	for (i = 0; i < plaintextlen; i++) 
+	{
 		fprintf(fp, "%c", cipherText[i]);
 	}
 	fclose(fp);
@@ -55,7 +56,7 @@ int readcipher(unsigned char* cipherText, int plaintextlen) {
         return 0;
     }
    		for (i = 0; i < plaintextlen; i++)
-	   		fscanf(fp, "%c", &cipherText[i]);
+	   	fscanf(fp, "%c", &cipherText[i]);
 	   	fclose(fp);
 	    return 1;
 }
@@ -76,7 +77,7 @@ int checkValidRange (unsigned char *unCheckedArray, int plaintextlen, char* chec
 		decASCII = (int) unCheckedArray[i]; 
 		if (decASCII >= 33 && decASCII <= 126)
 		{
-			checkedArray[j] = (char) (decASCII - 127) ;
+			checkedArray[j] = (char) unCheckedArray[i] ;
 			j++;
 		}
 	}
