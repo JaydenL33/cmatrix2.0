@@ -14,10 +14,12 @@
 # define BYTE_STATE_LEN 256
 # define INPUT_STRING_BUFFER 1025
 
-# define PLAINTEXT_EXPLANATION "Enter the data to be encrypted!\nNote: currently only\
+# define PLAINTEXT_EXPLANATION "Enter the data to be encrypted!\n\
+ Note: currently only\
  1024 characters are supported, all remaining characters\
  will be ignored!"
-# define GETKEY_EXPLANATION "The key value may contain any ASCII valid characters\
+# define GETKEY_EXPLANATION "The key value may contain\
+ any ASCII valid characters\
  \nOnly the first 256 characters inputed will be used."
 
 /*******************************************************************************
@@ -26,7 +28,7 @@
  * returns int length of the encrypted data, which equals the length of 
  * the original, unencrypted (plaintext), data.
 *******************************************************************************/
-int encrypt(unsigned char* encryptedData);
+int encrypt(unsigned char* encrypted_data_ptr);
 
 /*******************************************************************************
  * Implement the library to decrypt data
@@ -35,44 +37,45 @@ int encrypt(unsigned char* encryptedData);
  * This also requires the length of encrypted data as well as the key to decrypt
  * it (obviously).
 *******************************************************************************/
-int decrypt(unsigned char* encryptedData, char* decryptedData, int lenEncrytpedData,
-	char* userInputKey);
+int decrypt(unsigned char* encrypted_data_ptr, 
+char* decrypted_data_ptr, int len_encrytped_data,
+	char* user_input_key_ptr);
 
 /*******************************************************************************
  * Get key from user (stdin)
 *******************************************************************************/
-int getKey(char* userInputKey);
+int getKey(char* user_input_key_ptr);
 
 /*******************************************************************************
  * gets the plaintext entered by the user into the program's stdin source
- * returns the length of the plainText
+ * returns the length of the plain_text_ptr
 *******************************************************************************/
-int getPlainText(char* plainText);
+int getPlainText(char* plain_text_ptr);
 
 /*******************************************************************************
- * char userInputKey, user inputed key used in the initialisation
- * unsigned char byteStateVector, the byte state vector TOBE randomised by 
+ * char user_input_key_ptr, user inputed key used in the initialisation
+ * unsigned char byte_state_vector_ptr, the byte state vector TOBE randomised by 
  * genPseudoRandKey
- * int userKeyLength, length of the user inputed key
+ * int user_key_length, length of the user inputed key
  * 
  * state vector initiliser - initialises a BYTE_STATE_LEN byte key using the 
  * KSA algorithm (step 1 of RC4)
 *******************************************************************************/
-void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector, 
-	 int userKeyLength);
+void byteStreamInitialiser(char* user_input_key_ptr, 
+unsigned char* byte_state_vector_ptr, int user_key_length);
 
 /*******************************************************************************
  * unsigned char byte state vector
  * char plaintext, data to be encrypted
  * unsigned char ciphertext, data encrypted
  * int reverse, decrypt (0/false) vs encrypt (1/true)
- * int dataLen, length of data encrypted/decrypted
- * int keyLen, length of user inputed key
+ * int data_len, length of data encrypted/decrypted
+ * int key_len, length of user inputed key
  *
  * Generates a "pseudo random" BYTE_STATE_LEN byte key using the PRGA algorithm 
  * (step 2 of RC4)
 *******************************************************************************/
-int genPseudoRandKey(unsigned char* byteStateVector, char* plainText, 
-	unsigned char* cipherText, int reverse, int dataLen, int keyLen);
+int genPseudoRandKey(unsigned char* byte_state_vector_ptr, char* plain_text_ptr, 
+	unsigned char* cipher_text_ptr, int reverse, int data_len, int key_len);
 
 # endif
