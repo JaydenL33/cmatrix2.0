@@ -60,7 +60,8 @@ int COLUMNS, char* color_ptr, unsigned int is_random) {
 						int rand_num = (int) (rand() % LINES + 1) * 4;
 						spaces[j] = rand_num;
 						non_spaces[j] = rand_num / 4;
-						/* non_spaces[j] = (int) (rand() % rand_num + 1) / 2; */
+					    /* non_spaces[j] = 
+                        (int) (rand() % rand_num + 1) / 2; */
 					}
 					/* If spaces[j] isn't empty, print a space and -1 */
 					if (spaces[j] > 0) {
@@ -128,7 +129,8 @@ void rand_str(char *str_ptr, size_t length) {
  * 'length' is the desired width of the string, generally will be width of
  * the terminal.
 ****************************************************************************/
-void rand_encrypted_str(char *new_str_ptr, char *encrypted_str_ptr, size_t length) {
+void rand_encrypted_str(char *new_str_ptr,
+char *encrypted_str_ptr, size_t length) {
 	int i;
 	for (i = 0; encrypted_str_ptr[i] != '\0'; i++) {}
 	
