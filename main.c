@@ -22,7 +22,8 @@ void matrix_quotes();
 
 int main(int argc, char *argv_ptr[])  {
 	int plain_text_len = 0;
-	unsigned char encrypted_data[INPUT_STRING_BUFFER]; /* macro from encrypt.h */
+    /* macro from encrypt.h */
+	unsigned char encrypted_data[INPUT_STRING_BUFFER]; 
 	char test_key[INPUT_STRING_BUFFER];
 
 /* - Main program control logic follows */

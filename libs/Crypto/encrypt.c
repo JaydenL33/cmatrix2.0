@@ -35,8 +35,8 @@ int encrypt(unsigned char* encrypted_data_ptr) {
 	
 	byteStreamInitialiser(key_val, byte_state_vector_ptr, key_length);
 
-	genPseudoRandKey(byte_state_vector_ptr, plain_text_ptr, encrypted_data_ptr, 0, 
-					 plain_text_length, key_length);
+	genPseudoRandKey(byte_state_vector_ptr, plain_text_ptr, 
+    encrypted_data_ptr, 0, plain_text_length, key_length);
 
 	writecipher(encrypted_data_ptr, plain_text_length);
 
@@ -59,10 +59,11 @@ int decrypt(unsigned char* encrypted_data_ptr, char* decrypted_data_ptr,
 	/* intermediate used by RC4 encryption */
 	unsigned char byte_state_vector_ptr[BYTE_STATE_LEN]; 
 	int key_length = getKey(user_input_key_ptr);
-	byteStreamInitialiser(user_input_key_ptr, byte_state_vector_ptr, key_length);
+	byteStreamInitialiser(user_input_key_ptr, 
+    byte_state_vector_ptr, key_length);
 
-	genPseudoRandKey(byte_state_vector_ptr, decrypted_data_ptr, encrypted_data_ptr, 1, 
-					 len_encrytped_data, key_length);
+	genPseudoRandKey(byte_state_vector_ptr, decrypted_data_ptr, 
+    encrypted_data_ptr, 1, len_encrytped_data, key_length);
 	return 0;
 }
 
@@ -153,7 +154,8 @@ unsigned char* byte_state_vector_ptr, int user_key_length) {
 	}
 
 	for (i = 0; i < BYTE_STATE_LEN; i++) {
-		j = (j + byte_state_vector_ptr[i] + user_input_key_ptr[i % user_key_length]) 
+		j = (j + byte_state_vector_ptr[i] 
+        + user_input_key_ptr[i % user_key_length]) 
         % BYTE_STATE_LEN;
 		swap(byte_state_vector_ptr, i, j);		
 	}

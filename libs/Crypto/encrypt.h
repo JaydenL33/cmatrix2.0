@@ -61,8 +61,8 @@ int getPlainText(char* plain_text_ptr);
  * state vector initiliser - initialises a BYTE_STATE_LEN byte key using the 
  * KSA algorithm (step 1 of RC4)
 *******************************************************************************/
-void byteStreamInitialiser(char* user_input_key_ptr, unsigned char* byte_state_vector_ptr, 
-	 int user_key_length);
+void byteStreamInitialiser(char* user_input_key_ptr, 
+unsigned char* byte_state_vector_ptr, int user_key_length);
 
 /*******************************************************************************
  * unsigned char byte state vector
