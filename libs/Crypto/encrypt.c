@@ -1,7 +1,6 @@
 /* Encryption functionality for libCrypto
  * also includes utility functions used by the library.
  * Fund-O-C Assesment 3
- *
  * See the github: github.com/rlcaust/Fund-O-C
  * 
  * Authors:
@@ -9,21 +8,18 @@
  * Jayden Lee
  */
 
-# include <stdio.h> /* fgets, printf, */
-# include <stdlib.h> /* system */
-# include <string.h> /* strlen */
-# include <math.h>
-# include "encrypt.h" /* custom library header file for cryptography functionality */
+# include <stdio.h>   	/* fgets, printf 	*/
+# include <stdlib.h>  	/* system 			*/
+# include <string.h>  	/* strlen 			*/
+
+# include "encrypt.h" 		/* cryptography functionality 	*/
+# include "../Util/util.h"	/* utility functions 			*/
 
 /*******************************************************************************
- * Implement getKey to retrieve a user-defined key. Then use  byteStreamInitialiser
- * to generate the byteStateVector. Finally pseudo-randomise the key and XOR it
- * by implementing genPseudoRandKey.  
- * Inputs: 
- *	- none
- * Outputs:
- *	- mem address cipherText
- * 	- int length of plainText/cipherText
+ * Implement library to encrypt data
+ * this function expects an external decleration of encrypted data to write to!
+ * returns int length of the encrypted data, which equals the length of 
+ * the original, unencrypted (plaintext), data.
 *******************************************************************************/
 int encrypt(unsigned char* encryptedData) {
 
@@ -47,6 +43,13 @@ int encrypt(unsigned char* encryptedData) {
 	return plainTextLength;
 }
 
+/*******************************************************************************
+ * Implement the library to decrypt data
+ * this function expects an external decleration of encrypted and decrypted data
+ * to write to! 
+ * This also requires the length of encrypted data as well as the key to decrypt
+ * it (obviously).
+*******************************************************************************/
 int decrypt(unsigned char* encryptedData, char* decryptedData,
 	int lenEncrytpedData, char* userInputKey) {
 
@@ -64,13 +67,7 @@ int decrypt(unsigned char* encryptedData, char* decryptedData,
 }
 
 /*******************************************************************************
- * Get key from user, account for buffer overflow. Avoids printing key in 
- * plainText.
- * Inputs: 
- *	- mem address for key_arr ("byte" ~ int value of ASCII)
- * Outputs:
- *	- int length of key
- *	- BYTE struct converted key to mem address provided
+ * Get key from user (stdin)
 *******************************************************************************/
 int getKey(char* userInputKey) {
   
@@ -106,12 +103,8 @@ int getKey(char* userInputKey) {
 }
 
 /*******************************************************************************
- * plainText getter. Prompts user for plainText entry to be encrypted. 
- * WARNING: Max plainText entered currently allows 1024 char's!! All remaining 
- * ignored!
- *	- mem address for plainText
- * Outputs:
- *	- int length of plainText entered.
+ * gets the plaintext entered by the user into the program's stdin source
+ * returns the length of the plainText
 *******************************************************************************/
 int getPlainText(char* plainText) {
 	int lengthplainText;
@@ -140,12 +133,13 @@ int getPlainText(char* plainText) {
 }
 
 /*******************************************************************************
- * Utilise key to create a state vector.
- * Inputs: 
- *	- mem address for key_arr
- *	- int length of key
- * Outputs:
- *	- mem address of state vector to store to
+ * char userInputKey, user inputed key used in the initialisation
+ * unsigned char byteStateVector, the byte state vector TOBE randomised by 
+ * genPseudoRandKey
+ * int userKeyLength, length of the user inputed key
+ * 
+ * state vector initiliser - initialises a BYTE_STATE_LEN byte key using the 
+ * KSA algorithm (step 1 of RC4)
 *******************************************************************************/
 void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector, 
 	int userKeyLength) {
@@ -166,11 +160,15 @@ void byteStreamInitialiser(char* userInputKey, unsigned char* byteStateVector,
 }
 
 /*******************************************************************************
- * Utilise byte state vector array to generate a pseudo random key-stream.
- * Inputs: 
- *	- mem address for state_vector
- * Outputs:
- *	- mem address return_key byte stream.
+ * unsigned char byte state vector
+ * char plaintext, data to be encrypted
+ * unsigned char ciphertext, data encrypted
+ * int reverse, decrypt (0/false) vs encrypt (1/true)
+ * int dataLen, length of data encrypted/decrypted
+ * int keyLen, length of user inputed key
+ *
+ * Generates a "pseudo random" BYTE_STATE_LEN byte key using the PRGA algorithm 
+ * (step 2 of RC4)
 *******************************************************************************/
 int genPseudoRandKey(unsigned char* byteStateVector, char* plainText, 
 	unsigned char* cipherText, int reverse, int dataLen, int keyLen)  {
