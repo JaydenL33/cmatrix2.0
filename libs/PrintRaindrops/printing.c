@@ -59,7 +59,7 @@ int COLUMNS, char* color_ptr, unsigned int is_random) {
 					if (non_spaces[j] == 0) {
 						int rand_num = (int) (rand() % LINES + 1) * 4;
 						spaces[j] = rand_num;
-						non_spaces[j] = rand_num / 4;
+						non_spaces[j] = rand_num / 8;
 					    /* non_spaces[j] = 
                         (int) (rand() % rand_num + 1) / 2; */
 					}
