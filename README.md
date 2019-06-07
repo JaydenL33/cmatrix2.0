@@ -12,12 +12,19 @@
 ## Running the Application
 The application is runnable per environment. Simply use the included makefile to clean, recompile all or recompile libraries.
 __Note:__ The application requires $LINES and $COLUMNS to be available to the program. 
-To enable this, run: `export LINES=$LINES;export COLUMNS=$COLUMNS`
+In your terminal, run: 
+```
+export LINES=$LINES; export COLUMNS=$COLUMNS
+make clean && make all
+./main.out h # Displays the help menu
+./main.out g # Prints raindrops using a random string
+```
 
 ### *Using make:*
 * `make clean`, cleans all .o, .a and program generated files created during the compile process.
 * `make all`, compiles all libraries and links them to the implementer (main.c).
 * `make libraries`, compiles all libraries but doesn't link them, this is useful for debugging purposes. Otherwise, in typical use, simply call make all.
+
 ### *Chaining commands:*
 * The usual double-ampersand (&&) used in bash allows chaining makefile commands;
 	`make clean && make all`
